@@ -31,14 +31,14 @@ final class SeasonListViewController: UIViewController {
     return label
   }()
 
-  var coordinator: SeasonListCoordinator?
   var viewModel: SeasonListViewModelProtocol! {
     didSet {
-//      viewModel.delegate = self
+       viewModel.delegate = self
     }
   }
   
-  
+  var coordinator: SeasonListCoordinator?
+
   init() {
     super.init(nibName: nil, bundle: nil)
   }
@@ -54,7 +54,7 @@ final class SeasonListViewController: UIViewController {
 
     setupUI()
     setupConstraints()
-//    viewModel.loadData()
+    viewModel.loadData()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -87,6 +87,21 @@ final class SeasonListViewController: UIViewController {
       titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
     ])
   }
-  
+}
 
+// MARK: - SeasonListViewModelDelegate
+extension SeasonListViewController: SeasonListViewModelDelegate {
+  func handleOutput(_ output: SeasonListViewModelOutput) {
+    switch output {
+    case .showLoading(let isLoading):
+      // Loading durumunu handle et
+      if isLoading {
+        print("Loading started...")
+        // Buraya loading indicator gösterme kodu gelecek
+      } else {
+        print("Loading finished...")
+        // Buraya loading indicator gizleme kodu gelecek
+      }
+    }
+  }
 }

@@ -5,12 +5,13 @@
 //  Created by Tayfun Susamcioglu on 6.10.2025.
 //
 
-import UIKit
+import Foundation
 
 class SeasonListBuilder {
   static func make() -> SeasonListViewController {
     let viewController = SeasonListViewController()
-    let viewModel = SeasonListViewModel(service: SeasonListService())
+    let service = SeasonListService()
+    let viewModel = SeasonListViewModel(service: service)
     viewController.viewModel = viewModel
     
     return viewController

@@ -9,14 +9,17 @@ import Foundation
 
 protocol SeasonListViewModelProtocol: AnyObject {
   var delegate: SeasonListViewModelDelegate? { get set }
-  var service: SeasonListServiceProtocol! { get set }
 //  var someData: ModelData { get }
   func loadData()
 }
 
 
+enum SeasonListViewModelOutput {
+  case showLoading(Bool)
+}
+
 protocol SeasonListViewModelDelegate: AnyObject {
-//  func handleOutput(_ output: ...)
+  func handleOutput(_ output: SeasonListViewModelOutput)
 //  func navigate(to route: ...)
 }
 
@@ -29,8 +32,7 @@ final class SeasonListViewModel: SeasonListViewModelProtocol {
   }
   
   func loadData() {
-    // <#code#>
+    delegate?.handleOutput(.showLoading(true))
   }
-  
   
 }
