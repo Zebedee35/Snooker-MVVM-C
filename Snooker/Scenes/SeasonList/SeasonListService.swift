@@ -13,6 +13,13 @@ protocol SeasonListServiceProtocol: AnyObject {
 
 final class SeasonListService: SeasonListServiceProtocol {
   func fetchSeason(completion: @escaping (Result<[DummyModel], any Error>) -> Void) {
-//    <#code#>
+    Task {
+      do {
+        let seasons = try await SupabaseAPI.fetchSeasons()
+        print("Seasons: \(seasons)")
+      } catch {
+        print("Error: \(error)")
+      }
+    }
   }
 }

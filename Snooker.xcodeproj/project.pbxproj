@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		AAB319A42E96F1070014CA2A /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A32E96F1070014CA2A /* PostgREST */; };
+		AAB319A62E96F4770014CA2A /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A52E96F4770014CA2A /* Auth */; };
+		AAB319A82E96F4770014CA2A /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A72E96F4770014CA2A /* Functions */; };
+		AAB319AB2E96F4AF0014CA2A /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319AA2E96F4AF0014CA2A /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +43,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAB319AB2E96F4AF0014CA2A /* Supabase in Frameworks */,
+				AAB319A82E96F4770014CA2A /* Functions in Frameworks */,
+				AAB319A62E96F4770014CA2A /* Auth in Frameworks */,
 				AAB319A42E96F1070014CA2A /* PostgREST in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,10 +53,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AAB319A92E96F4AF0014CA2A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AAC2649B2E93031A0062804E = {
 			isa = PBXGroup;
 			children = (
 				AAC264A62E93031A0062804E /* Snooker */,
+				AAB319A92E96F4AF0014CA2A /* Frameworks */,
 				AAC264A52E93031A0062804E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -84,6 +98,9 @@
 			name = Snooker;
 			packageProductDependencies = (
 				AAB319A32E96F1070014CA2A /* PostgREST */,
+				AAB319A52E96F4770014CA2A /* Auth */,
+				AAB319A72E96F4770014CA2A /* Functions */,
+				AAB319AA2E96F4AF0014CA2A /* Supabase */,
 			);
 			productName = Snooker;
 			productReference = AAC264A42E93031A0062804E /* Snooker.app */;
@@ -385,6 +402,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = PostgREST;
+		};
+		AAB319A52E96F4770014CA2A /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		AAB319A72E96F4770014CA2A /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		AAB319AA2E96F4AF0014CA2A /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -33,6 +33,16 @@ final class SeasonListViewModel: SeasonListViewModelProtocol {
   
   func loadData() {
     delegate?.handleOutput(.showLoading(true))
+    service.fetchSeason{[weak self] result in
+      guard let self else {return}
+      delegate?.handleOutput(.showLoading(false))
+      switch result {
+      case .success(let tours):
+        print (tours)
+      case .failure(let error):
+        print (error)
+      }
+    }
   }
   
 }
