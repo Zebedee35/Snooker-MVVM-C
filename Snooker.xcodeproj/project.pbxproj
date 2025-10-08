@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AAB319A42E96F1070014CA2A /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A32E96F1070014CA2A /* PostgREST */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AAC264A42E93031A0062804E /* Snooker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snooker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAB319A42E96F1070014CA2A /* PostgREST in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = Snooker;
 			packageProductDependencies = (
+				AAB319A32E96F1070014CA2A /* PostgREST */,
 			);
 			productName = Snooker;
 			productReference = AAC264A42E93031A0062804E /* Snooker.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = AAC2649B2E93031A0062804E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AAC264A52E93031A0062804E /* Products */;
 			projectDirPath = "";
@@ -359,6 +368,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AAB319A32E96F1070014CA2A /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AAB319A22E96F1070014CA2A /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AAC2649C2E93031A0062804E /* Project object */;
 }
