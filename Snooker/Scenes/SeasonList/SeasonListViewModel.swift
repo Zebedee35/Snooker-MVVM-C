@@ -9,23 +9,40 @@ import Foundation
 
 protocol SeasonListViewModelProtocol: AnyObject {
   var delegate: SeasonListViewModelDelegate? { get set }
-//  var someData: ModelData { get }
   func loadData()
+  func selectSeason(at index: Int)
 }
 
-
-enum SeasonListViewModelOutput {
+enum SeasonListViewModelOutput: Equatable {
+  case displaySeasons([SeasonListCellPresentation])
   case showLoading(Bool)
+  
+  static func == (lhs: SeasonListViewModelOutput, rhs: SeasonListViewModelOutput) -> Bool {
+    switch (lhs, rhs) {
+    case (.displaySeasons(let lhsSeasons), .displaySeasons(let rhsSeasons)):
+      return lhsSeasons.count == rhsSeasons.count
+    case (.showLoading(let lhsLoading), .showLoading(let rhsLoading)):
+      return lhsLoading == rhsLoading
+    default:
+      return false
+    }
+  }
+}
+
+enum SeasonListRoute {
+  case seasonDetail(TournamentDTO)
 }
 
 protocol SeasonListViewModelDelegate: AnyObject {
   func handleOutput(_ output: SeasonListViewModelOutput)
-//  func navigate(to route: ...)
+  func navigate(to route: SeasonListRoute)
 }
 
 final class SeasonListViewModel: SeasonListViewModelProtocol {
-  var delegate: (any SeasonListViewModelDelegate)?
-  var service: SeasonListServiceProtocol!
+  weak var delegate: SeasonListViewModelDelegate?
+  
+  private let service: SeasonListServiceProtocol
+  private var tournaments: [TournamentDTO] = []
   
   init(service: SeasonListServiceProtocol) {
     self.service = service
@@ -33,16 +50,25 @@ final class SeasonListViewModel: SeasonListViewModelProtocol {
   
   func loadData() {
     delegate?.handleOutput(.showLoading(true))
-    service.fetchSeason{[weak self] result in
-      guard let self else {return}
+    service.fetchSeasons { [weak self] result in
+      guard let self else { return }
       delegate?.handleOutput(.showLoading(false))
       switch result {
-      case .success(let tours):
-        print (tours)
+      case .success(let tournaments):
+        self.tournaments = tournaments
+        let cellPresentations = tournaments.map { SeasonListCellPresentation(tournament: $0) }
+        delegate?.handleOutput(.displaySeasons(cellPresentations))
       case .failure(let error):
-        print (error)
+        print("Error fetching seasons: \(error)")
+        // TODO: Error handling
       }
     }
   }
   
+  func selectSeason(at index: Int) {
+    guard index < tournaments.count else { return }
+    let tournament = tournaments[index]
+    delegate?.navigate(to: .seasonDetail(tournament))
+  }
 }
+

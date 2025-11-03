@@ -9,16 +9,26 @@ import UIKit
 
 final class SeasonListCoordinator: Coordinator {
   weak var navigationController: UINavigationController!
-  weak var mainViewContoller: SeasonListViewController?
+  weak var mainViewController: SeasonListViewController?
   
-  init (navigationController: UINavigationController!) {
+  init(navigationController: UINavigationController!) {
     self.navigationController = navigationController
   }
   
   func start() {
     let viewController = SeasonListBuilder.make()
     viewController.coordinator = self
-    mainViewContoller = viewController
+    mainViewController = viewController
     navigationController.setViewControllers([viewController], animated: true)
+  }
+  
+  func handle(route: SeasonListRoute) {
+    switch route {
+    case .seasonDetail(let tournament):
+      // TODO: SeasonDetail ekranı oluşturulduğunda burası implement edilecek
+      print("Navigate to season detail: \(tournament.name)")
+      // let detailCoordinator = SeasonDetailCoordinator(navigationController: navigationController, tournament: tournament)
+      // detailCoordinator.start()
+    }
   }
 }

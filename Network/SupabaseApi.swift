@@ -56,7 +56,7 @@ struct SupabaseAPI {
             .from(SupabaseEndpoint.seasons.rawValue)
             .select(TournamentDTO.sqlFields)
             .eq("season", value: 2025)
-//            .order("start_date", ascending: true)
+            .order("start_date", ascending: true)
             .execute()
             .value
         return response

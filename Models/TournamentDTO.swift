@@ -20,8 +20,8 @@ struct TournamentDTO: Decodable, Identifiable {
     case id
     case season
     case name
-    case startDate // = "start_date"
-    case endDate // = "end_date"
+    case startDate //= "start_date"
+    case endDate //= "end_date"
     case city
     case country
     case venue

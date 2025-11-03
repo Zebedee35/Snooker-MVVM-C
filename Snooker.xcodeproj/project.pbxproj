@@ -28,6 +28,16 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AABD5E762EB919C300B0045D /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AABD5E7A2EB919D000B0045D /* Network */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Network;
+			sourceTree = "<group>";
+		};
 		AAC264A62E93031A0062804E /* Snooker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -56,6 +66,8 @@
 		AAB319A92E96F4AF0014CA2A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AABD5E762EB919C300B0045D /* Models */,
+				AABD5E7A2EB919D000B0045D /* Network */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -93,6 +105,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				AABD5E762EB919C300B0045D /* Models */,
+				AABD5E7A2EB919D000B0045D /* Network */,
 				AAC264A62E93031A0062804E /* Snooker */,
 			);
 			name = Snooker;
