@@ -193,3 +193,150 @@ final class SeasonListCell: UITableViewCell {
     locationLabel.text = presentation.location
   }
 }
+
+// MARK: - Previews
+#if DEBUG
+import SwiftUI
+
+@available(iOS 13.0, *)
+struct SeasonListViewController_Previews: PreviewProvider {
+  static var previews: some View {
+    Group {
+      // Preview with mock data
+      UIViewControllerPreview {
+        let viewController = SeasonListViewController()
+        let mockService = MockSeasonListService()
+        let viewModel = SeasonListViewModel(service: mockService)
+        viewController.viewModel = viewModel
+        
+        let navController = UINavigationController(rootViewController: viewController)
+        return navController
+      }
+      .previewDisplayName("Season List - Light")
+      
+      UIViewControllerPreview {
+        let viewController = SeasonListViewController()
+        let mockService = MockSeasonListService()
+        let viewModel = SeasonListViewModel(service: mockService)
+        viewController.viewModel = viewModel
+        
+        let navController = UINavigationController(rootViewController: viewController)
+        return navController
+      }
+      .preferredColorScheme(.dark)
+      .previewDisplayName("Season List - Dark")
+    }
+  }
+}
+
+@available(iOS 13.0, *)
+struct SeasonListCell_Previews: PreviewProvider {
+  static var previews: some View {
+    Group {
+      // Single cell preview - Light
+      CellPreviewContainer {
+        let cell = SeasonListCell(style: .default, reuseIdentifier: SeasonListCell.identifier)
+        let presentation = SeasonListCellPresentation(tournament: TournamentDTO.preview)
+        cell.configure(with: presentation)
+        return cell
+      }
+      .previewDisplayName("Cell - Light")
+      
+      // Single cell preview - Dark
+      CellPreviewContainer {
+        let cell = SeasonListCell(style: .default, reuseIdentifier: SeasonListCell.identifier)
+        let presentation = SeasonListCellPresentation(tournament: TournamentDTO.preview)
+        cell.configure(with: presentation)
+        return cell
+      }
+      .preferredColorScheme(.dark)
+      .previewDisplayName("Cell - Dark")
+    }
+  }
+}
+
+// MARK: - Cell Preview Container
+@available(iOS 13.0, *)
+struct CellPreviewContainer<Content: UIView>: View {
+  let content: Content
+  let width: CGFloat
+  let height: CGFloat
+  
+  init(width: CGFloat = 375, height: CGFloat = 88, @ViewBuilder builder: () -> Content) {
+    self.content = builder()
+    self.width = width
+    self.height = height
+  }
+  
+  var body: some View {
+    UIViewPreviewWrapper(view: content)
+      .frame(width: width, height: height)
+      .previewLayout(.sizeThatFits)
+  }
+}
+
+@available(iOS 13.0, *)
+struct UIViewPreviewWrapper<View: UIView>: UIViewRepresentable {
+  let view: View
+  
+  func makeUIView(context: Context) -> UIView {
+    let container = UIView(frame: .zero)
+    container.addSubview(view)
+    view.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      view.topAnchor.constraint(equalTo: container.topAnchor),
+      view.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+      view.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+      view.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+    ])
+    return container
+  }
+  
+  func updateUIView(_ uiView: UIView, context: Context) {}
+}
+
+// MARK: - Preview TableView DataSource
+final class PreviewTableViewDataSource: NSObject, UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return TournamentDTO.previewList.count
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: SeasonListCell.identifier, for: indexPath) as? SeasonListCell else {
+      return UITableViewCell()
+    }
+    let presentation = SeasonListCellPresentation(tournament: TournamentDTO.previewList[indexPath.row])
+    cell.configure(with: presentation)
+    return cell
+  }
+}
+
+// MARK: - Preview Helpers
+
+@available(iOS 13.0, *)
+struct UIViewControllerPreview<ViewController: UIViewController>: UIViewControllerRepresentable {
+  let viewController: ViewController
+  
+  init(_ builder: @escaping () -> ViewController) {
+    viewController = builder()
+  }
+  
+  func makeUIViewController(context: Context) -> ViewController {
+    return viewController
+  }
+  
+  func updateUIViewController(_ uiViewController: ViewController, context: Context) {}
+}
+
+// MARK: - Mock Service for Preview
+
+final class MockSeasonListService: SeasonListServiceProtocol {
+  func fetchSeasons(completion: @escaping (Result<[TournamentDTO], Error>) -> Void) {
+    // Simulate network delay
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+      completion(.success(TournamentDTO.previewList))
+    }
+  }
+}
+
+#endif
