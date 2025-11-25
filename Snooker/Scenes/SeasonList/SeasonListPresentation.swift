@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SeasonListCellPresentation {
+struct SeasonListCellPresentation: Sendable {
   let id: String
   let name: String
   let dateRange: String

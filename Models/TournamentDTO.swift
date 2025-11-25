@@ -5,7 +5,7 @@
 //  Created by Tayfun Susamcioglu on 8.10.2025.
 //
 
-struct TournamentDTO: Decodable, Identifiable {
+struct TournamentDTO: Decodable, Identifiable, Sendable {
   let id: String
   let season: Int
   let name: String

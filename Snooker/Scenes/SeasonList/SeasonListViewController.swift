@@ -182,11 +182,10 @@ struct UIViewControllerPreview<ViewController: UIViewController>: UIViewControll
 // MARK: - Mock Service for Preview
 
 final class MockSeasonListService: SeasonListServiceProtocol {
-  func fetchSeasons(completion: @escaping (Result<[TournamentDTO], Error>) -> Void) {
+  func fetchSeasons() async throws -> [TournamentDTO] {
     // Simulate network delay
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-      completion(.success(TournamentDTO.previewList))
-    }
+    try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+    return TournamentDTO.previewList
   }
 }
 

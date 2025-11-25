@@ -7,13 +7,14 @@
 
 import Foundation
 
+@MainActor
 protocol SeasonListViewModelProtocol: AnyObject {
   var delegate: SeasonListViewModelDelegate? { get set }
   func loadData()
   func selectSeason(at index: Int)
 }
 
-enum SeasonListViewModelOutput: Equatable {
+enum SeasonListViewModelOutput: Equatable, Sendable {
   case displaySeasons([SeasonListCellPresentation])
   case showLoading(Bool)
   
@@ -29,15 +30,17 @@ enum SeasonListViewModelOutput: Equatable {
   }
 }
 
-enum SeasonListRoute {
+enum SeasonListRoute: Sendable {
   case seasonDetail(TournamentDTO)
 }
 
+@MainActor
 protocol SeasonListViewModelDelegate: AnyObject {
   func handleOutput(_ output: SeasonListViewModelOutput)
   func navigate(to route: SeasonListRoute)
 }
 
+@MainActor
 final class SeasonListViewModel: SeasonListViewModelProtocol {
   weak var delegate: SeasonListViewModelDelegate?
   
@@ -50,15 +53,16 @@ final class SeasonListViewModel: SeasonListViewModelProtocol {
   
   func loadData() {
     delegate?.handleOutput(.showLoading(true))
-    service.fetchSeasons { [weak self] result in
-      guard let self else { return }
-      delegate?.handleOutput(.showLoading(false))
-      switch result {
-      case .success(let tournaments):
+    
+    Task {
+      do {
+        let tournaments = try await service.fetchSeasons()
         self.tournaments = tournaments
         let cellPresentations = tournaments.map { SeasonListCellPresentation(tournament: $0) }
+        delegate?.handleOutput(.showLoading(false))
         delegate?.handleOutput(.displaySeasons(cellPresentations))
-      case .failure(let error):
+      } catch {
+        delegate?.handleOutput(.showLoading(false))
         print("Error fetching seasons: \(error)")
         // TODO: Error handling
       }

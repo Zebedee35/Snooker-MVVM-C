@@ -7,25 +7,12 @@
 
 import Foundation
 
-protocol SeasonListServiceProtocol: AnyObject {
-  func fetchSeasons(completion: @escaping (Result<[TournamentDTO], Error>) -> Void)
+protocol SeasonListServiceProtocol: Sendable {
+  func fetchSeasons() async throws -> [TournamentDTO]
 }
 
 final class SeasonListService: SeasonListServiceProtocol {
-  func fetchSeasons(completion: @escaping (Result<[TournamentDTO], any Error>) -> Void) {
-    Task {
-      do {
-        let seasons = try await SupabaseAPI.fetchSeasons()
-        // Ana thread'de completion çağır
-        DispatchQueue.main.async {
-          completion(.success(seasons))
-        }
-      } catch {
-        // Ana thread'de completion çağır
-        DispatchQueue.main.async {
-          completion(.failure(error))
-        }
-      }
-    }
+  func fetchSeasons() async throws -> [TournamentDTO] {
+    return try await SupabaseAPI.fetchSeasons()
   }
 }
