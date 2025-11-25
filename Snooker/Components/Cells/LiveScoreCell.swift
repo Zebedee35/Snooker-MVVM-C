@@ -14,10 +14,14 @@ struct LiveScoreCellPresentation {
     let homePlayerSurname: String
     let homePlayerPhotoUrl: String?
     let homePlayerScore: Int
+    let homePlayerCountryCode: String?
+    let homePlayerRank: Int?
     let awayPlayerName: String
     let awayPlayerSurname: String
     let awayPlayerPhotoUrl: String?
     let awayPlayerScore: Int
+    let awayPlayerCountryCode: String?
+    let awayPlayerRank: Int?
     let matchStatus: String
     let round: String
     
@@ -26,12 +30,51 @@ struct LiveScoreCellPresentation {
         self.homePlayerSurname = match.homePlayer.surname
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
         self.homePlayerScore = match.homePlayerScore ?? 0
+        self.homePlayerCountryCode = match.homePlayer.countryCode
+        self.homePlayerRank = match.homePlayer.rank
         self.awayPlayerName = match.awayPlayer.firstName
         self.awayPlayerSurname = match.awayPlayer.surname
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
         self.awayPlayerScore = match.awayPlayerScore ?? 0
+        self.awayPlayerCountryCode = match.awayPlayer.countryCode
+        self.awayPlayerRank = match.awayPlayer.rank
         self.matchStatus = match.status
         self.round = match.round
+    }
+    
+    // Bayrak emoji helper
+    func flagEmoji(for countryCode: String?) -> String? {
+        guard var code = countryCode?.uppercased() else {
+            return nil
+        }
+        
+        // Handle sub-region codes (e.g., GB-WLS, GB-SCT, GB-NIR, GB-ENG)
+        if code.contains("-") {
+            let parts = code.split(separator: "-")
+            if parts.count == 2 {
+                let subRegion = String(parts[1])
+                switch subRegion {
+                case "WLS": return "🏴󠁧󠁢󠁷󠁬󠁳󠁿" // Wales
+                case "SCT": return "🏴󠁧󠁢󠁳󠁣󠁴󠁿" // Scotland
+                case "ENG": return "🏴󠁧󠁢󠁥󠁮󠁧󠁿" // England
+                case "NIR": return "🇬🇧" // Northern Ireland (use GB flag)
+                default: code = String(parts[0]) // Use main country code
+                }
+            }
+        }
+        
+        // Standard 2-letter ISO country code
+        guard code.count == 2 else {
+            return nil
+        }
+        let base: UInt32 = 127397
+        var emoji = ""
+        for scalar in code.unicodeScalars {
+            if let scalarValue = UnicodeScalar(base + scalar.value) {
+                emoji.append(String(scalarValue))
+            }
+        }
+        return emoji.isEmpty ? nil : emoji
     }
 }
 
@@ -47,6 +90,8 @@ final class LiveScoreCell: UITableViewCell {
         static let frameHeight: CGFloat = 120
         static let playerImageSize: PlayerImageSize = .medium
         static let playerFontSize: CGFloat = 13
+        static let rankFontSize: CGFloat = 11
+        static let flagFontSize: CGFloat = 16
         static let scoreFontSize: CGFloat = 36
         static let statusFontSize: CGFloat = 14
         static let horizontalPadding: CGFloat = 16
@@ -69,7 +114,33 @@ final class LiveScoreCell: UITableViewCell {
     }()
     
     // Home Player Views
+    private let homePlayerImageContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private let homePlayerImageView = PlayerImageView(size: Constants.playerImageSize)
+    
+    private let homePlayerFlagLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: Constants.flagFontSize)
+        label.textAlignment = .center
+        label.backgroundColor = .systemBackground
+        label.layer.cornerRadius = 10
+        label.layer.masksToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let homePlayerRankLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: Constants.rankFontSize, weight: .medium)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private let homePlayerNameLabel: UILabel = {
         let label = UILabel()
@@ -82,16 +153,42 @@ final class LiveScoreCell: UITableViewCell {
     }()
     
     private lazy var homePlayerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [homePlayerImageView, homePlayerNameLabel])
+        let stack = UIStackView(arrangedSubviews: [homePlayerImageContainerView, homePlayerRankLabel, homePlayerNameLabel])
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = Constants.playerStackSpacing
+        stack.spacing = 4
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
     
     // Away Player Views
+    private let awayPlayerImageContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private let awayPlayerImageView = PlayerImageView(size: Constants.playerImageSize)
+    
+    private let awayPlayerFlagLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: Constants.flagFontSize)
+        label.textAlignment = .center
+        label.backgroundColor = .systemBackground
+        label.layer.cornerRadius = 10
+        label.layer.masksToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let awayPlayerRankLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: Constants.rankFontSize, weight: .medium)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
     
     private let awayPlayerNameLabel: UILabel = {
         let label = UILabel()
@@ -104,10 +201,10 @@ final class LiveScoreCell: UITableViewCell {
     }()
     
     private lazy var awayPlayerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [awayPlayerImageView, awayPlayerNameLabel])
+        let stack = UIStackView(arrangedSubviews: [awayPlayerImageContainerView, awayPlayerRankLabel, awayPlayerNameLabel])
         stack.axis = .vertical
         stack.alignment = .center
-        stack.spacing = Constants.playerStackSpacing
+        stack.spacing = 4
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -197,9 +294,19 @@ final class LiveScoreCell: UITableViewCell {
         
         contentView.addSubview(containerView)
         containerView.addSubview(mainStackView)
+        
+        // Home player image container setup
+        homePlayerImageContainerView.addSubview(homePlayerImageView)
+        homePlayerImageContainerView.addSubview(homePlayerFlagLabel)
+        
+        // Away player image container setup
+        awayPlayerImageContainerView.addSubview(awayPlayerImageView)
+        awayPlayerImageContainerView.addSubview(awayPlayerFlagLabel)
     }
     
     private func setupConstraints() {
+        let imageSize = Constants.playerImageSize.dimension
+        
         NSLayoutConstraint.activate([
             // Container
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
@@ -216,6 +323,36 @@ final class LiveScoreCell: UITableViewCell {
             // Player Stacks width
             homePlayerStackView.widthAnchor.constraint(equalToConstant: 100),
             awayPlayerStackView.widthAnchor.constraint(equalToConstant: 100),
+            
+            // Home Player Image Container
+            homePlayerImageContainerView.widthAnchor.constraint(equalToConstant: imageSize),
+            homePlayerImageContainerView.heightAnchor.constraint(equalToConstant: imageSize),
+            
+            homePlayerImageView.topAnchor.constraint(equalTo: homePlayerImageContainerView.topAnchor),
+            homePlayerImageView.leadingAnchor.constraint(equalTo: homePlayerImageContainerView.leadingAnchor),
+            homePlayerImageView.trailingAnchor.constraint(equalTo: homePlayerImageContainerView.trailingAnchor),
+            homePlayerImageView.bottomAnchor.constraint(equalTo: homePlayerImageContainerView.bottomAnchor),
+            
+            // Home Player Flag - bottom right corner, overlapping image
+            homePlayerFlagLabel.trailingAnchor.constraint(equalTo: homePlayerImageContainerView.trailingAnchor, constant: 2),
+            homePlayerFlagLabel.bottomAnchor.constraint(equalTo: homePlayerImageContainerView.bottomAnchor, constant: 2),
+            homePlayerFlagLabel.widthAnchor.constraint(equalToConstant: 22),
+            homePlayerFlagLabel.heightAnchor.constraint(equalToConstant: 22),
+            
+            // Away Player Image Container
+            awayPlayerImageContainerView.widthAnchor.constraint(equalToConstant: imageSize),
+            awayPlayerImageContainerView.heightAnchor.constraint(equalToConstant: imageSize),
+            
+            awayPlayerImageView.topAnchor.constraint(equalTo: awayPlayerImageContainerView.topAnchor),
+            awayPlayerImageView.leadingAnchor.constraint(equalTo: awayPlayerImageContainerView.leadingAnchor),
+            awayPlayerImageView.trailingAnchor.constraint(equalTo: awayPlayerImageContainerView.trailingAnchor),
+            awayPlayerImageView.bottomAnchor.constraint(equalTo: awayPlayerImageContainerView.bottomAnchor),
+            
+            // Away Player Flag - bottom right corner, overlapping image
+            awayPlayerFlagLabel.trailingAnchor.constraint(equalTo: awayPlayerImageContainerView.trailingAnchor, constant: 2),
+            awayPlayerFlagLabel.bottomAnchor.constraint(equalTo: awayPlayerImageContainerView.bottomAnchor, constant: 2),
+            awayPlayerFlagLabel.widthAnchor.constraint(equalToConstant: 22),
+            awayPlayerFlagLabel.heightAnchor.constraint(equalToConstant: 22),
         ])
     }
     
@@ -229,12 +366,44 @@ final class LiveScoreCell: UITableViewCell {
             surname: presentation.homePlayerSurname
         )
         
+        // Home Player Flag
+        if let flagEmoji = presentation.flagEmoji(for: presentation.homePlayerCountryCode) {
+            homePlayerFlagLabel.text = flagEmoji
+            homePlayerFlagLabel.isHidden = false
+        } else {
+            homePlayerFlagLabel.isHidden = true
+        }
+        
+        // Home Player Rank
+        if let rank = presentation.homePlayerRank {
+            homePlayerRankLabel.text = "#\(rank)"
+            homePlayerRankLabel.isHidden = false
+        } else {
+            homePlayerRankLabel.isHidden = true
+        }
+        
         // Away Player
         awayPlayerImageView.configure(with: presentation.awayPlayerPhotoUrl)
         awayPlayerNameLabel.attributedText = createPlayerNameAttributedString(
             firstName: presentation.awayPlayerName,
             surname: presentation.awayPlayerSurname
         )
+        
+        // Away Player Flag
+        if let flagEmoji = presentation.flagEmoji(for: presentation.awayPlayerCountryCode) {
+            awayPlayerFlagLabel.text = flagEmoji
+            awayPlayerFlagLabel.isHidden = false
+        } else {
+            awayPlayerFlagLabel.isHidden = true
+        }
+        
+        // Away Player Rank
+        if let rank = presentation.awayPlayerRank {
+            awayPlayerRankLabel.text = "#\(rank)"
+            awayPlayerRankLabel.isHidden = false
+        } else {
+            awayPlayerRankLabel.isHidden = true
+        }
         
         // Scores
         homeScoreLabel.text = String(presentation.homePlayerScore)
@@ -297,6 +466,14 @@ final class LiveScoreCell: UITableViewCell {
         awayPlayerImageView.configure(with: nil)
         homePlayerNameLabel.text = nil
         awayPlayerNameLabel.text = nil
+        homePlayerFlagLabel.text = nil
+        homePlayerFlagLabel.isHidden = true
+        awayPlayerFlagLabel.text = nil
+        awayPlayerFlagLabel.isHidden = true
+        homePlayerRankLabel.text = nil
+        homePlayerRankLabel.isHidden = true
+        awayPlayerRankLabel.text = nil
+        awayPlayerRankLabel.isHidden = true
         homeScoreLabel.text = nil
         awayScoreLabel.text = nil
         matchStatusLabel.text = nil

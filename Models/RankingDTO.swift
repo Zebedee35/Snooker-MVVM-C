@@ -27,7 +27,7 @@ extension RankingDTO {
             position,
             prize_money,
             player_id,
-            player:player_id(first_name,  surname, photo_url, country, turned_pro)
+            player:player_id(first_name, surname, photo_url, country, country_code, turned_pro)
         """
   
   static let preview: RankingDTO = .init(
@@ -38,10 +38,12 @@ extension RankingDTO {
     player: PlayerDTO(
       firstName: "Ronnie",
       surname: "O'Sullivan",
-      country: "England",
+      country: "ENG",
+      countryCode: "gb-eng",
       dob: "1975-12-05",
       turnedPro: 1992,
-      photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg"
+      photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg",
+      rank: 1
     )
   )
   
@@ -54,10 +56,12 @@ extension RankingDTO {
       player: PlayerDTO(
         firstName: "Ronnie",
         surname: "O'Sullivan",
-        country: "England",
+        country: "ENG",
+        countryCode: "gb-eng",
         dob: "1975-12-05",
         turnedPro: 1992,
-        photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg"
+        photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg",
+        rank: 1
       )
     ),
     .init(
@@ -68,10 +72,12 @@ extension RankingDTO {
       player: PlayerDTO(
         firstName: "Judd",
         surname: "Trump",
-        country: "England",
+        country: "ENG",
+        countryCode: "gb-eng",
         dob: "1989-08-20",
         turnedPro: 2005,
-        photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg"
+        photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg",
+        rank: 2
       )
     ),
     .init(
@@ -82,10 +88,12 @@ extension RankingDTO {
       player: PlayerDTO(
         firstName: "Mark",
         surname: "Selby",
-        country: "England",
+        country: "ENG",
+        countryCode: "gb-eng",
         dob: "1983-06-19",
         turnedPro: 1999,
-        photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg"
+        photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg",
+        rank: 3
       )
     )
   ]

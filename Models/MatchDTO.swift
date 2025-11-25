@@ -103,17 +103,21 @@ extension TournamentWithMatchesDTO {
         firstName: "Jak",
         surname: "Jones",
         country: "WAL",
+        countryCode: "gb-wls",
         dob: "1993",
         turnedPro: 2010,
-        photoUrl: "https://35coders.com/common/snooker/img/mark-williams.jpg"
+        photoUrl: "https://35coders.com/common/snooker/img/mark-williams.jpg",
+        rank: 24
       ),
       awayPlayer: PlayerDTO(
         firstName: "Stuart",
         surname: "Bingham",
         country: "ENG",
+        countryCode: "gb-eng",
         dob: "1976",
         turnedPro: 1995,
-        photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg"
+        photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg",
+        rank: 11
       ),
       frames: nil
   )
@@ -138,20 +142,24 @@ extension TournamentWithMatchesDTO {
         homePlayerScore: 17,
         awayPlayerScore: 12,
         homePlayer: PlayerDTO(
-          firstName: "Stuart",
-          surname: "Bingham",
+          firstName: "Ronnie",
+          surname: "O'Sullivan",
           country: "ENG",
-          dob: "1976",
-          turnedPro: 1995,
-          photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg"
+          countryCode: "gb-eng",
+          dob: "1975",
+          turnedPro: 1992,
+          photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg",
+          rank: 1
         ),
         awayPlayer: PlayerDTO(
           firstName: "Kyren",
           surname: "Wilson",
           country: "ENG",
+          countryCode: "gb-eng",
           dob: "1991",
           turnedPro: 2010,
-          photoUrl: "https://35coders.com/common/snooker/img/john-higgins.jpg"
+          photoUrl: "https://35coders.com/common/snooker/img/john-higgins.jpg",
+          rank: 5
         ),
         frames: nil
       ),
@@ -165,47 +173,55 @@ extension TournamentWithMatchesDTO {
         homePlayerScore: 13,
         awayPlayerScore: 8,
         homePlayer: PlayerDTO(
-          firstName: "Stephen",
-          surname: "Maguire",
-          country: "SCT",
-          dob: "1981",
-          turnedPro: 1998,
-          photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg"
+          firstName: "Judd",
+          surname: "Trump",
+          country: "ENG",
+          countryCode: "gb-eng",
+          dob: "1989",
+          turnedPro: 2005,
+          photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg",
+          rank: 2
         ),
         awayPlayer: PlayerDTO(
-          firstName: "Pang",
-          surname: "Junxu",
+          firstName: "Ding",
+          surname: "Junhui",
           country: "CHN",
-          dob: "2000",
-          turnedPro: 2020,
-          photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg"
+          countryCode: "CN",
+          dob: "1987",
+          turnedPro: 2003,
+          photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg",
+          rank: 15
         ),
         frames: nil
       ),
       .init(
         id: "407bf6e2-2b5f-4f6b-9638-2394839aa",
         round: "Round 1",
-        status: "Completed",
+        status: "Live",
         startDateTime: "2024-04-27T09:00:00+00:00",
         homePlayerId: "9b2532c1-a189-4573-8320-f254d2f9bfde",
         awayPlayerId: "c07238de-bca9-4067-9749-00841bd06d28",
         homePlayerScore: 6,
-        awayPlayerScore: 13,
+        awayPlayerScore: 5,
         homePlayer: PlayerDTO(
           firstName: "Luca",
           surname: "Brecel",
-          country: "BLG",
+          country: "BEL",
+          countryCode: "BE",
           dob: "1995",
-          turnedPro: 1995,
-          photoUrl: "https://35coders.com/common/snooker/img/luca-brecel.jpg"
+          turnedPro: 2011,
+          photoUrl: "https://35coders.com/common/snooker/img/luca-brecel.jpg",
+          rank: 3
         ),
         awayPlayer: PlayerDTO(
           firstName: "Mark",
           surname: "Allen",
-          country: "NRU",
+          country: "NIR",
+          countryCode: "gb-nir",
           dob: "1986",
           turnedPro: 2005,
-          photoUrl: "https://35coders.com/common/snooker/img/mark-allen.jpg"
+          photoUrl: "https://35coders.com/common/snooker/img/mark-allen.jpg",
+          rank: 7
         ),
         frames: nil
       ),
@@ -222,17 +238,21 @@ extension TournamentWithMatchesDTO {
           firstName: "Jak",
           surname: "Jones",
           country: "WAL",
+          countryCode: "gb-wls",
           dob: "1993",
           turnedPro: 2010,
-          photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg"
+          photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg",
+          rank: 24
         ),
         awayPlayer: PlayerDTO(
           firstName: "Stuart",
           surname: "Bingham",
           country: "ENG",
+          countryCode: "gb-eng",
           dob: "1976",
           turnedPro: 1995,
-          photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg"
+          photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg",
+          rank: 11
         ),
         frames: nil
       )
@@ -253,17 +273,21 @@ extension TournamentWithMatchesDTO {
         firstName: "Jamie",
         surname: "Jones",
         country: "WAL",
+        countryCode: "gb-wls",
         dob: "1988-02-14",
         turnedPro: 2006,
-        photoUrl: nil
+        photoUrl: nil,
+        rank: 32
       ),
       awayPlayer: PlayerDTO(
         firstName: "Liu",
         surname: "Wenwei",
         country: "CHN",
+        countryCode: "CN",
         dob: "2003-12-08",
         turnedPro: nil,
-        photoUrl: nil
+        photoUrl: nil,
+        rank: 85
       ),
       frames: [
         .init(
