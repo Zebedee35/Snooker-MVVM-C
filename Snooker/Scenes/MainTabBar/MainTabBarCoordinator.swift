@@ -39,14 +39,17 @@ final class MainTabBarCoordinator: Coordinator {
     
     seasonNavController.tabBarItem = UITabBarItem(title: "Season", image: UIImage(systemName: "calendar"), tag: 0)
 
+    // Live tab
+    let liveNavController = UINavigationController()
+    let liveCoordinator = LiveScoreCoordinator(navigationController: liveNavController)
+    liveCoordinator.start()
+    
+    liveNavController.tabBarItem = UITabBarItem(title: "Live", image: UIImage(systemName: "dot.radiowaves.left.and.right"), tag: 2)
+      
 
     let tab1 = UIViewController()
     tab1.view.backgroundColor = .systemRed
     tab1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
-    
-    let tab2 = UIViewController()
-    tab2.view.backgroundColor = .systemBlue
-    tab2.tabBarItem = UITabBarItem(title: "Live", image: UIImage(systemName: "dot.radiowaves.left.and.right"), tag: 2)
     
     let tab3 = UIViewController()
     tab3.view.backgroundColor = .systemGreen
@@ -56,10 +59,11 @@ final class MainTabBarCoordinator: Coordinator {
     tab5.view.backgroundColor = .systemPurple
     tab5.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 4)
     
-    mainController!.viewControllers = [seasonNavController, tab1, tab2, tab3, tab5]
+    mainController!.viewControllers = [seasonNavController, liveNavController, tab1, tab3, tab5]
     
     navigationController.setViewControllers([viewController], animated: false)
     childCoordinators[.season] = seasonCoordinator
+    childCoordinators[.live] = liveCoordinator
   }
   
 }
