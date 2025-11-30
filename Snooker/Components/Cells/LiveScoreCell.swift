@@ -185,8 +185,35 @@ final class LiveScoreCell: UITableViewCell {
         return label
     }()
     
+    private let liveIndicatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemRed
+        view.layer.cornerRadius = 5
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let liveLabel: UILabel = {
+        let label = UILabel()
+        label.text = "LIVE"
+        label.font = .systemFont(ofSize: 10, weight: .bold)
+        label.textColor = .systemRed
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private lazy var liveContainerView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [liveIndicatorView, liveLabel])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.isHidden = true
+        return stack
+    }()
+    
     private lazy var centerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [scoreStackView, matchStatusLabel])
+        let stack = UIStackView(arrangedSubviews: [liveContainerView, scoreStackView, matchStatusLabel])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 4
@@ -282,6 +309,10 @@ final class LiveScoreCell: UITableViewCell {
             awayPlayerFlagLabel.bottomAnchor.constraint(equalTo: awayPlayerImageContainerView.bottomAnchor, constant: 2),
             awayPlayerFlagLabel.widthAnchor.constraint(equalToConstant: 22),
             awayPlayerFlagLabel.heightAnchor.constraint(equalToConstant: 22),
+            
+            // Live Indicator
+            liveIndicatorView.widthAnchor.constraint(equalToConstant: 10),
+            liveIndicatorView.heightAnchor.constraint(equalToConstant: 10),
         ])
     }
     
@@ -343,6 +374,7 @@ final class LiveScoreCell: UITableViewCell {
         
         // Status
         matchStatusLabel.text = presentation.matchStatus
+        // startLiveAnimation()
     }
     
     // MARK: - Helpers
@@ -382,10 +414,33 @@ final class LiveScoreCell: UITableViewCell {
         }
     }
     
+    // MARK: - Live Animation
+    
+    func startLiveAnimation() {
+        liveContainerView.isHidden = false
+        liveIndicatorView.alpha = 1.0
+        
+        UIView.animate(
+            withDuration: 0.8,
+            delay: 0,
+            options: [.repeat, .autoreverse, .allowUserInteraction],
+            animations: { [weak self] in
+                self?.liveIndicatorView.alpha = 0.3
+            }
+        )
+    }
+    
+    func stopLiveAnimation() {
+        liveIndicatorView.layer.removeAllAnimations()
+        liveContainerView.isHidden = true
+        liveIndicatorView.alpha = 1.0
+    }
+    
     // MARK: - Reuse
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        stopLiveAnimation()
         homePlayerImageView.configure(with: nil)
         awayPlayerImageView.configure(with: nil)
         homePlayerNameLabel.text = nil

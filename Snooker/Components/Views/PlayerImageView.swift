@@ -12,7 +12,7 @@ enum PlayerImageSize {
   
   var dimension: CGFloat {
     switch self {
-    case .small: return 60
+    case .small: return 50
     case .medium: return 90
     case .large: return 120
     case .extraLarge: return 150
