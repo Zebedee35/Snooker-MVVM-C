@@ -51,19 +51,24 @@ final class MainTabBarCoordinator: Coordinator {
     tab1.view.backgroundColor = .systemRed
     tab1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
     
-    let tab3 = UIViewController()
-    tab3.view.backgroundColor = .systemGreen
-    tab3.tabBarItem = UITabBarItem(title: "Ranking", image: UIImage(systemName: "chart.bar"), tag: 3)
+    // Ranking tab
+    let rankingNavController = UINavigationController()
+    let rankingCoordinator = RankingCoordinator(navigationController: rankingNavController)
+    rankingCoordinator.start()
+    
+    rankingNavController.tabBarItem = UITabBarItem(title: "Ranking", image: UIImage(systemName: "chart.bar"), tag: 3)
 
     let tab5 = UIViewController()
     tab5.view.backgroundColor = .systemPurple
     tab5.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 4)
     
-    mainController!.viewControllers = [seasonNavController, liveNavController, tab1, tab3, tab5]
+    mainController!.viewControllers = [seasonNavController, liveNavController, tab1, rankingNavController, tab5]
+    mainController!.selectedIndex = 2  
     
     navigationController.setViewControllers([viewController], animated: false)
     childCoordinators[.season] = seasonCoordinator
     childCoordinators[.live] = liveCoordinator
+    childCoordinators[.ranking] = rankingCoordinator
   }
   
 }
