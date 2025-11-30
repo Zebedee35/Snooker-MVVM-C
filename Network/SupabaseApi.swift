@@ -62,6 +62,15 @@ struct SupabaseAPI {
         return response
     }
     
+    /// Canlı maç verilerini RPC ile cekiyoruz.
+    static func fetchLiveMatches() async throws -> [MatchDTO] {
+        let response: [MatchDTO] = try await client
+            .rpc("get_live_matches")
+            .execute()
+            .value
+        return response
+    }
+    
 //    /// Players tablosundan veri çek
 //    static func fetchPlayers() async throws -> [Player] {
 //        let response: [Player] = try await client
