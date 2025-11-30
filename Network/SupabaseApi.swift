@@ -71,6 +71,17 @@ struct SupabaseAPI {
         return response
     }
     
+    /// Oyuncu sıralaması verilerini çek
+    static func fetchRankings() async throws -> [RankingDTO] {
+        let response: [RankingDTO] = try await client
+            .from("ranking")
+            .select(RankingDTO.sqlFields)
+            .order("position", ascending: true)
+            .execute()
+            .value
+        return response
+    }
+    
 //    /// Players tablosundan veri çek
 //    static func fetchPlayers() async throws -> [Player] {
 //        let response: [Player] = try await client
