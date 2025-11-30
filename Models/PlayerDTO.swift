@@ -32,39 +32,9 @@ struct PlayerDTO: Decodable {
   }
   
   // Bayrak emoji döndürür (countryCode'dan)
-  // Supabase formatı: "gb-wls", "gb-eng", "HK", "CN" vs.
+  // CountryFlagHelper kullanır
   var flagEmoji: String? {
-    guard var code = countryCode?.uppercased() else {
-      return nil
-    }
-    
-    // Alt bölge kodları (örn: GB-WLS, GB-SCT, GB-NIR, GB-ENG)
-    if code.contains("-") {
-      let parts = code.split(separator: "-")
-      if parts.count == 2 {
-        let subRegion = String(parts[1])
-        switch subRegion {
-        case "WLS": return "🏴󠁧󠁢󠁷󠁬󠁳󠁿" // Wales
-        case "SCT": return "🏴󠁧󠁢󠁳󠁣󠁴󠁿" // Scotland
-        case "ENG": return "🏴󠁧󠁢󠁥󠁮󠁧󠁿" // England
-        case "NIR": return "🇬🇧" // Northern Ireland (UK bayrağı)
-        default: code = String(parts[0])
-        }
-      }
-    }
-    
-    // Standart 2 harfli ISO ülke kodu
-    guard code.count == 2 else {
-      return nil
-    }
-    let base: UInt32 = 127397
-    var emoji = ""
-    for scalar in code.unicodeScalars {
-      if let scalarValue = UnicodeScalar(base + scalar.value) {
-        emoji.append(String(scalarValue))
-      }
-    }
-    return emoji.isEmpty ? nil : emoji
+    CountryFlagHelper.flagEmoji(for: countryCode)
   }
 }
 
@@ -84,8 +54,8 @@ extension PlayerDTO {
     .init(
       firstName: "Ronnie",
       surname: "O'Sullivan",
-      country: "England",
-      countryCode: "GB",
+      country: "ENG",
+      countryCode: "gb-eng",
       dob: "1975-12-05",
       turnedPro: 1992,
       photoUrl: "https://35coders.com/common/snooker/img/ronnie-osullivan.jpg",
@@ -94,8 +64,8 @@ extension PlayerDTO {
     .init(
       firstName: "Judd",
       surname: "Trump",
-      country: "England",
-      countryCode: "GB",
+      country: "ENG",
+      countryCode: "gb-eng",
       dob: "1989-08-20",
       turnedPro: 2005,
       photoUrl: "https://35coders.com/common/snooker/img/judd-trump.jpg",
@@ -104,8 +74,8 @@ extension PlayerDTO {
     .init(
       firstName: "Mark",
       surname: "Selby",
-      country: "England",
-      countryCode: "GB",
+      country: "ENG",
+      countryCode: "gb-eng",
       dob: "1983-06-19",
       turnedPro: 1999,
       photoUrl: "https://35coders.com/common/snooker/img/mselby.jpg",

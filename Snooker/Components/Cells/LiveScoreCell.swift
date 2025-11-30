@@ -7,77 +7,6 @@
 
 import UIKit
 
-// MARK: - LiveScoreCellPresentation
-
-struct LiveScoreCellPresentation {
-    let homePlayerName: String
-    let homePlayerSurname: String
-    let homePlayerPhotoUrl: String?
-    let homePlayerScore: Int
-    let homePlayerCountryCode: String?
-    let homePlayerRank: Int?
-    let awayPlayerName: String
-    let awayPlayerSurname: String
-    let awayPlayerPhotoUrl: String?
-    let awayPlayerScore: Int
-    let awayPlayerCountryCode: String?
-    let awayPlayerRank: Int?
-    let matchStatus: String
-    let round: String
-    
-    init(match: MatchDTO) {
-        self.homePlayerName = match.homePlayer.firstName
-        self.homePlayerSurname = match.homePlayer.surname
-        self.homePlayerPhotoUrl = match.homePlayer.photoUrl
-        self.homePlayerScore = match.homePlayerScore ?? 0
-        self.homePlayerCountryCode = match.homePlayer.countryCode
-        self.homePlayerRank = match.homePlayer.rank
-        self.awayPlayerName = match.awayPlayer.firstName
-        self.awayPlayerSurname = match.awayPlayer.surname
-        self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
-        self.awayPlayerScore = match.awayPlayerScore ?? 0
-        self.awayPlayerCountryCode = match.awayPlayer.countryCode
-        self.awayPlayerRank = match.awayPlayer.rank
-        self.matchStatus = match.status
-        self.round = match.round
-    }
-    
-    // Bayrak emoji helper
-    func flagEmoji(for countryCode: String?) -> String? {
-        guard var code = countryCode?.uppercased() else {
-            return nil
-        }
-        
-        // Handle sub-region codes (e.g., GB-WLS, GB-SCT, GB-NIR, GB-ENG)
-        if code.contains("-") {
-            let parts = code.split(separator: "-")
-            if parts.count == 2 {
-                let subRegion = String(parts[1])
-                switch subRegion {
-                case "WLS": return "🏴󠁧󠁢󠁷󠁬󠁳󠁿" // Wales
-                case "SCT": return "🏴󠁧󠁢󠁳󠁣󠁴󠁿" // Scotland
-                case "ENG": return "🏴󠁧󠁢󠁥󠁮󠁧󠁿" // England
-                case "NIR": return "🇬🇧" // Northern Ireland (use GB flag)
-                default: code = String(parts[0]) // Use main country code
-                }
-            }
-        }
-        
-        // Standard 2-letter ISO country code
-        guard code.count == 2 else {
-            return nil
-        }
-        let base: UInt32 = 127397
-        var emoji = ""
-        for scalar in code.unicodeScalars {
-            if let scalarValue = UnicodeScalar(base + scalar.value) {
-                emoji.append(String(scalarValue))
-            }
-        }
-        return emoji.isEmpty ? nil : emoji
-    }
-}
-
 // MARK: - LiveScoreCell
 
 final class LiveScoreCell: UITableViewCell {
@@ -367,8 +296,8 @@ final class LiveScoreCell: UITableViewCell {
         )
         
         // Home Player Flag
-        if let flagEmoji = presentation.flagEmoji(for: presentation.homePlayerCountryCode) {
-            homePlayerFlagLabel.text = flagEmoji
+        if let flag = presentation.homePlayerFlag {
+            homePlayerFlagLabel.text = flag
             homePlayerFlagLabel.isHidden = false
         } else {
             homePlayerFlagLabel.isHidden = true
@@ -390,8 +319,8 @@ final class LiveScoreCell: UITableViewCell {
         )
         
         // Away Player Flag
-        if let flagEmoji = presentation.flagEmoji(for: presentation.awayPlayerCountryCode) {
-            awayPlayerFlagLabel.text = flagEmoji
+        if let flag = presentation.awayPlayerFlag {
+            awayPlayerFlagLabel.text = flag
             awayPlayerFlagLabel.isHidden = false
         } else {
             awayPlayerFlagLabel.isHidden = true
@@ -414,11 +343,6 @@ final class LiveScoreCell: UITableViewCell {
         
         // Status
         matchStatusLabel.text = presentation.matchStatus
-    }
-    
-    func configure(with match: MatchDTO) {
-        let presentation = LiveScoreCellPresentation(match: match)
-        configure(with: presentation)
     }
     
     // MARK: - Helpers
@@ -511,7 +435,7 @@ struct LiveScoreCell_Previews: PreviewProvider {
 private struct LiveScoreCellPreviewWrapper: UIViewRepresentable {
     func makeUIView(context: Context) -> UITableViewCell {
         let cell = LiveScoreCell(style: .default, reuseIdentifier: LiveScoreCell.identifier)
-        cell.configure(with: TournamentWithMatchesDTO.preview)
+        cell.configure(with: LiveScoreCellPresentation.preview)
         return cell
     }
     
@@ -529,7 +453,7 @@ private struct LiveScoreCellListPreviewWrapper: UIViewControllerRepresentable {
 }
 
 private class LiveScorePreviewTableViewController: UITableViewController {
-    private let matches = TournamentWithMatchesDTO.previewList.matches
+    private let presentations = LiveScoreCellPresentation.previewList
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -542,14 +466,14 @@ private class LiveScorePreviewTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return matches.count
+        return presentations.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
             return UITableViewCell()
         }
-        cell.configure(with: matches[indexPath.row])
+        cell.configure(with: presentations[indexPath.row])
         return cell
     }
 }
