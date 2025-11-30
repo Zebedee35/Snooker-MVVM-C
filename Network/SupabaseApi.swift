@@ -82,6 +82,25 @@ struct SupabaseAPI {
         return response
     }
     
+    /// Aktif turnuva veya belirli bir turnuvanın detaylarını maçlarıyla birlikte çek
+    /// - Parameter tournamentId: Opsiyonel turnuva ID. Verilmezse aktif turnuva döner.
+    /// - Returns: Turnuva bilgisi ve maç listesi
+    static func fetchTournamentWithMatches(tournamentId: String? = nil) async throws -> TournamentWithMatchesDTO {
+        let params: [String: String]
+        if let id = tournamentId {
+            params = ["p_tournament_id": id]
+        } else {
+            params = [:]
+        }
+        
+        let response: TournamentWithMatchesDTO = try await client
+            .rpc("get_tournament_with_matches", params: params)
+            .single()
+            .execute()
+            .value
+        return response
+    }
+    
 //    /// Players tablosundan veri çek
 //    static func fetchPlayers() async throws -> [Player] {
 //        let response: [Player] = try await client

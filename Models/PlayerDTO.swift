@@ -31,10 +31,15 @@ struct PlayerDTO: Decodable {
     "\(firstName) \(surname)"
   }
   
-  // Bayrak emoji döndürür (countryCode'dan)
+  // Bayrak emoji döndürür (önce countryCode, yoksa country'ye bakar)
   // CountryFlagHelper kullanır
   var flagEmoji: String? {
-    CountryFlagHelper.flagEmoji(for: countryCode)
+    // Önce countryCode'a bak (gb-eng, gb-wls gibi)
+    if let emoji = CountryFlagHelper.flagEmoji(for: countryCode) {
+      return emoji
+    }
+    // countryCode yoksa country'ye bak (SCT, ENG, WAL gibi)
+    return CountryFlagHelper.flagEmoji(for: country)
   }
 }
 

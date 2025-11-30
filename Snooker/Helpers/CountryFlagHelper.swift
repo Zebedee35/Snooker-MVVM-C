@@ -10,8 +10,24 @@ import Foundation
 /// Ülke kodlarından bayrak emoji'si üreten yardımcı sınıf
 enum CountryFlagHelper {
     
+    // UK alt bölge kodları için mapping (3 harfli ve 2 harfli alternatifler)
+    private static let ukSubRegions: [String: String] = [
+        // 3 harfli kodlar (RPC response'dan gelen format)
+        "WLS": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", // Wales
+        "WAL": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", // Wales alternatif
+        "SCT": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", // Scotland
+        "ENG": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", // England
+        "NIR": "🇬🇧",          // Northern Ireland (UK bayrağı)
+        // Çin (3 harfli)
+        "CHN": "🇨🇳",
+        // Avustralya (3 harfli)
+        "AUS": "🇦🇺",
+        // Belçika (3 harfli)
+        "BEL": "🇧🇪",
+    ]
+    
     /// Ülke kodundan bayrak emoji döndürür
-    /// - Parameter countryCode: ISO 2 harfli kod veya alt bölge kodu (örn: "gb-eng", "gb-wls", "CN", "BE")
+    /// - Parameter countryCode: ISO 2/3 harfli kod veya alt bölge kodu (örn: "gb-eng", "gb-wls", "CN", "BE", "SCT", "ENG")
     /// - Returns: Bayrak emoji veya nil
     static func flagEmoji(for countryCode: String?) -> String? {
         guard var code = countryCode?.uppercased() else {
@@ -23,14 +39,16 @@ enum CountryFlagHelper {
             let parts = code.split(separator: "-")
             if parts.count == 2 {
                 let subRegion = String(parts[1])
-                switch subRegion {
-                case "WLS": return "🏴󠁧󠁢󠁷󠁬󠁳󠁿" // Wales
-                case "SCT": return "🏴󠁧󠁢󠁳󠁣󠁴󠁿" // Scotland
-                case "ENG": return "🏴󠁧󠁢󠁥󠁮󠁧󠁿" // England
-                case "NIR": return "🇬🇧" // Northern Ireland (UK bayrağı)
-                default: code = String(parts[0])
+                if let flag = ukSubRegions[subRegion] {
+                    return flag
                 }
+                code = String(parts[0])
             }
+        }
+        
+        // 3 harfli UK/diğer bölge kodları için kontrol et
+        if let flag = ukSubRegions[code] {
+            return flag
         }
         
         // Standart 2 harfli ISO ülke kodu
