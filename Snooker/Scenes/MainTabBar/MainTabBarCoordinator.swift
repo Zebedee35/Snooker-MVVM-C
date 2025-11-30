@@ -46,10 +46,12 @@ final class MainTabBarCoordinator: Coordinator {
     
     liveNavController.tabBarItem = UITabBarItem(title: "Live", image: UIImage(systemName: "dot.radiowaves.left.and.right"), tag: 2)
       
-
-    let tab1 = UIViewController()
-    tab1.view.backgroundColor = .systemRed
-    tab1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
+    // Home tab
+    let homeNavController = UINavigationController()
+    let homeCoordinator = HomeCoordinator(navigationController: homeNavController)
+    homeCoordinator.start()
+    
+    homeNavController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 1)
     
     // Ranking tab
     let rankingNavController = UINavigationController()
@@ -62,12 +64,13 @@ final class MainTabBarCoordinator: Coordinator {
     tab5.view.backgroundColor = .systemPurple
     tab5.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 4)
     
-    mainController!.viewControllers = [seasonNavController, liveNavController, tab1, rankingNavController, tab5]
+    mainController!.viewControllers = [seasonNavController, liveNavController, homeNavController, rankingNavController, tab5]
     mainController!.selectedIndex = 2  
     
     navigationController.setViewControllers([viewController], animated: false)
     childCoordinators[.season] = seasonCoordinator
     childCoordinators[.live] = liveCoordinator
+    childCoordinators[.home] = homeCoordinator
     childCoordinators[.ranking] = rankingCoordinator
   }
   
