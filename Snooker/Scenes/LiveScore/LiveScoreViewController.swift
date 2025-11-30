@@ -134,6 +134,18 @@ extension LiveScoreViewController: UITableViewDataSource {
         
         let presentation = cellPresentations[indexPath.row]
         cell.configure(with: presentation)
+        
+        // Callback bindings
+        cell.onHomePlayerTapped = { [weak self] in
+            self?.viewModel.selectHomePlayer(at: indexPath.row)
+        }
+        cell.onAwayPlayerTapped = { [weak self] in
+            self?.viewModel.selectAwayPlayer(at: indexPath.row)
+        }
+        cell.onScoreTapped = { [weak self] in
+            self?.viewModel.selectMatch(at: indexPath.row)
+        }
+        
         return cell
     }
 }

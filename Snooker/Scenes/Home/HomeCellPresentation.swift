@@ -60,6 +60,8 @@ struct MatchSection {
 /// Her maç için UI presentation modeli
 struct HomeCellPresentation {
     let matchId: String
+    
+    let homePlayerId: String
     let homePlayerName: String
     let homePlayerSurname: String
     let homePlayerPhotoUrl: String?
@@ -67,6 +69,7 @@ struct HomeCellPresentation {
     let homePlayerFlag: String?
     let homePlayerRank: Int?
     
+    let awayPlayerId: String
     let awayPlayerName: String
     let awayPlayerSurname: String
     let awayPlayerPhotoUrl: String?
@@ -113,6 +116,8 @@ struct HomeCellPresentation {
     
     init(match: MatchDTO) {
         self.matchId = match.id
+        
+        self.homePlayerId = match.homePlayerId
         self.homePlayerName = match.homePlayer.firstName
         self.homePlayerSurname = match.homePlayer.surname
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
@@ -120,6 +125,7 @@ struct HomeCellPresentation {
         self.homePlayerFlag = match.homePlayer.flagEmoji
         self.homePlayerRank = match.homePlayer.rank
         
+        self.awayPlayerId = match.awayPlayerId
         self.awayPlayerName = match.awayPlayer.firstName
         self.awayPlayerSurname = match.awayPlayer.surname
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl

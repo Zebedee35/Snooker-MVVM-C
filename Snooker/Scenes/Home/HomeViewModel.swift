@@ -13,6 +13,8 @@ protocol HomeViewModelProtocol: AnyObject {
     func loadData()
     func refreshData()
     func selectMatch(at indexPath: IndexPath)
+    func selectHomePlayer(at indexPath: IndexPath)
+    func selectAwayPlayer(at indexPath: IndexPath)
 }
 
 enum HomeViewModelOutput: Sendable {
@@ -23,7 +25,8 @@ enum HomeViewModelOutput: Sendable {
 }
 
 enum HomeRoute: Sendable {
-    case matchDetail(MatchDTO)
+    case matchDetail(matchId: String, homePlayerName: String, awayPlayerName: String)
+    case playerDetail(playerId: String, playerName: String)
 }
 
 @MainActor
@@ -77,16 +80,44 @@ final class HomeViewModel: HomeViewModelProtocol {
     }
     
     func selectMatch(at indexPath: IndexPath) {
-        guard let tournament = tournament,
-              indexPath.section < sections.count,
+        guard indexPath.section < sections.count,
               indexPath.row < sections[indexPath.section].matches.count else { return }
         
         let matchPresentation = sections[indexPath.section].matches[indexPath.row]
+        let homePlayerFullName = "\(matchPresentation.homePlayerName) \(matchPresentation.homePlayerSurname)"
+        let awayPlayerFullName = "\(matchPresentation.awayPlayerName) \(matchPresentation.awayPlayerSurname)"
         
-        // MatchDTO'yu bul
-        if let match = tournament.matches.first(where: { $0.id == matchPresentation.matchId }) {
-            delegate?.navigate(to: .matchDetail(match))
-        }
+        delegate?.navigate(to: .matchDetail(
+            matchId: matchPresentation.matchId,
+            homePlayerName: homePlayerFullName,
+            awayPlayerName: awayPlayerFullName
+        ))
+    }
+    
+    func selectHomePlayer(at indexPath: IndexPath) {
+        guard indexPath.section < sections.count,
+              indexPath.row < sections[indexPath.section].matches.count else { return }
+        
+        let matchPresentation = sections[indexPath.section].matches[indexPath.row]
+        let playerFullName = "\(matchPresentation.homePlayerName) \(matchPresentation.homePlayerSurname)"
+        
+        delegate?.navigate(to: .playerDetail(
+            playerId: matchPresentation.homePlayerId,
+            playerName: playerFullName
+        ))
+    }
+    
+    func selectAwayPlayer(at indexPath: IndexPath) {
+        guard indexPath.section < sections.count,
+              indexPath.row < sections[indexPath.section].matches.count else { return }
+        
+        let matchPresentation = sections[indexPath.section].matches[indexPath.row]
+        let playerFullName = "\(matchPresentation.awayPlayerName) \(matchPresentation.awayPlayerSurname)"
+        
+        delegate?.navigate(to: .playerDetail(
+            playerId: matchPresentation.awayPlayerId,
+            playerName: playerFullName
+        ))
     }
     
     // MARK: - Private Methods

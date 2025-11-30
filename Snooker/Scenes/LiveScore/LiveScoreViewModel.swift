@@ -13,6 +13,8 @@ protocol LiveScoreViewModelProtocol: AnyObject {
     func loadData()
     func refreshData()
     func selectMatch(at index: Int)
+    func selectHomePlayer(at index: Int)
+    func selectAwayPlayer(at index: Int)
 }
 
 enum LiveScoreViewModelOutput: Equatable, Sendable {
@@ -38,7 +40,8 @@ enum LiveScoreViewModelOutput: Equatable, Sendable {
 }
 
 enum LiveScoreRoute: Sendable {
-    case matchDetail(MatchDTO)
+    case matchDetail(matchId: String, homePlayerName: String, awayPlayerName: String)
+    case playerDetail(playerId: String, playerName: String)
 }
 
 @MainActor
@@ -52,7 +55,7 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     weak var delegate: LiveScoreViewModelDelegate?
     
     private let service: LiveScoreServiceProtocol
-    private var matches: [MatchDTO] = []
+    private var cellPresentations: [LiveScoreCellPresentation] = []
     
     init(service: LiveScoreServiceProtocol) {
         self.service = service
@@ -64,7 +67,6 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
         Task {
             do {
                 let matches = try await service.fetchLiveMatches()
-                self.matches = matches
                 
                 delegate?.handleOutput(.showLoading(false))
                 
@@ -72,8 +74,9 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                     delegate?.handleOutput(.showEmptyState(true))
                 } else {
                     delegate?.handleOutput(.showEmptyState(false))
-                    let cellPresentations = matches.map { LiveScoreCellPresentation(match: $0) }
-                    delegate?.handleOutput(.displayMatches(cellPresentations))
+                    let presentations = matches.map { LiveScoreCellPresentation(match: $0) }
+                    self.cellPresentations = presentations
+                    delegate?.handleOutput(.displayMatches(presentations))
                 }
             } catch {
                 delegate?.handleOutput(.showLoading(false))
@@ -88,8 +91,37 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     }
     
     func selectMatch(at index: Int) {
-        guard index < matches.count else { return }
-        let match = matches[index]
-        delegate?.navigate(to: .matchDetail(match))
+        guard index < cellPresentations.count else { return }
+        let presentation = cellPresentations[index]
+        let homePlayerFullName = "\(presentation.homePlayerName) \(presentation.homePlayerSurname)"
+        let awayPlayerFullName = "\(presentation.awayPlayerName) \(presentation.awayPlayerSurname)"
+        
+        delegate?.navigate(to: .matchDetail(
+            matchId: presentation.matchId,
+            homePlayerName: homePlayerFullName,
+            awayPlayerName: awayPlayerFullName
+        ))
+    }
+    
+    func selectHomePlayer(at index: Int) {
+        guard index < cellPresentations.count else { return }
+        let presentation = cellPresentations[index]
+        let playerFullName = "\(presentation.homePlayerName) \(presentation.homePlayerSurname)"
+        
+        delegate?.navigate(to: .playerDetail(
+            playerId: presentation.homePlayerId,
+            playerName: playerFullName
+        ))
+    }
+    
+    func selectAwayPlayer(at index: Int) {
+        guard index < cellPresentations.count else { return }
+        let presentation = cellPresentations[index]
+        let playerFullName = "\(presentation.awayPlayerName) \(presentation.awayPlayerSurname)"
+        
+        delegate?.navigate(to: .playerDetail(
+            playerId: presentation.awayPlayerId,
+            playerName: playerFullName
+        ))
     }
 }

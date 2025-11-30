@@ -24,9 +24,13 @@ final class HomeCoordinator: Coordinator {
     
     func handle(route: HomeRoute) {
         switch route {
-        case .matchDetail(let match):
+        case .matchDetail(let matchId, let homePlayerName, let awayPlayerName):
             // TODO: MatchDetail ekranı oluşturulduğunda implement edilecek
-            print("Navigate to match detail: \(match.id)")
+            print("[HomeCoordinator] Navigate to match detail - ID: \(matchId) | \(homePlayerName) vs \(awayPlayerName)")
+            
+        case .playerDetail(let playerId, let playerName):
+            // TODO: PlayerDetail ekranı oluşturulduğunda implement edilecek
+            print("[HomeCoordinator] Navigate to player detail - ID: \(playerId) | \(playerName)")
         }
     }
 }

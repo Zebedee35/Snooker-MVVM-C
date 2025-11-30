@@ -24,11 +24,13 @@ final class LiveScoreCoordinator: Coordinator {
     
     func handle(route: LiveScoreRoute) {
         switch route {
-        case .matchDetail(let match):
-            // TODO: MatchDetail ekranı oluşturulduğunda burası implement edilecek
-            print("Navigate to match detail: \(match.homePlayer.fullName) vs \(match.awayPlayer.fullName)")
-            // let detailCoordinator = MatchDetailCoordinator(navigationController: navigationController, match: match)
-            // detailCoordinator.start()
+        case .matchDetail(let matchId, let homePlayerName, let awayPlayerName):
+            // TODO: MatchDetail ekranı oluşturulduğunda implement edilecek
+            print("[LiveScoreCoordinator] Navigate to match detail - ID: \(matchId) | \(homePlayerName) vs \(awayPlayerName)")
+            
+        case .playerDetail(let playerId, let playerName):
+            // TODO: PlayerDetail ekranı oluşturulduğunda implement edilecek
+            print("[LiveScoreCoordinator] Navigate to player detail - ID: \(playerId) | \(playerName)")
         }
     }
 }

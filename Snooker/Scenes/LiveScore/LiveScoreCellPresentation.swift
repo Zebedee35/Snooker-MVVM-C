@@ -10,6 +10,9 @@ import Foundation
 /// LiveScoreCell için ViewModel/Presentation modeli
 /// MatchDTO'dan UI'da gösterilecek verilere dönüşümü yapar
 struct LiveScoreCellPresentation {
+    let matchId: String
+    
+    let homePlayerId: String
     let homePlayerName: String
     let homePlayerSurname: String
     let homePlayerPhotoUrl: String?
@@ -17,6 +20,7 @@ struct LiveScoreCellPresentation {
     let homePlayerFlag: String?
     let homePlayerRank: Int?
     
+    let awayPlayerId: String
     let awayPlayerName: String
     let awayPlayerSurname: String
     let awayPlayerPhotoUrl: String?
@@ -30,6 +34,9 @@ struct LiveScoreCellPresentation {
     // MARK: - Initialization
     
     init(match: MatchDTO) {
+        self.matchId = match.id
+        
+        self.homePlayerId = match.homePlayerId
         self.homePlayerName = match.homePlayer.firstName
         self.homePlayerSurname = match.homePlayer.surname
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
@@ -37,6 +44,7 @@ struct LiveScoreCellPresentation {
         self.homePlayerFlag = CountryFlagHelper.flagEmoji(for: match.homePlayer.countryCode)
         self.homePlayerRank = match.homePlayer.rank
         
+        self.awayPlayerId = match.awayPlayerId
         self.awayPlayerName = match.awayPlayer.firstName
         self.awayPlayerSurname = match.awayPlayer.surname
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
@@ -50,12 +58,15 @@ struct LiveScoreCellPresentation {
     
     /// Manuel oluşturma için (test/preview amaçlı)
     init(
+        matchId: String = UUID().uuidString,
+        homePlayerId: String = UUID().uuidString,
         homePlayerName: String,
         homePlayerSurname: String,
         homePlayerPhotoUrl: String?,
         homePlayerScore: Int,
         homePlayerFlag: String?,
         homePlayerRank: Int?,
+        awayPlayerId: String = UUID().uuidString,
         awayPlayerName: String,
         awayPlayerSurname: String,
         awayPlayerPhotoUrl: String?,
@@ -65,12 +76,15 @@ struct LiveScoreCellPresentation {
         matchStatus: String,
         round: String
     ) {
+        self.matchId = matchId
+        self.homePlayerId = homePlayerId
         self.homePlayerName = homePlayerName
         self.homePlayerSurname = homePlayerSurname
         self.homePlayerPhotoUrl = homePlayerPhotoUrl
         self.homePlayerScore = homePlayerScore
         self.homePlayerFlag = homePlayerFlag
         self.homePlayerRank = homePlayerRank
+        self.awayPlayerId = awayPlayerId
         self.awayPlayerName = awayPlayerName
         self.awayPlayerSurname = awayPlayerSurname
         self.awayPlayerPhotoUrl = awayPlayerPhotoUrl

@@ -153,12 +153,35 @@ extension HomeViewController: UITableViewDataSource {
                 cell.stopLiveAnimation()
             }
             
+            // Callback bindings
+            cell.onHomePlayerTapped = { [weak self] in
+                self?.viewModel.selectHomePlayer(at: indexPath)
+            }
+            cell.onAwayPlayerTapped = { [weak self] in
+                self?.viewModel.selectAwayPlayer(at: indexPath)
+            }
+            cell.onScoreTapped = { [weak self] in
+                self?.viewModel.selectMatch(at: indexPath)
+            }
+            
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: ScoreCell.identifier, for: indexPath) as? ScoreCell else {
                 return UITableViewCell()
             }
             cell.configure(with: matchPresentation.toLiveScoreCellPresentation)
+            
+            // Callback bindings
+            cell.onHomePlayerTapped = { [weak self] in
+                self?.viewModel.selectHomePlayer(at: indexPath)
+            }
+            cell.onAwayPlayerTapped = { [weak self] in
+                self?.viewModel.selectAwayPlayer(at: indexPath)
+            }
+            cell.onScoreTapped = { [weak self] in
+                self?.viewModel.selectMatch(at: indexPath)
+            }
+            
             return cell
         }
     }

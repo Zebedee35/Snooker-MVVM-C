@@ -134,6 +134,12 @@ final class ScoreCell: UITableViewCell {
         return view
     }()
     
+    // MARK: - Callbacks
+    
+    var onHomePlayerTapped: (() -> Void)?
+    var onAwayPlayerTapped: (() -> Void)?
+    var onScoreTapped: (() -> Void)?
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -160,6 +166,45 @@ final class ScoreCell: UITableViewCell {
         containerView.addSubview(awayPlayerNameLabel)
         containerView.addSubview(awayPlayerImageView)
         containerView.addSubview(liveIndicatorView)
+        
+        setupGestures()
+    }
+    
+    private func setupGestures() {
+        // Home Player taps
+        homePlayerImageView.isUserInteractionEnabled = true
+        let homeImageTap = UITapGestureRecognizer(target: self, action: #selector(homePlayerTapped))
+        homePlayerImageView.addGestureRecognizer(homeImageTap)
+        
+        homePlayerNameLabel.isUserInteractionEnabled = true
+        let homeNameTap = UITapGestureRecognizer(target: self, action: #selector(homePlayerTapped))
+        homePlayerNameLabel.addGestureRecognizer(homeNameTap)
+        
+        // Away Player taps
+        awayPlayerImageView.isUserInteractionEnabled = true
+        let awayImageTap = UITapGestureRecognizer(target: self, action: #selector(awayPlayerTapped))
+        awayPlayerImageView.addGestureRecognizer(awayImageTap)
+        
+        awayPlayerNameLabel.isUserInteractionEnabled = true
+        let awayNameTap = UITapGestureRecognizer(target: self, action: #selector(awayPlayerTapped))
+        awayPlayerNameLabel.addGestureRecognizer(awayNameTap)
+        
+        // Score tap
+        centerStackView.isUserInteractionEnabled = true
+        let scoreTap = UITapGestureRecognizer(target: self, action: #selector(scoreTapped))
+        centerStackView.addGestureRecognizer(scoreTap)
+    }
+    
+    @objc private func homePlayerTapped() {
+        onHomePlayerTapped?()
+    }
+    
+    @objc private func awayPlayerTapped() {
+        onAwayPlayerTapped?()
+    }
+    
+    @objc private func scoreTapped() {
+        onScoreTapped?()
     }
     
     private func setupConstraints() {
@@ -293,6 +338,9 @@ final class ScoreCell: UITableViewCell {
         matchStatusLabel.textColor = .secondaryLabel
         liveIndicatorView.isHidden = true
         stopLiveAnimation()
+        onHomePlayerTapped = nil
+        onAwayPlayerTapped = nil
+        onScoreTapped = nil
     }
 }
 

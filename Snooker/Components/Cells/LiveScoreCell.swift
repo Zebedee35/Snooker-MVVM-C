@@ -230,6 +230,12 @@ final class LiveScoreCell: UITableViewCell {
         return stack
     }()
     
+    // MARK: - Callbacks
+    
+    var onHomePlayerTapped: (() -> Void)?
+    var onAwayPlayerTapped: (() -> Void)?
+    var onScoreTapped: (() -> Void)?
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -258,6 +264,37 @@ final class LiveScoreCell: UITableViewCell {
         // Away player image container setup
         awayPlayerImageContainerView.addSubview(awayPlayerImageView)
         awayPlayerImageContainerView.addSubview(awayPlayerFlagLabel)
+        
+        setupGestures()
+    }
+    
+    private func setupGestures() {
+        // Home Player taps (entire stack)
+        homePlayerStackView.isUserInteractionEnabled = true
+        let homePlayerTap = UITapGestureRecognizer(target: self, action: #selector(homePlayerTapped))
+        homePlayerStackView.addGestureRecognizer(homePlayerTap)
+        
+        // Away Player taps (entire stack)
+        awayPlayerStackView.isUserInteractionEnabled = true
+        let awayPlayerTap = UITapGestureRecognizer(target: self, action: #selector(awayPlayerTapped))
+        awayPlayerStackView.addGestureRecognizer(awayPlayerTap)
+        
+        // Score tap (center stack)
+        centerStackView.isUserInteractionEnabled = true
+        let scoreTap = UITapGestureRecognizer(target: self, action: #selector(scoreTapped))
+        centerStackView.addGestureRecognizer(scoreTap)
+    }
+    
+    @objc private func homePlayerTapped() {
+        onHomePlayerTapped?()
+    }
+    
+    @objc private func awayPlayerTapped() {
+        onAwayPlayerTapped?()
+    }
+    
+    @objc private func scoreTapped() {
+        onScoreTapped?()
     }
     
     private func setupConstraints() {
@@ -456,6 +493,9 @@ final class LiveScoreCell: UITableViewCell {
         homeScoreLabel.text = nil
         awayScoreLabel.text = nil
         matchStatusLabel.text = nil
+        onHomePlayerTapped = nil
+        onAwayPlayerTapped = nil
+        onScoreTapped = nil
     }
 }
 
