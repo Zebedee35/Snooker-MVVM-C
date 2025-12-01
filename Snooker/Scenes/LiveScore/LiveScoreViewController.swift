@@ -54,7 +54,6 @@ final class LiveScoreViewController: UIViewController {
     
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         return refreshControl
     }()
     
@@ -122,12 +121,6 @@ final class LiveScoreViewController: UIViewController {
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
-    
-    // MARK: - Actions
-    
-    @objc private func handleRefresh() {
-        viewModel.refreshData()
-    }
 }
 
 // MARK: - UITableViewDataSource
@@ -166,6 +159,12 @@ extension LiveScoreViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         viewModel.selectMatch(at: indexPath.row)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if refreshControl.isRefreshing {
+            viewModel.refreshData()
+        }
     }
 }
 

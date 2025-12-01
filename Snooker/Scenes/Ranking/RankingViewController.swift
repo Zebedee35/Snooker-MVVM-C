@@ -42,7 +42,6 @@ final class RankingViewController: UIViewController {
     
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         return refreshControl
     }()
     
@@ -79,7 +78,7 @@ final class RankingViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.refreshControl = refreshControl
-        
+
         viewModel.loadData()
     }
     
@@ -112,12 +111,6 @@ final class RankingViewController: UIViewController {
             emptyStateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32)
         ])
     }
-    
-    // MARK: - Actions
-    
-    @objc private func handleRefresh() {
-        viewModel.refreshData()
-    }
 }
 
 // MARK: - UITableViewDataSource
@@ -144,6 +137,12 @@ extension RankingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         viewModel.selectRanking(at: indexPath.row)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if refreshControl.isRefreshing {
+            viewModel.refreshData()
+        }
     }
 }
 
