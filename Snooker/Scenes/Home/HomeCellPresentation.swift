@@ -108,7 +108,8 @@ struct HomeCellPresentation {
             awayPlayerFlag: awayPlayerFlag,
             awayPlayerRank: awayPlayerRank,
             matchStatus: status,
-            round: round
+            round: round,
+            startDateTime: startDateTime
         )
     }
     

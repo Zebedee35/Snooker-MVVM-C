@@ -80,6 +80,7 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                 }
             } catch {
                 delegate?.handleOutput(.showLoading(false))
+                delegate?.handleOutput(.showEmptyState(true))
                 delegate?.handleOutput(.showError(error.localizedDescription))
                 print("Error fetching live matches: \(error)")
             }

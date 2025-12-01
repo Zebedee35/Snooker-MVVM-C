@@ -402,16 +402,35 @@ final class LiveScoreCell: UITableViewCell {
             awayPlayerRankLabel.isHidden = true
         }
         
-        // Scores
-        homeScoreLabel.text = String(presentation.homePlayerScore)
-        awayScoreLabel.text = String(presentation.awayPlayerScore)
-        
-        // Highlight winning score
-        updateScoreColors(homeScore: presentation.homePlayerScore, awayScore: presentation.awayPlayerScore)
-        
-        // Status
-        matchStatusLabel.text = presentation.matchStatus
-        // startLiveAnimation()
+        // Scheduled maçlarda skor yerine tarih göster
+        if presentation.isScheduled {
+            // Skor label'larını gizle
+            homeScoreLabel.isHidden = true
+            awayScoreLabel.isHidden = true
+            scoreSeparatorLabel.isHidden = true
+            
+            // Tarih/saat göster
+            matchStatusLabel.text = presentation.formattedStartTime ?? "TBD"
+            matchStatusLabel.textColor = .label
+            matchStatusLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 8, weight: .semibold)
+            stopLiveAnimation()
+        } else {
+            // Skor label'larını göster
+            homeScoreLabel.isHidden = false
+            awayScoreLabel.isHidden = false
+            scoreSeparatorLabel.isHidden = false
+            
+            // Scores
+            homeScoreLabel.text = String(presentation.homePlayerScore)
+            awayScoreLabel.text = String(presentation.awayPlayerScore)
+            
+            // Highlight winning score
+            updateScoreColors(homeScore: presentation.homePlayerScore, awayScore: presentation.awayPlayerScore)
+            
+            // Status
+            matchStatusLabel.text = presentation.matchStatus
+            matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize)
+        }
     }
     
     // MARK: - Helpers
@@ -491,8 +510,12 @@ final class LiveScoreCell: UITableViewCell {
         awayPlayerRankLabel.text = nil
         awayPlayerRankLabel.isHidden = true
         homeScoreLabel.text = nil
+        homeScoreLabel.isHidden = false
         awayScoreLabel.text = nil
+        awayScoreLabel.isHidden = false
+        scoreSeparatorLabel.isHidden = false
         matchStatusLabel.text = nil
+        matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize)
         onHomePlayerTapped = nil
         onAwayPlayerTapped = nil
         onScoreTapped = nil

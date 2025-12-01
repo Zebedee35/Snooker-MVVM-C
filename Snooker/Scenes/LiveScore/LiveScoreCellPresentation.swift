@@ -30,6 +30,45 @@ struct LiveScoreCellPresentation {
     
     let matchStatus: String
     let round: String
+    let startDateTime: String?
+    
+    /// Maç planlanmış mı (henüz başlamamış)?
+    var isScheduled: Bool {
+        matchStatus.lowercased() == "scheduled"
+    }
+    
+    /// Scheduled maçlar için formatlanmış başlangıç zamanı
+    /// Bugün ise: "14:00", farklı gün ise: "2 Dec / 14:00"
+    var formattedStartTime: String? {
+        guard let dateString = startDateTime else { return nil }
+        
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        // Fractional seconds olmadan da dene
+        var date = isoFormatter.date(from: dateString)
+        if date == nil {
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            date = isoFormatter.date(from: dateString)
+        }
+        
+        guard let matchDate = date else { return nil }
+        
+        let calendar = Calendar.current
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale.current
+        timeFormatter.timeZone = TimeZone.current
+        
+        if calendar.isDateInToday(matchDate) {
+            // Bugün - sadece saat
+            timeFormatter.dateFormat = "HH:mm"
+            return timeFormatter.string(from: matchDate)
+        } else {
+            // Farklı gün - tarih ve saat
+            timeFormatter.dateFormat = "d MMM / HH:mm"
+            return timeFormatter.string(from: matchDate)
+        }
+    }
     
     // MARK: - Initialization
     
@@ -54,6 +93,7 @@ struct LiveScoreCellPresentation {
         
         self.matchStatus = match.status
         self.round = match.round
+        self.startDateTime = match.startDateTime
     }
     
     /// Manuel oluşturma için (test/preview amaçlı)
@@ -74,7 +114,8 @@ struct LiveScoreCellPresentation {
         awayPlayerFlag: String?,
         awayPlayerRank: Int?,
         matchStatus: String,
-        round: String
+        round: String,
+        startDateTime: String? = nil
     ) {
         self.matchId = matchId
         self.homePlayerId = homePlayerId
@@ -93,6 +134,7 @@ struct LiveScoreCellPresentation {
         self.awayPlayerRank = awayPlayerRank
         self.matchStatus = matchStatus
         self.round = round
+        self.startDateTime = startDateTime
     }
 }
 

@@ -266,30 +266,51 @@ final class ScoreCell: UITableViewCell {
         awayPlayerImageView.configure(with: presentation.awayPlayerPhotoUrl)
         awayPlayerNameLabel.text = "\(presentation.awayPlayerName.prefix(1)). \(presentation.awayPlayerSurname)"
         
-        // Scores
-        homeScoreLabel.text = String(presentation.homePlayerScore)
-        awayScoreLabel.text = String(presentation.awayPlayerScore)
-        
-        // Score renkleri
-        updateScoreColors(homeScore: presentation.homePlayerScore, awayScore: presentation.awayPlayerScore)
-        
-        // Status
-        let status = presentation.matchStatus.lowercased()
-        if status == "live" {
-            matchStatusLabel.text = "LIVE"
-            matchStatusLabel.textColor = .systemRed
-            liveIndicatorView.isHidden = false
-            startLiveAnimation()
-        } else if status == "completed" || status == "done" {
-            matchStatusLabel.text = "Completed"
-            matchStatusLabel.textColor = .secondaryLabel
+        // Scheduled maçlarda skor yerine tarih göster
+        if presentation.isScheduled {
+            // Skor label'larını gizle
+            homeScoreLabel.isHidden = true
+            awayScoreLabel.isHidden = true
+            scoreSeparatorLabel.isHidden = true
+            
+            // Tarih/saat göster
+            matchStatusLabel.text = presentation.formattedStartTime ?? "TBD"
+            matchStatusLabel.textColor = .label
+            matchStatusLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 4, weight: .medium)
             liveIndicatorView.isHidden = true
             stopLiveAnimation()
         } else {
-            matchStatusLabel.text = presentation.matchStatus
-            matchStatusLabel.textColor = .secondaryLabel
-            liveIndicatorView.isHidden = true
-            stopLiveAnimation()
+            // Skor label'larını göster
+            homeScoreLabel.isHidden = false
+            awayScoreLabel.isHidden = false
+            scoreSeparatorLabel.isHidden = false
+            
+            // Scores
+            homeScoreLabel.text = String(presentation.homePlayerScore)
+            awayScoreLabel.text = String(presentation.awayPlayerScore)
+            
+            // Score renkleri
+            updateScoreColors(homeScore: presentation.homePlayerScore, awayScore: presentation.awayPlayerScore)
+            
+            // Status
+            matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize, weight: .medium)
+            let status = presentation.matchStatus.lowercased()
+            if status == "live" {
+                matchStatusLabel.text = "LIVE"
+                matchStatusLabel.textColor = .systemRed
+                liveIndicatorView.isHidden = false
+                startLiveAnimation()
+            } else if status == "completed" || status == "done" {
+                matchStatusLabel.text = "Completed"
+                matchStatusLabel.textColor = .secondaryLabel
+                liveIndicatorView.isHidden = true
+                stopLiveAnimation()
+            } else {
+                matchStatusLabel.text = presentation.matchStatus
+                matchStatusLabel.textColor = .secondaryLabel
+                liveIndicatorView.isHidden = true
+                stopLiveAnimation()
+            }
         }
     }
     
@@ -333,9 +354,13 @@ final class ScoreCell: UITableViewCell {
         homePlayerNameLabel.text = nil
         awayPlayerNameLabel.text = nil
         homeScoreLabel.text = nil
+        homeScoreLabel.isHidden = false
         awayScoreLabel.text = nil
+        awayScoreLabel.isHidden = false
+        scoreSeparatorLabel.isHidden = false
         matchStatusLabel.text = nil
         matchStatusLabel.textColor = .secondaryLabel
+        matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize, weight: .medium)
         liveIndicatorView.isHidden = true
         stopLiveAnimation()
         onHomePlayerTapped = nil

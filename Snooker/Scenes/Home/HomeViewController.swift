@@ -45,6 +45,18 @@ final class HomeViewController: UIViewController {
         return label
     }()
     
+    private lazy var emptyStateContainerView: UIView = {
+        let containerView = UIView()
+        containerView.addSubview(emptyStateLabel)
+        NSLayoutConstraint.activate([
+            emptyStateLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            emptyStateLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            emptyStateLabel.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor, constant: 32),
+            emptyStateLabel.trailingAnchor.constraint(lessThanOrEqualTo: containerView.trailingAnchor, constant: -32)
+        ])
+        return containerView
+    }()
+    
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
@@ -61,6 +73,7 @@ final class HomeViewController: UIViewController {
     
     var sections: [MatchSection] = []
     var coordinator: HomeCoordinator?
+    private var isEmptyState: Bool = false
     
     // MARK: - Lifecycle
     
@@ -98,7 +111,9 @@ final class HomeViewController: UIViewController {
     private func setupUI() {
         view.addSubview(tableView)
         view.addSubview(activityIndicator)
-        view.addSubview(emptyStateLabel)
+        
+        // Empty state container'ı tableView'ın backgroundView'ı olarak ayarla
+        tableView.backgroundView = emptyStateContainerView
     }
     
     private func setupConstraints() {
@@ -109,12 +124,7 @@ final class HomeViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            emptyStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyStateLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            emptyStateLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 32),
-            emptyStateLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32)
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -237,8 +247,9 @@ extension HomeViewController: HomeViewModelDelegate {
             print("Error: \(message)")
             
         case .showEmptyState(let isEmpty):
+            isEmptyState = isEmpty
             emptyStateLabel.isHidden = !isEmpty
-            tableView.isHidden = isEmpty
+            tableView.reloadData()
         }
     }
     
