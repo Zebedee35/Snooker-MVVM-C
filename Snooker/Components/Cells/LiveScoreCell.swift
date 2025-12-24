@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - LiveScoreCell
 
-final class LiveScoreCell: UITableViewCell {
+final class LiveScoreCell: UICollectionViewCell {
     
     static let identifier = "LiveScoreCell"
     
@@ -181,6 +181,7 @@ final class LiveScoreCell: UITableViewCell {
         label.font = .systemFont(ofSize: Constants.statusFontSize)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
+        label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -238,8 +239,8 @@ final class LiveScoreCell: UITableViewCell {
     
     // MARK: - Initialization
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
         setupConstraints()
     }
@@ -252,7 +253,6 @@ final class LiveScoreCell: UITableViewCell {
     
     private func setupUI() {
         backgroundColor = .clear
-        selectionStyle = .none
         
         contentView.addSubview(containerView)
         containerView.addSubview(mainStackView)
@@ -402,19 +402,40 @@ final class LiveScoreCell: UITableViewCell {
             awayPlayerRankLabel.isHidden = true
         }
         
-        // Scheduled maçlarda skor yerine tarih göster
+        // Scheduled maçlarda skor yerine tarih/saat göster
         if presentation.isScheduled {
-            // Skor label'larını gizle
-            homeScoreLabel.isHidden = true
-            awayScoreLabel.isHidden = true
+            // Skor label'larını tarih/saat için yeniden kullan
+            homeScoreLabel.isHidden = false
+            awayScoreLabel.isHidden = false
             scoreSeparatorLabel.isHidden = true
             
-            // Tarih/saat göster
-            matchStatusLabel.text = presentation.formattedStartTime ?? "TBD"
-            matchStatusLabel.textColor = .label
-            matchStatusLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 8, weight: .semibold)
+            // Stack'i dikey yap (tarih üstte, saat altta)
+            scoreStackView.axis = .vertical
+            scoreStackView.spacing = 2
+            
+            // Tarih kısmı (bugün değilse)
+            if let datePart = presentation.formattedDatePart {
+                homeScoreLabel.text = datePart
+                homeScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 14, weight: .medium)
+                homeScoreLabel.textColor = .secondaryLabel
+                homeScoreLabel.textAlignment = .center
+            } else {
+                homeScoreLabel.text = ""
+            }
+            
+            // Saat kısmı
+            awayScoreLabel.text = presentation.formattedTimePart ?? "TBD"
+            awayScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 8, weight: .semibold)
+            awayScoreLabel.textColor = .label
+            awayScoreLabel.textAlignment = .center
+            
+            matchStatusLabel.text = ""
             stopLiveAnimation()
         } else {
+            // Stack'i yatay yap (normal skor görünümü)
+            scoreStackView.axis = .horizontal
+            scoreStackView.spacing = 8
+            
             // Skor label'larını göster
             homeScoreLabel.isHidden = false
             awayScoreLabel.isHidden = false
@@ -422,13 +443,18 @@ final class LiveScoreCell: UITableViewCell {
             
             // Scores
             homeScoreLabel.text = String(presentation.homePlayerScore)
+            homeScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .semibold)
+            homeScoreLabel.textAlignment = .center
             awayScoreLabel.text = String(presentation.awayPlayerScore)
+            awayScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .semibold)
+            awayScoreLabel.textAlignment = .center
             
             // Highlight winning score
             updateScoreColors(homeScore: presentation.homePlayerScore, awayScore: presentation.awayPlayerScore)
             
             // Status
             matchStatusLabel.text = presentation.matchStatus
+            matchStatusLabel.textColor = .secondaryLabel
             matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize)
         }
     }
@@ -531,15 +557,20 @@ import SwiftUI
 struct LiveScoreCell_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            // Single Cell Preview
-            LiveScoreCellPreviewWrapper()
+            // Single Cell Preview - Live
+            LiveScoreCellPreviewWrapper(presentation: .preview)
                 .frame(height: 150)
-                .previewDisplayName("Single Cell - Light")
+                .previewDisplayName("Live Match")
             
-            LiveScoreCellPreviewWrapper()
+            // Scheduled - Farklı gün (tarih + saat)
+            LiveScoreCellPreviewWrapper(presentation: .previewScheduled)
                 .frame(height: 150)
-                .preferredColorScheme(.dark)
-                .previewDisplayName("Single Cell - Dark")
+                .previewDisplayName("Scheduled - Different Day")
+            
+            // Scheduled - Bugün (sadece saat)
+            LiveScoreCellPreviewWrapper(presentation: .previewScheduledToday)
+                .frame(height: 150)
+                .previewDisplayName("Scheduled - Today")
             
             // Multiple Cells in List
             LiveScoreCellListPreviewWrapper()
@@ -551,48 +582,61 @@ struct LiveScoreCell_Previews: PreviewProvider {
 
 @available(iOS 13.0, *)
 private struct LiveScoreCellPreviewWrapper: UIViewRepresentable {
-    func makeUIView(context: Context) -> UITableViewCell {
-        let cell = LiveScoreCell(style: .default, reuseIdentifier: LiveScoreCell.identifier)
-        cell.configure(with: LiveScoreCellPresentation.preview)
+    var presentation: LiveScoreCellPresentation = .preview
+    
+    func makeUIView(context: Context) -> UICollectionViewCell {
+        let cell = LiveScoreCell(frame: CGRect(x: 0, y: 0, width: 375, height: 150))
+        cell.configure(with: presentation)
         return cell
     }
     
-    func updateUIView(_ uiView: UITableViewCell, context: Context) {}
+    func updateUIView(_ uiView: UICollectionViewCell, context: Context) {}
 }
 
 @available(iOS 13.0, *)
 private struct LiveScoreCellListPreviewWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UITableViewController {
-        let controller = LiveScorePreviewTableViewController()
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = LiveScorePreviewCollectionViewController()
         return controller
     }
     
-    func updateUIViewController(_ uiViewController: UITableViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
-private class LiveScorePreviewTableViewController: UITableViewController {
+private class LiveScorePreviewCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private let presentations = LiveScoreCellPresentation.previewList
+    private var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(LiveScoreCell.self, forCellReuseIdentifier: LiveScoreCell.identifier)
-        tableView.backgroundColor = .systemBackground
-        tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 150
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.register(LiveScoreCell.self, forCellWithReuseIdentifier: LiveScoreCell.identifier)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        view.addSubview(collectionView)
         title = "Live Scores"
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return presentations.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
-            return UITableViewCell()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
+            return UICollectionViewCell()
         }
-        cell.configure(with: presentations[indexPath.row])
+        cell.configure(with: presentations[indexPath.item])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 150)
     }
 }
 

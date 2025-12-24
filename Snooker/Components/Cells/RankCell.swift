@@ -9,7 +9,7 @@ import UIKit
 
 // MARK: - RankCell
 
-final class RankCell: UITableViewCell {
+final class RankCell: UICollectionViewCell {
     
     static let identifier = "RankCell"
     
@@ -107,8 +107,8 @@ final class RankCell: UITableViewCell {
     
     // MARK: - Initialization
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
         setupConstraints()
     }
@@ -121,7 +121,6 @@ final class RankCell: UITableViewCell {
     
     private func setupUI() {
         backgroundColor = .clear
-        selectionStyle = .none
         
         contentView.addSubview(containerView)
         
@@ -261,48 +260,59 @@ struct RankCell_Previews: PreviewProvider {
 
 @available(iOS 13.0, *)
 private struct RankCellPreviewWrapper: UIViewRepresentable {
-    func makeUIView(context: Context) -> UITableViewCell {
-        let cell = RankCell(style: .default, reuseIdentifier: RankCell.identifier)
+    func makeUIView(context: Context) -> UICollectionViewCell {
+        let cell = RankCell(frame: CGRect(x: 0, y: 0, width: 375, height: 120))
         cell.configure(with: RankCellPresentation.preview)
         return cell
     }
     
-    func updateUIView(_ uiView: UITableViewCell, context: Context) {}
+    func updateUIView(_ uiView: UICollectionViewCell, context: Context) {}
 }
 
 @available(iOS 13.0, *)
 private struct RankCellListPreviewWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UITableViewController {
-        let controller = RankCellPreviewTableViewController()
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = RankCellPreviewCollectionViewController()
         return controller
     }
     
-    func updateUIViewController(_ uiViewController: UITableViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
-private class RankCellPreviewTableViewController: UITableViewController {
+private class RankCellPreviewCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private let presentations = RankCellPresentation.previewList
+    private var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(RankCell.self, forCellReuseIdentifier: RankCell.identifier)
-        tableView.backgroundColor = .systemBackground
-        tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 120
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.register(RankCell.self, forCellWithReuseIdentifier: RankCell.identifier)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        view.addSubview(collectionView)
         title = "Rankings"
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return presentations.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: RankCell.identifier, for: indexPath) as? RankCell else {
-            return UITableViewCell()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RankCell.identifier, for: indexPath) as? RankCell else {
+            return UICollectionViewCell()
         }
-        cell.configure(with: presentations[indexPath.row])
+        cell.configure(with: presentations[indexPath.item])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 120)
     }
 }
 

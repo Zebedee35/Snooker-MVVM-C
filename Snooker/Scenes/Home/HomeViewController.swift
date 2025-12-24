@@ -11,20 +11,21 @@ final class HomeViewController: UIViewController {
     
     // MARK: - UI Components
     
-    private let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(LiveScoreCell.self, forCellReuseIdentifier: LiveScoreCell.identifier)
-        tableView.register(ScoreCell.self, forCellReuseIdentifier: ScoreCell.identifier)
-        tableView.register(RoundHeaderView.self, forHeaderFooterViewReuseIdentifier: RoundHeaderView.identifier)
-        tableView.backgroundColor = .systemBackground
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 80
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedSectionHeaderHeight = 50
-        tableView.sectionFooterHeight = 0
-        tableView.separatorStyle = .none
-        return tableView
+    private let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.headerReferenceSize = CGSize(width: 0, height: 50)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(LiveScoreCell.self, forCellWithReuseIdentifier: LiveScoreCell.identifier)
+        collectionView.register(ScoreCell.self, forCellWithReuseIdentifier: ScoreCell.identifier)
+        collectionView.register(RoundHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: RoundHeaderView.identifier)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.alwaysBounceVertical = true
+        return collectionView
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
@@ -59,6 +60,7 @@ final class HomeViewController: UIViewController {
     
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         return refreshControl
     }()
     
@@ -93,11 +95,15 @@ final class HomeViewController: UIViewController {
         setupUI()
         setupConstraints()
         
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.refreshControl = refreshControl
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.refreshControl = refreshControl
         
         viewModel.loadData()
+    }
+    
+    @objc private func handleRefresh() {
+        viewModel.refreshData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,19 +114,19 @@ final class HomeViewController: UIViewController {
     // MARK: - Setup
     
     private func setupUI() {
-        view.addSubview(tableView)
+        view.addSubview(collectionView)
         view.addSubview(activityIndicator)
         
-        // Empty state container'ı tableView'ın backgroundView'ı olarak ayarla
-        tableView.backgroundView = emptyStateContainerView
+        // Empty state container'ı collectionView'ın backgroundView'ı olarak ayarla
+        collectionView.backgroundView = emptyStateContainerView
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -128,24 +134,24 @@ final class HomeViewController: UIViewController {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UICollectionViewDataSource
 
-extension HomeViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension HomeViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return sections[section].matches.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let matchPresentation = sections[indexPath.section].matches[indexPath.row]
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let matchPresentation = sections[indexPath.section].matches[indexPath.item]
         
         // Final ve Semi Final için büyük cell kullan
         if matchPresentation.usesBigCell {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
-                return UITableViewCell()
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
+                return UICollectionViewCell()
             }
             cell.configure(with: matchPresentation.toLiveScoreCellPresentation)
             
@@ -169,8 +175,8 @@ extension HomeViewController: UITableViewDataSource {
             
             return cell
         } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: ScoreCell.identifier, for: indexPath) as? ScoreCell else {
-                return UITableViewCell()
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ScoreCell.identifier, for: indexPath) as? ScoreCell else {
+                return UICollectionViewCell()
             }
             cell.configure(with: matchPresentation.toLiveScoreCellPresentation)
             
@@ -189,39 +195,35 @@ extension HomeViewController: UITableViewDataSource {
         }
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: RoundHeaderView.identifier) as? RoundHeaderView else {
-            return nil
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: RoundHeaderView.identifier, for: indexPath) as? RoundHeaderView else {
+            return UICollectionReusableView()
         }
-        headerView.configure(roundName: sections[section].roundName)
+        headerView.configure(roundName: sections[indexPath.section].roundName)
         return headerView
     }
 }
 
-// MARK: - UITableViewDelegate
+// MARK: - UICollectionViewDelegate
 
-extension HomeViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel.selectMatch(at: indexPath)
     }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let matchPresentation = sections[indexPath.section].matches[indexPath.item]
+        let height: CGFloat = matchPresentation.usesBigCell ? 150 : 80
+        return CGSize(width: collectionView.bounds.width, height: height)
     }
     
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return nil
-    }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if refreshControl.isRefreshing {
-            viewModel.refreshData()
-        }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 50)
     }
 }
 
@@ -240,7 +242,7 @@ extension HomeViewController: HomeViewModelDelegate {
             
         case .displaySections(let sections):
             self.sections = sections
-            tableView.reloadData()
+            collectionView.reloadData()
             
         case .showError(let message):
             print("Error: \(message)")
@@ -248,7 +250,7 @@ extension HomeViewController: HomeViewModelDelegate {
         case .showEmptyState(let isEmpty):
             isEmptyState = isEmpty
             emptyStateLabel.isHidden = !isEmpty
-            tableView.reloadData()
+            collectionView.reloadData()
         }
     }
     

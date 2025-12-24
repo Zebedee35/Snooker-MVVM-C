@@ -11,15 +11,18 @@ final class LiveScoreViewController: UIViewController {
     
     // MARK: - UI Components
     
-    private let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .plain)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(LiveScoreCell.self, forCellReuseIdentifier: LiveScoreCell.identifier)
-        tableView.backgroundColor = .systemBackground
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 150
-        tableView.separatorStyle = .none
-        return tableView
+    private let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(LiveScoreCell.self, forCellWithReuseIdentifier: LiveScoreCell.identifier)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.alwaysBounceVertical = true
+        return collectionView
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
@@ -54,6 +57,7 @@ final class LiveScoreViewController: UIViewController {
     
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         return refreshControl
     }()
     
@@ -88,11 +92,15 @@ final class LiveScoreViewController: UIViewController {
         setupUI()
         setupConstraints()
         
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.refreshControl = refreshControl
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.refreshControl = refreshControl
         
         viewModel.loadData()
+    }
+    
+    @objc private func handleRefresh() {
+        viewModel.refreshData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -103,19 +111,19 @@ final class LiveScoreViewController: UIViewController {
     // MARK: - Setup
     
     private func setupUI() {
-        view.addSubview(tableView)
+        view.addSubview(collectionView)
         view.addSubview(activityIndicator)
         
-        // Empty state container'ı tableView'ın backgroundView'ı olarak ayarla
-        tableView.backgroundView = emptyStateContainerView
+        // Empty state container'ı collectionView'ın backgroundView'ı olarak ayarla
+        collectionView.backgroundView = emptyStateContainerView
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -123,48 +131,49 @@ final class LiveScoreViewController: UIViewController {
     }
 }
 
-// MARK: - UITableViewDataSource
+// MARK: - UICollectionViewDataSource
 
-extension LiveScoreViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension LiveScoreViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellPresentations.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
-            return UITableViewCell()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LiveScoreCell.identifier, for: indexPath) as? LiveScoreCell else {
+            return UICollectionViewCell()
         }
         
-        let presentation = cellPresentations[indexPath.row]
+        let presentation = cellPresentations[indexPath.item]
         cell.configure(with: presentation)
         
         // Callback bindings
         cell.onHomePlayerTapped = { [weak self] in
-            self?.viewModel.selectHomePlayer(at: indexPath.row)
+            self?.viewModel.selectHomePlayer(at: indexPath.item)
         }
         cell.onAwayPlayerTapped = { [weak self] in
-            self?.viewModel.selectAwayPlayer(at: indexPath.row)
+            self?.viewModel.selectAwayPlayer(at: indexPath.item)
         }
         cell.onScoreTapped = { [weak self] in
-            self?.viewModel.selectMatch(at: indexPath.row)
+            self?.viewModel.selectMatch(at: indexPath.item)
         }
         
         return cell
     }
 }
 
-// MARK: - UITableViewDelegate
+// MARK: - UICollectionViewDelegate
 
-extension LiveScoreViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        viewModel.selectMatch(at: indexPath.row)
+extension LiveScoreViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel.selectMatch(at: indexPath.item)
     }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if refreshControl.isRefreshing {
-            viewModel.refreshData()
-        }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension LiveScoreViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 160)
     }
 }
 
@@ -183,7 +192,7 @@ extension LiveScoreViewController: LiveScoreViewModelDelegate {
             
         case .displayMatches(let presentations):
             cellPresentations = presentations
-            tableView.reloadData()
+            collectionView.reloadData()
             
         case .showError(let message):
             // TODO: Show error alert or banner
@@ -192,7 +201,7 @@ extension LiveScoreViewController: LiveScoreViewModelDelegate {
         case .showEmptyState(let isEmpty):
             isEmptyState = isEmpty
             emptyStateLabel.isHidden = !isEmpty
-            tableView.reloadData()
+            collectionView.reloadData()
         }
     }
     

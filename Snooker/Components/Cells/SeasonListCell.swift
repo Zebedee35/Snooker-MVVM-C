@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SeasonListCell: UITableViewCell {
+final class SeasonListCell: UICollectionViewCell {
   static let identifier = "SeasonListCell"
   
   private let tournamentNameLabel: UILabel = {
@@ -43,8 +43,8 @@ final class SeasonListCell: UITableViewCell {
     return stack
   }()
   
-  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
+  override init(frame: CGRect) {
+    super.init(frame: frame)
     setupUI()
   }
   
@@ -83,7 +83,7 @@ struct SeasonListCell_Previews: PreviewProvider {
     Group {
       // Single cell preview - Light
       CellPreviewContainer {
-        let cell = SeasonListCell(style: .default, reuseIdentifier: SeasonListCell.identifier)
+        let cell = SeasonListCell(frame: CGRect(x: 0, y: 0, width: 375, height: 88))
         let presentation = SeasonListCellPresentation(tournament: TournamentDTO.preview)
         cell.configure(with: presentation)
         return cell
@@ -92,7 +92,7 @@ struct SeasonListCell_Previews: PreviewProvider {
       
       // Single cell preview - Dark
       CellPreviewContainer {
-        let cell = SeasonListCell(style: .default, reuseIdentifier: SeasonListCell.identifier)
+        let cell = SeasonListCell(frame: CGRect(x: 0, y: 0, width: 375, height: 88))
         let presentation = SeasonListCellPresentation(tournament: TournamentDTO.preview)
         cell.configure(with: presentation)
         return cell

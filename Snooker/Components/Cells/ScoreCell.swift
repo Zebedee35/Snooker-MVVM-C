@@ -11,7 +11,7 @@ import UIKit
 
 /// Kompakt skor hücresi - Maç listelerinde kullanılır
 /// Layout: | Photo | PlayerName | Score - Score | PlayerName | Photo |
-final class ScoreCell: UITableViewCell {
+final class ScoreCell: UICollectionViewCell {
     
     static let identifier = "ScoreCell"
     
@@ -142,8 +142,8 @@ final class ScoreCell: UITableViewCell {
     
     // MARK: - Initialization
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
         setupConstraints()
     }
@@ -156,7 +156,6 @@ final class ScoreCell: UITableViewCell {
     
     private func setupUI() {
         backgroundColor = .clear
-        selectionStyle = .none
         
         contentView.addSubview(containerView)
         
@@ -268,24 +267,49 @@ final class ScoreCell: UITableViewCell {
         
         // Scheduled maçlarda skor yerine tarih göster
         if presentation.isScheduled {
-            // Skor label'larını gizle
-            homeScoreLabel.isHidden = true
-            awayScoreLabel.isHidden = true
+            // Skor label'larını tarih/saat için kullan
+            homeScoreLabel.isHidden = false
+            awayScoreLabel.isHidden = false
             scoreSeparatorLabel.isHidden = true
             
-            // Tarih/saat göster
-            matchStatusLabel.text = presentation.formattedStartTime ?? "TBD"
-            matchStatusLabel.textColor = .label
-            matchStatusLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 4, weight: .medium)
+            // Stack'i dikey yap (tarih üstte, saat altta)
+            scoreStackView.axis = .vertical
+            scoreStackView.spacing = 0
+            
+            // Tarih kısmı (bugün değilse)
+            if let datePart = presentation.formattedDatePart {
+                homeScoreLabel.text = datePart
+                homeScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 8, weight: .medium)
+                homeScoreLabel.textColor = .secondaryLabel
+                homeScoreLabel.textAlignment = .center
+            } else {
+                homeScoreLabel.text = ""
+            }
+            
+            // Saat kısmı
+            awayScoreLabel.text = presentation.formattedTimePart ?? "TBD"
+            awayScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 2, weight: .semibold)
+            awayScoreLabel.textColor = .label
+            awayScoreLabel.textAlignment = .center
+            
+            matchStatusLabel.text = ""
             liveIndicatorView.isHidden = true
             stopLiveAnimation()
         } else {
+            // Stack'i yatay yap (normal skor görünümü)
+            scoreStackView.axis = .horizontal
+            scoreStackView.spacing = 4
+            
             // Skor label'larını göster
             homeScoreLabel.isHidden = false
             awayScoreLabel.isHidden = false
             scoreSeparatorLabel.isHidden = false
             
-            // Scores
+            // Scores - fontları resetle
+            homeScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .bold)
+            homeScoreLabel.textAlignment = .right
+            awayScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .bold)
+            awayScoreLabel.textAlignment = .left
             homeScoreLabel.text = String(presentation.homePlayerScore)
             awayScoreLabel.text = String(presentation.awayPlayerScore)
             
@@ -378,15 +402,20 @@ import SwiftUI
 struct ScoreCell_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            // Single Cell Preview
-            ScoreCellPreviewWrapper()
+            // Live Match
+            ScoreCellPreviewWrapper(presentation: .preview)
                 .frame(height: 70)
-                .previewDisplayName("Single Cell - Light")
+                .previewDisplayName("Live Match")
             
-            ScoreCellPreviewWrapper()
+            // Scheduled - Farklı gün
+            ScoreCellPreviewWrapper(presentation: .previewScheduled)
                 .frame(height: 70)
-                .preferredColorScheme(.dark)
-                .previewDisplayName("Single Cell - Dark")
+                .previewDisplayName("Scheduled - Different Day")
+            
+            // Scheduled - Bugün
+            ScoreCellPreviewWrapper(presentation: .previewScheduledToday)
+                .frame(height: 70)
+                .previewDisplayName("Scheduled - Today")
             
             // Multiple Cells in List
             ScoreCellListPreviewWrapper()
@@ -398,48 +427,61 @@ struct ScoreCell_Previews: PreviewProvider {
 
 @available(iOS 13.0, *)
 private struct ScoreCellPreviewWrapper: UIViewRepresentable {
-    func makeUIView(context: Context) -> UITableViewCell {
-        let cell = ScoreCell(style: .default, reuseIdentifier: ScoreCell.identifier)
-        cell.configure(with: LiveScoreCellPresentation.preview)
+    var presentation: LiveScoreCellPresentation = .preview
+    
+    func makeUIView(context: Context) -> UICollectionViewCell {
+        let cell = ScoreCell(frame: CGRect(x: 0, y: 0, width: 375, height: 70))
+        cell.configure(with: presentation)
         return cell
     }
     
-    func updateUIView(_ uiView: UITableViewCell, context: Context) {}
+    func updateUIView(_ uiView: UICollectionViewCell, context: Context) {}
 }
 
 @available(iOS 13.0, *)
 private struct ScoreCellListPreviewWrapper: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> UITableViewController {
-        let controller = ScoreCellPreviewTableViewController()
+    func makeUIViewController(context: Context) -> UIViewController {
+        let controller = ScoreCellPreviewCollectionViewController()
         return controller
     }
     
-    func updateUIViewController(_ uiViewController: UITableViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
-private class ScoreCellPreviewTableViewController: UITableViewController {
+private class ScoreCellPreviewCollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     private let presentations = LiveScoreCellPresentation.previewList
+    private var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(ScoreCell.self, forCellReuseIdentifier: ScoreCell.identifier)
-        tableView.backgroundColor = .systemBackground
-        tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 70
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.register(ScoreCell.self, forCellWithReuseIdentifier: ScoreCell.identifier)
+        collectionView.backgroundColor = .systemBackground
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        view.addSubview(collectionView)
         title = "Scores"
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return presentations.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ScoreCell.identifier, for: indexPath) as? ScoreCell else {
-            return UITableViewCell()
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ScoreCell.identifier, for: indexPath) as? ScoreCell else {
+            return UICollectionViewCell()
         }
-        cell.configure(with: presentations[indexPath.row])
+        cell.configure(with: presentations[indexPath.item])
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 70)
     }
 }
 

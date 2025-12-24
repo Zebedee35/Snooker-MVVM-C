@@ -8,7 +8,7 @@
 import UIKit
 
 /// Round section header view - Sadece round adını gösterir
-final class RoundHeaderView: UITableViewHeaderFooterView {
+final class RoundHeaderView: UICollectionReusableView {
     
     static let identifier = "RoundHeaderView"
     
@@ -38,8 +38,8 @@ final class RoundHeaderView: UITableViewHeaderFooterView {
     
     // MARK: - Initialization
     
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupUI()
         setupConstraints()
     }
@@ -51,17 +51,17 @@ final class RoundHeaderView: UITableViewHeaderFooterView {
     // MARK: - Setup
     
     private func setupUI() {
-        contentView.addSubview(containerView)
+        addSubview(containerView)
         containerView.addSubview(roundNameLabel)
         containerView.addSubview(separatorView)
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            containerView.topAnchor.constraint(equalTo: topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             roundNameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             roundNameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
@@ -124,7 +124,7 @@ private struct RoundHeaderViewPreviewWrapper: UIViewRepresentable {
     let roundName: String
     
     func makeUIView(context: Context) -> RoundHeaderView {
-        let view = RoundHeaderView(reuseIdentifier: RoundHeaderView.identifier)
+        let view = RoundHeaderView(frame: CGRect(x: 0, y: 0, width: 375, height: 50))
         view.configure(roundName: roundName)
         return view
     }

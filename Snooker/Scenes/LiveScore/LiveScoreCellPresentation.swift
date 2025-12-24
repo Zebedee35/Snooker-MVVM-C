@@ -64,10 +64,62 @@ struct LiveScoreCellPresentation {
             timeFormatter.dateFormat = "HH:mm"
             return timeFormatter.string(from: matchDate)
         } else {
-            // Farklı gün - tarih ve saat
-            timeFormatter.dateFormat = "d MMM / HH:mm"
-            return timeFormatter.string(from: matchDate)
+            // Farklı gün - tarih ilk satır, saat ikinci satır
+            timeFormatter.dateFormat = "d MMM"
+            let datePart = timeFormatter.string(from: matchDate)
+            timeFormatter.dateFormat = "HH:mm"
+            let timePart = timeFormatter.string(from: matchDate)
+            return "\(datePart)\n\(timePart)"
         }
+    }
+    
+    /// Scheduled maçlar için sadece tarih kısmı (bugünse nil döner)
+    var formattedDatePart: String? {
+        guard let dateString = startDateTime else { return nil }
+        
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        var date = isoFormatter.date(from: dateString)
+        if date == nil {
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            date = isoFormatter.date(from: dateString)
+        }
+        
+        guard let matchDate = date else { return nil }
+        
+        let calendar = Calendar.current
+        if calendar.isDateInToday(matchDate) {
+            return nil // Bugün ise tarih gösterme
+        }
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale.current
+        timeFormatter.timeZone = TimeZone.current
+        timeFormatter.dateFormat = "d MMM"
+        return timeFormatter.string(from: matchDate)
+    }
+    
+    /// Scheduled maçlar için sadece saat kısmı
+    var formattedTimePart: String? {
+        guard let dateString = startDateTime else { return nil }
+        
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        var date = isoFormatter.date(from: dateString)
+        if date == nil {
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            date = isoFormatter.date(from: dateString)
+        }
+        
+        guard let matchDate = date else { return nil }
+        
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale.current
+        timeFormatter.timeZone = TimeZone.current
+        timeFormatter.dateFormat = "HH:mm"
+        return timeFormatter.string(from: matchDate)
     }
     
     // MARK: - Initialization
@@ -159,6 +211,44 @@ extension LiveScoreCellPresentation {
         round: "Final"
     )
     
+    /// Scheduled maç preview - farklı gün
+    static let previewScheduled = LiveScoreCellPresentation(
+        homePlayerName: "Neil",
+        homePlayerSurname: "Robertson",
+        homePlayerPhotoUrl: nil,
+        homePlayerScore: 0,
+        homePlayerFlag: "🇦🇺",
+        homePlayerRank: 5,
+        awayPlayerName: "Kyren",
+        awayPlayerSurname: "Wilson",
+        awayPlayerPhotoUrl: nil,
+        awayPlayerScore: 0,
+        awayPlayerFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+        awayPlayerRank: 6,
+        matchStatus: "Scheduled",
+        round: "Quarter Final",
+        startDateTime: "2024-12-26T14:00:00Z"
+    )
+    
+    /// Scheduled maç preview - bugün
+    static let previewScheduledToday = LiveScoreCellPresentation(
+        homePlayerName: "John",
+        homePlayerSurname: "Higgins",
+        homePlayerPhotoUrl: nil,
+        homePlayerScore: 0,
+        homePlayerFlag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+        homePlayerRank: 8,
+        awayPlayerName: "Mark",
+        awayPlayerSurname: "Williams",
+        awayPlayerPhotoUrl: nil,
+        awayPlayerScore: 0,
+        awayPlayerFlag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+        awayPlayerRank: 9,
+        matchStatus: "Scheduled",
+        round: "Quarter Final",
+        startDateTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(3600))
+    )
+    
     static let previewList: [LiveScoreCellPresentation] = [
         preview,
         LiveScoreCellPresentation(
@@ -176,6 +266,42 @@ extension LiveScoreCellPresentation {
             awayPlayerRank: 15,
             matchStatus: "Live",
             round: "Semi Final"
+        ),
+        // Scheduled maç - farklı gün (26 Dec 14:00)
+        LiveScoreCellPresentation(
+            homePlayerName: "Neil",
+            homePlayerSurname: "Robertson",
+            homePlayerPhotoUrl: nil,
+            homePlayerScore: 0,
+            homePlayerFlag: "🇦🇺",
+            homePlayerRank: 5,
+            awayPlayerName: "Kyren",
+            awayPlayerSurname: "Wilson",
+            awayPlayerPhotoUrl: nil,
+            awayPlayerScore: 0,
+            awayPlayerFlag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
+            awayPlayerRank: 6,
+            matchStatus: "Scheduled",
+            round: "Quarter Final",
+            startDateTime: "2024-12-26T14:00:00Z"
+        ),
+        // Scheduled maç - bugün (sadece saat gösterir)
+        LiveScoreCellPresentation(
+            homePlayerName: "John",
+            homePlayerSurname: "Higgins",
+            homePlayerPhotoUrl: nil,
+            homePlayerScore: 0,
+            homePlayerFlag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+            homePlayerRank: 8,
+            awayPlayerName: "Mark",
+            awayPlayerSurname: "Williams",
+            awayPlayerPhotoUrl: nil,
+            awayPlayerScore: 0,
+            awayPlayerFlag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿",
+            awayPlayerRank: 9,
+            matchStatus: "Scheduled",
+            round: "Quarter Final",
+            startDateTime: ISO8601DateFormatter().string(from: Date().addingTimeInterval(3600)) // 1 saat sonra
         ),
         LiveScoreCellPresentation(
             homePlayerName: "Jak",

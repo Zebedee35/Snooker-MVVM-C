@@ -9,14 +9,18 @@ import UIKit
 
 final class SeasonListViewController: UIViewController {
   
-  private let tableView: UITableView = {
-    let tableView = UITableView(frame: .zero, style: .plain)
-    tableView.translatesAutoresizingMaskIntoConstraints = false
-    tableView.register(SeasonListCell.self, forCellReuseIdentifier: SeasonListCell.identifier)
-    tableView.backgroundColor = .systemBackground
-    tableView.rowHeight = UITableView.automaticDimension
-    tableView.estimatedRowHeight = 80
-    return tableView
+  private let collectionView: UICollectionView = {
+    let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .vertical
+    layout.minimumLineSpacing = 0
+    layout.minimumInteritemSpacing = 0
+    
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    collectionView.translatesAutoresizingMaskIntoConstraints = false
+    collectionView.register(SeasonListCell.self, forCellWithReuseIdentifier: SeasonListCell.identifier)
+    collectionView.backgroundColor = .systemBackground
+    collectionView.alwaysBounceVertical = true
+    return collectionView
   }()
   
   private let activityIndicator: UIActivityIndicatorView = {
@@ -52,8 +56,8 @@ final class SeasonListViewController: UIViewController {
     setupUI()
     setupConstraints()
     
-    tableView.delegate = self
-    tableView.dataSource = self
+    collectionView.delegate = self
+    collectionView.dataSource = self
     
     viewModel.loadData()
   }
@@ -64,16 +68,16 @@ final class SeasonListViewController: UIViewController {
   }
   
   private func setupUI() {
-    view.addSubview(tableView)
+    view.addSubview(collectionView)
     view.addSubview(activityIndicator)
   }
   
   private func setupConstraints() {
     NSLayoutConstraint.activate([
-      tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-      tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-      tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-      tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+      collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
       
       activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -81,28 +85,34 @@ final class SeasonListViewController: UIViewController {
   }
 }
 
-// MARK: - UITableViewDataSource
-extension SeasonListViewController: UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+// MARK: - UICollectionViewDataSource
+extension SeasonListViewController: UICollectionViewDataSource {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return cellPresentations.count
   }
   
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: SeasonListCell.identifier, for: indexPath) as? SeasonListCell else {
-      return UITableViewCell()
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SeasonListCell.identifier, for: indexPath) as? SeasonListCell else {
+      return UICollectionViewCell()
     }
     
-    let presentation = cellPresentations[indexPath.row]
+    let presentation = cellPresentations[indexPath.item]
     cell.configure(with: presentation)
     return cell
   }
 }
 
-// MARK: - UITableViewDelegate
-extension SeasonListViewController: UITableViewDelegate {
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    tableView.deselectRow(at: indexPath, animated: true)
-    viewModel.selectSeason(at: indexPath.row)
+// MARK: - UICollectionViewDelegate
+extension SeasonListViewController: UICollectionViewDelegate {
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    viewModel.selectSeason(at: indexPath.item)
+  }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension SeasonListViewController: UICollectionViewDelegateFlowLayout {
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    return CGSize(width: collectionView.bounds.width, height: 80)
   }
 }
 
@@ -118,7 +128,7 @@ extension SeasonListViewController: SeasonListViewModelDelegate {
       }
     case .displaySeasons(let presentations):
       cellPresentations = presentations
-      tableView.reloadData()
+      collectionView.reloadData()
     }
   }
   
