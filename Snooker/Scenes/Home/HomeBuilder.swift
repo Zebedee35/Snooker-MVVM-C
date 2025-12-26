@@ -8,10 +8,10 @@
 import Foundation
 
 final class HomeBuilder {
-    static func make() -> HomeViewController {
+    static func make(tournamentId: String? = nil) -> HomeViewController {
         let viewController = HomeViewController()
         let service = HomeService()
-        let viewModel = HomeViewModel(service: service)
+        let viewModel = HomeViewModel(service: service, tournamentId: tournamentId)
         viewController.viewModel = viewModel
         
         return viewController

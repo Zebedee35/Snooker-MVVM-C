@@ -23,6 +23,7 @@ final class HomeViewController: UIViewController {
         collectionView.register(LiveScoreCell.self, forCellWithReuseIdentifier: LiveScoreCell.identifier)
         collectionView.register(ScoreCell.self, forCellWithReuseIdentifier: ScoreCell.identifier)
         collectionView.register(RoundHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: RoundHeaderView.identifier)
+        collectionView.register(TournamentHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: TournamentHeaderView.identifier)
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
         collectionView.contentInsetAdjustmentBehavior = .automatic
@@ -76,6 +77,7 @@ final class HomeViewController: UIViewController {
     var sections: [MatchSection] = []
     var coordinator: HomeCoordinator?
     private var isEmptyState: Bool = false
+    private var tournamentPresentation: TournamentHeaderPresentation?
     
     // MARK: - Lifecycle
     
@@ -140,15 +142,24 @@ final class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return sections.count
+        // Section 0: Tournament Header (no items, sadece header)
+        // Section 1+: Round sections
+        return sections.count + 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return sections[section].matches.count
+        // Section 0 tournament header için, item yok
+        if section == 0 { return 0 }
+        return sections[section - 1].matches.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let matchPresentation = sections[indexPath.section].matches[indexPath.item]
+        // Section 0 için cell yok (tournament header section)
+        let sectionIndex = indexPath.section - 1
+        let matchPresentation = sections[sectionIndex].matches[indexPath.item]
+        
+        // ViewModel için orijinal indexPath (section - 1)
+        let viewModelIndexPath = IndexPath(item: indexPath.item, section: sectionIndex)
         
         // Final ve Semi Final için büyük cell kullan
         if matchPresentation.usesBigCell {
@@ -166,13 +177,13 @@ extension HomeViewController: UICollectionViewDataSource {
             
             // Callback bindings
             cell.onHomePlayerTapped = { [weak self] in
-                self?.viewModel.selectHomePlayer(at: indexPath)
+                self?.viewModel.selectHomePlayer(at: viewModelIndexPath)
             }
             cell.onAwayPlayerTapped = { [weak self] in
-                self?.viewModel.selectAwayPlayer(at: indexPath)
+                self?.viewModel.selectAwayPlayer(at: viewModelIndexPath)
             }
             cell.onScoreTapped = { [weak self] in
-                self?.viewModel.selectMatch(at: indexPath)
+                self?.viewModel.selectMatch(at: viewModelIndexPath)
             }
             
             return cell
@@ -184,13 +195,13 @@ extension HomeViewController: UICollectionViewDataSource {
             
             // Callback bindings
             cell.onHomePlayerTapped = { [weak self] in
-                self?.viewModel.selectHomePlayer(at: indexPath)
+                self?.viewModel.selectHomePlayer(at: viewModelIndexPath)
             }
             cell.onAwayPlayerTapped = { [weak self] in
-                self?.viewModel.selectAwayPlayer(at: indexPath)
+                self?.viewModel.selectAwayPlayer(at: viewModelIndexPath)
             }
             cell.onScoreTapped = { [weak self] in
-                self?.viewModel.selectMatch(at: indexPath)
+                self?.viewModel.selectMatch(at: viewModelIndexPath)
             }
             
             return cell
@@ -198,11 +209,26 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        guard kind == UICollectionView.elementKindSectionHeader,
-              let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: RoundHeaderView.identifier, for: indexPath) as? RoundHeaderView else {
+        guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
         }
-        headerView.configure(roundName: sections[indexPath.section].roundName)
+        
+        // Section 0: Tournament Header
+        if indexPath.section == 0 {
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: TournamentHeaderView.identifier, for: indexPath) as? TournamentHeaderView else {
+                return UICollectionReusableView()
+            }
+            if let presentation = tournamentPresentation {
+                headerView.configure(with: presentation)
+            }
+            return headerView
+        }
+        
+        // Section 1+: Round Headers
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: RoundHeaderView.identifier, for: indexPath) as? RoundHeaderView else {
+            return UICollectionReusableView()
+        }
+        headerView.configure(roundName: sections[indexPath.section - 1].roundName)
         return headerView
     }
 }
@@ -211,7 +237,9 @@ extension HomeViewController: UICollectionViewDataSource {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.selectMatch(at: indexPath)
+        // Section 0 tournament header, ignore tap
+        guard indexPath.section > 0 else { return }
+        viewModel.selectMatch(at: IndexPath(item: indexPath.item, section: indexPath.section - 1))
     }
 }
 
@@ -219,12 +247,20 @@ extension HomeViewController: UICollectionViewDelegate {
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let matchPresentation = sections[indexPath.section].matches[indexPath.item]
+        // Section 0 için item yok
+        guard indexPath.section > 0 else { return .zero }
+        let sectionIndex = indexPath.section - 1
+        let matchPresentation = sections[sectionIndex].matches[indexPath.item]
         let height: CGFloat = matchPresentation.usesBigCell ? 150 : 80
         return CGSize(width: collectionView.bounds.width, height: height)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        // Section 0: Tournament Header
+        if section == 0 {
+            return CGSize(width: collectionView.bounds.width, height: TournamentHeaderView.preferredHeight)
+        }
+        // Section 1+: Round Headers
         return CGSize(width: collectionView.bounds.width, height: 50)
     }
 }
@@ -241,6 +277,11 @@ extension HomeViewController: HomeViewModelDelegate {
                 activityIndicator.stopAnimating()
                 refreshControl.endRefreshing()
             }
+            
+        case .displayTournament(let presentation):
+            self.tournamentPresentation = presentation
+            // Navigation bar title'ı turnuva adı olarak ayarla (TabBar title'ı etkilemez)
+            self.navigationItem.title = presentation.name
             
         case .displaySections(let sections):
             self.sections = sections

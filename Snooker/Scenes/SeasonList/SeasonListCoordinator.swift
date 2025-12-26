@@ -25,10 +25,9 @@ final class SeasonListCoordinator: Coordinator {
   func handle(route: SeasonListRoute) {
     switch route {
     case .seasonDetail(let tournament):
-      // TODO: SeasonDetail ekranı oluşturulduğunda burası implement edilecek
-      print("Navigate to season detail: \(tournament.name)")
-      // let detailCoordinator = SeasonDetailCoordinator(navigationController: navigationController, tournament: tournament)
-      // detailCoordinator.start()
+      let viewController = HomeBuilder.make(tournamentId: tournament.id)
+      viewController.navigationItem.largeTitleDisplayMode = .never
+      navigationController.pushViewController(viewController, animated: true)
     }
   }
 }

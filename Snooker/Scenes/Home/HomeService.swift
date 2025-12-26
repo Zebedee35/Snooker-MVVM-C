@@ -8,11 +8,11 @@
 import Foundation
 
 protocol HomeServiceProtocol: Sendable {
-    func fetchActiveTournament() async throws -> TournamentWithMatchesDTO
+    func fetchTournament(id: String?) async throws -> TournamentWithMatchesDTO
 }
 
 final class HomeService: HomeServiceProtocol {
-    func fetchActiveTournament() async throws -> TournamentWithMatchesDTO {
-        return try await SupabaseAPI.fetchTournamentWithMatches()
+    func fetchTournament(id: String? = nil) async throws -> TournamentWithMatchesDTO {
+        return try await SupabaseAPI.fetchTournamentWithMatches(tournamentId: id)
     }
 }

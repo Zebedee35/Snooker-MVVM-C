@@ -19,6 +19,7 @@ protocol HomeViewModelProtocol: AnyObject {
 
 enum HomeViewModelOutput: Sendable {
     case showLoading(Bool)
+    case displayTournament(TournamentHeaderPresentation)
     case displaySections([MatchSection])
     case showError(String)
     case showEmptyState(Bool)
@@ -40,11 +41,13 @@ final class HomeViewModel: HomeViewModelProtocol {
     weak var delegate: HomeViewModelDelegate?
     
     private let service: HomeServiceProtocol
+    private let tournamentId: String?
     private var tournament: TournamentWithMatchesDTO?
     private var sections: [MatchSection] = []
     
-    init(service: HomeServiceProtocol) {
+    init(service: HomeServiceProtocol, tournamentId: String? = nil) {
         self.service = service
+        self.tournamentId = tournamentId
     }
     
     func loadData() {
@@ -52,10 +55,14 @@ final class HomeViewModel: HomeViewModelProtocol {
         
         Task {
             do {
-                let tournament = try await service.fetchActiveTournament()
+                let tournament = try await service.fetchTournament(id: tournamentId)
                 self.tournament = tournament
                 
                 delegate?.handleOutput(.showLoading(false))
+                
+                // Turnuva bilgilerini gönder
+                let tournamentPresentation = TournamentHeaderPresentation(tournament: tournament)
+                delegate?.handleOutput(.displayTournament(tournamentPresentation))
                 
                 if tournament.matches.isEmpty {
                     delegate?.handleOutput(.showEmptyState(true))
