@@ -48,6 +48,80 @@ struct SupabaseAPI {
         )
     }()
     
+    // MARK: - Round Priority Order
+    
+    /// Round sıralama önceliği - düşük index = daha yüksek öncelik (üstte gösterilir)
+    private static let roundPriorityOrder: [String] = [
+        "Final",
+        "Group Final",
+        "Semi Final",
+        "Semi Finals",
+        "Semi-Final",
+        "Semi-Finals",
+        "Group Semi Finals",
+        "Group Semi-Finals",
+        "Quarter Final",
+        "Quarter Finals",
+        "Last 16",
+        "Round Robin",
+        "Round 6",
+        "Round 5",
+        "Round 4",
+        "Round 3",
+        "Round 2",
+        "Round 1",
+        "Round 1 (Held Over)",
+        "Round 1 (held over)",
+        "Qualifier 1 (heldover)",
+        "Qualifier 2 (heldover)",
+        "Pre-Qualifier",
+        "Group Stage",
+        "League Phase",
+        "League Phase (STAGE ONE / WEEK 1)",
+        "League Phase (STAGE ONE / WEEK 2)",
+        "League Phase (STAGE ONE / WEEK 3)",
+        "League Phase (STAGE THREE)",
+        "League Phase (STAGE TWO / WEEK 1)",
+        "League Phase (STAGE TWO / WEEK 2)",
+        "Stage 2",
+        "Stage 3",
+        "Stage One",
+        "Stage One/week 2",
+        "Stage One/week 3",
+        "Stage One/WK1",
+        "Stage One/WK2",
+        "Stage One/WK3",
+        "Stage Three",
+        "Stage Two"
+    ]
+    
+    /// Round için priority değeri döndürür (düşük = yüksek öncelik)
+    private static func roundPriority(for round: String) -> Int {
+        if let index = roundPriorityOrder.firstIndex(of: round) {
+            return index
+        }
+        // Bilinmeyen round'lar en sona
+        return Int.max
+    }
+    
+    /// Maçları round önceliğine ve tarihine göre sıralar
+    private static func sortMatches(_ matches: [MatchDTO]) -> [MatchDTO] {
+        return matches.sorted { match1, match2 in
+            let priority1 = roundPriority(for: match1.round)
+            let priority2 = roundPriority(for: match2.round)
+            
+            // Önce round önceliğine göre sırala
+            if priority1 != priority2 {
+                return priority1 < priority2
+            }
+            
+            // Aynı round'da ise startDateTime'a göre sırala (büyük tarih üstte)
+            let date1 = match1.startDateTime ?? ""
+            let date2 = match2.startDateTime ?? ""
+            return date1 > date2
+        }
+    }
+    
     // MARK: - Helper Methods
     
     /// Seasons tablosundan veri çek
@@ -84,11 +158,11 @@ struct SupabaseAPI {
     
     /// Aktif turnuva veya belirli bir turnuvanın detaylarını maçlarıyla birlikte çek
     /// - Parameter tournamentId: Opsiyonel turnuva ID. Verilmezse aktif turnuva döner.
-    /// - Returns: Turnuva bilgisi ve maç listesi
+    /// - Returns: Turnuva bilgisi ve maç listesi (sıralanmış)
     static func fetchTournamentWithMatches(tournamentId: String? = nil) async throws -> TournamentWithMatchesDTO {
         let params: [String: String]
         if let id = tournamentId {
-            params = ["p_tournament_id": id]
+            params = ["tournament_id": id]
         } else {
             params = [:]
         }
@@ -98,7 +172,20 @@ struct SupabaseAPI {
             .single()
             .execute()
             .value
-        return response
+        
+        // Maçları sıralayarak yeni DTO döndür
+        let sortedMatches = sortMatches(response.matches)
+        return TournamentWithMatchesDTO(
+            id: response.id,
+            name: response.name,
+            season: response.season,
+            startDate: response.startDate,
+            endDate: response.endDate,
+            city: response.city,
+            venue: response.venue,
+            country: response.country,
+            matches: sortedMatches
+        )
     }
     
 //    /// Players tablosundan veri çek

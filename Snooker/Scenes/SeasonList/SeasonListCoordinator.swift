@@ -27,6 +27,12 @@ final class SeasonListCoordinator: Coordinator {
     case .seasonDetail(let tournament):
       let viewController = HomeBuilder.make(tournamentId: tournament.id)
       viewController.navigationItem.largeTitleDisplayMode = .never
+      
+      // HomeCoordinator oluştur ve ata
+      let homeCoordinator = HomeCoordinator(navigationController: navigationController)
+      homeCoordinator.mainViewController = viewController
+      viewController.coordinator = homeCoordinator
+      
       navigationController.pushViewController(viewController, animated: true)
     }
   }

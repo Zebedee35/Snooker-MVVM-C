@@ -130,32 +130,27 @@ final class HomeViewModel: HomeViewModelProtocol {
     // MARK: - Private Methods
     
     private func createSections(from matches: [MatchDTO]) -> [MatchSection] {
-        // Round'lara göre grupla
+        // API'den gelen sırayı koruyarak round'lara göre grupla
+        // LinkedHashMap mantığı: ilk gelen round önce kalır
+        var orderedRounds: [String] = []
         var groupedMatches: [String: [MatchDTO]] = [:]
         
         for match in matches {
             if groupedMatches[match.round] == nil {
+                orderedRounds.append(match.round)
                 groupedMatches[match.round] = []
             }
             groupedMatches[match.round]?.append(match)
         }
         
-        // Section'ları oluştur
+        // Section'ları API'den gelen sırada oluştur
         var sections: [MatchSection] = []
         
-        for (roundName, roundMatches) in groupedMatches {
+        for roundName in orderedRounds {
+            guard let roundMatches = groupedMatches[roundName] else { continue }
+            
             let roundType = RoundType.from(roundName)
-            
-            // Maçları tarihe göre sırala
-            let sortedMatches = roundMatches.sorted { match1, match2 in
-                guard let date1 = match1.startDateTime,
-                      let date2 = match2.startDateTime else {
-                    return false
-                }
-                return date1 < date2
-            }
-            
-            let matchPresentations = sortedMatches.map { HomeCellPresentation(match: $0) }
+            let matchPresentations = roundMatches.map { HomeCellPresentation(match: $0) }
             
             let section = MatchSection(
                 roundName: roundName,
@@ -165,9 +160,6 @@ final class HomeViewModel: HomeViewModelProtocol {
             
             sections.append(section)
         }
-        
-        // Section'ları round önemine göre sırala (Final en üstte)
-        sections.sort { $0.roundType.sortOrder < $1.roundType.sortOrder }
         
         return sections
     }
