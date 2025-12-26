@@ -18,8 +18,9 @@ final class SeasonListViewController: UIViewController {
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
     collectionView.translatesAutoresizingMaskIntoConstraints = false
     collectionView.register(SeasonListCell.self, forCellWithReuseIdentifier: SeasonListCell.identifier)
-    collectionView.backgroundColor = .systemBackground
+    collectionView.backgroundColor = .clear
     collectionView.alwaysBounceVertical = true
+    collectionView.contentInsetAdjustmentBehavior = .automatic
     return collectionView
   }()
   
@@ -47,6 +48,8 @@ final class SeasonListViewController: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
   
+  private var hasLoadedData = false
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -58,13 +61,18 @@ final class SeasonListViewController: UIViewController {
     
     collectionView.delegate = self
     collectionView.dataSource = self
-    
-    viewModel.loadData()
   }
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     navigationController?.navigationBar.prefersLargeTitles = true
+    navigationItem.largeTitleDisplayMode = .always
+    
+    // Lazy loading - sadece ilk görünümde yükle
+    if !hasLoadedData {
+      hasLoadedData = true
+      viewModel.loadData()
+    }
   }
   
   private func setupUI() {
@@ -74,10 +82,10 @@ final class SeasonListViewController: UIViewController {
   
   private func setupConstraints() {
     NSLayoutConstraint.activate([
-      collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      collectionView.topAnchor.constraint(equalTo: view.topAnchor),
       collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-      collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+      collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
       
       activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -129,11 +137,61 @@ extension SeasonListViewController: SeasonListViewModelDelegate {
     case .displaySeasons(let presentations):
       cellPresentations = presentations
       collectionView.reloadData()
+      
+      // Data yüklendikten sonra bugünden sonraki ilk turnuvaya scroll yap
+      scrollToUpcomingTournament()
     }
   }
   
   func navigate(to route: SeasonListRoute) {
     coordinator?.handle(route: route)
+  }
+  
+  // MARK: - Auto Scroll
+  
+  /// Bugünden sonraki ilk turnuvayı bulup ekranın ortasına scroll yapar
+  private func scrollToUpcomingTournament() {
+    guard !cellPresentations.isEmpty else { return }
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    let today = Date()
+    
+    // Bugünden sonraki ilk turnuvayı bul (isPast == false olan ilk item)
+    // veya startDate >= today olan ilk item
+    var targetIndex: Int?
+    
+    for (index, presentation) in cellPresentations.enumerated() {
+      // Önce isPast property'sine bak
+      if !presentation.isPast {
+        targetIndex = index
+        break
+      }
+      
+      // Alternatif olarak startDate'i kontrol et
+      if let startDate = dateFormatter.date(from: presentation.startDateString),
+         startDate >= today {
+        targetIndex = index
+        break
+      }
+    }
+    
+    // Eğer gelecek turnuva bulunamadıysa, en son turnuvaya git
+    guard let index = targetIndex, index < cellPresentations.count else { return }
+    
+    // CollectionView layout'unun tamamlanmasını bekle
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+      guard let self = self else { return }
+      
+      let indexPath = IndexPath(item: index, section: 0)
+      
+      // Scroll to item with animation - ekranın ortasında olacak şekilde
+      self.collectionView.scrollToItem(
+        at: indexPath,
+        at: .centeredVertically,
+        animated: true
+      )
+    }
   }
 }
 
