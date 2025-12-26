@@ -18,7 +18,7 @@ final class LiveScoreCell: UICollectionViewCell {
     private enum Constants {
         static let frameHeight: CGFloat = 120
         static let playerImageSize: PlayerImageSize = .medium
-        static let playerFontSize: CGFloat = 13
+        static let playerFontSize: CGFloat = 14
         static let rankFontSize: CGFloat = 11
         static let flagFontSize: CGFloat = 16
         static let scoreFontSize: CGFloat = 36
@@ -34,6 +34,8 @@ final class LiveScoreCell: UICollectionViewCell {
         let view = UIView()
         view.backgroundColor = .secondarySystemBackground
         view.layer.cornerRadius = 12
+        view.clipsToBounds = false
+        view.layer.masksToBounds = false
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.1
         view.layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -45,6 +47,8 @@ final class LiveScoreCell: UICollectionViewCell {
     // Home Player Views
     private let homePlayerImageContainerView: UIView = {
         let view = UIView()
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
+        view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -64,9 +68,12 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let homePlayerRankLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.rankFontSize, weight: .medium)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 11, weight: .bold)
+        label.textColor = .white
         label.textAlignment = .center
+        label.backgroundColor = .systemGray
+        label.layer.cornerRadius = 10
+        label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -75,24 +82,21 @@ final class LiveScoreCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: Constants.playerFontSize)
         label.textColor = .label
-        label.textAlignment = .center
-        label.numberOfLines = 2
+        label.textAlignment = .left
+        label.numberOfLines = 1
+        label.adjustsFontSizeToFitWidth = false
+        label.clipsToBounds = false
+        label.setContentHuggingPriority(.required, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private lazy var homePlayerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [homePlayerImageContainerView, homePlayerRankLabel, homePlayerNameLabel])
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.spacing = 4
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
+
     // Away Player Views
     private let awayPlayerImageContainerView: UIView = {
         let view = UIView()
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
+        view.setContentCompressionResistancePriority(.required, for: .horizontal)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -112,9 +116,12 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let awayPlayerRankLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.rankFontSize, weight: .medium)
-        label.textColor = .secondaryLabel
+        label.font = .systemFont(ofSize: 11, weight: .bold)
+        label.textColor = .white
         label.textAlignment = .center
+        label.backgroundColor = .systemGray
+        label.layer.cornerRadius = 10
+        label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -123,21 +130,16 @@ final class LiveScoreCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: Constants.playerFontSize)
         label.textColor = .label
-        label.textAlignment = .center
-        label.numberOfLines = 2
+        label.textAlignment = .right
+        label.numberOfLines = 1
+        label.adjustsFontSizeToFitWidth = false
+        label.clipsToBounds = false
+        label.setContentHuggingPriority(.required, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private lazy var awayPlayerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [awayPlayerImageContainerView, awayPlayerRankLabel, awayPlayerNameLabel])
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.spacing = 4
-        stack.translatesAutoresizingMaskIntoConstraints = false
-        return stack
-    }()
-    
+
     // Score Views
     private let homeScoreLabel: UILabel = {
         let label = UILabel()
@@ -223,10 +225,33 @@ final class LiveScoreCell: UICollectionViewCell {
     }()
     
     private lazy var mainStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [homePlayerStackView, centerStackView, awayPlayerStackView])
+        let stack = UIStackView(arrangedSubviews: [homePlayerImageContainerView, centerStackView, awayPlayerImageContainerView])
         stack.axis = .horizontal
         stack.alignment = .center
         stack.distribution = .equalSpacing
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private lazy var namesStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [homePlayerNameLabel, awayPlayerNameLabel])
+        stack.axis = .horizontal
+        stack.alignment = .fill
+        stack.distribution = .fillEqually
+        stack.spacing = 8
+        stack.clipsToBounds = false
+        stack.setContentHuggingPriority(.required, for: .vertical)
+        stack.setContentCompressionResistancePriority(.required, for: .vertical)
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    private lazy var rootStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [mainStackView, namesStackView])
+        stack.axis = .vertical
+        stack.alignment = .fill
+        stack.spacing = 8
+        stack.clipsToBounds = false
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -253,31 +278,43 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private func setupUI() {
         backgroundColor = .clear
+        clipsToBounds = false
+        contentView.clipsToBounds = false
         
         contentView.addSubview(containerView)
-        containerView.addSubview(mainStackView)
+        containerView.addSubview(rootStackView)
         
         // Home player image container setup
         homePlayerImageContainerView.addSubview(homePlayerImageView)
         homePlayerImageContainerView.addSubview(homePlayerFlagLabel)
+        homePlayerImageContainerView.addSubview(homePlayerRankLabel)
         
         // Away player image container setup
         awayPlayerImageContainerView.addSubview(awayPlayerImageView)
         awayPlayerImageContainerView.addSubview(awayPlayerFlagLabel)
+        awayPlayerImageContainerView.addSubview(awayPlayerRankLabel)
         
         setupGestures()
     }
     
     private func setupGestures() {
-        // Home Player taps (entire stack)
-        homePlayerStackView.isUserInteractionEnabled = true
-        let homePlayerTap = UITapGestureRecognizer(target: self, action: #selector(homePlayerTapped))
-        homePlayerStackView.addGestureRecognizer(homePlayerTap)
+        // Home Player taps (image container + name)
+        homePlayerImageContainerView.isUserInteractionEnabled = true
+        let homeImageTap = UITapGestureRecognizer(target: self, action: #selector(homePlayerTapped))
+        homePlayerImageContainerView.addGestureRecognizer(homeImageTap)
         
-        // Away Player taps (entire stack)
-        awayPlayerStackView.isUserInteractionEnabled = true
-        let awayPlayerTap = UITapGestureRecognizer(target: self, action: #selector(awayPlayerTapped))
-        awayPlayerStackView.addGestureRecognizer(awayPlayerTap)
+        homePlayerNameLabel.isUserInteractionEnabled = true
+        let homeNameTap = UITapGestureRecognizer(target: self, action: #selector(homePlayerTapped))
+        homePlayerNameLabel.addGestureRecognizer(homeNameTap)
+        
+        // Away Player taps (image container + name)
+        awayPlayerImageContainerView.isUserInteractionEnabled = true
+        let awayImageTap = UITapGestureRecognizer(target: self, action: #selector(awayPlayerTapped))
+        awayPlayerImageContainerView.addGestureRecognizer(awayImageTap)
+        
+        awayPlayerNameLabel.isUserInteractionEnabled = true
+        let awayNameTap = UITapGestureRecognizer(target: self, action: #selector(awayPlayerTapped))
+        awayPlayerNameLabel.addGestureRecognizer(awayNameTap)
         
         // Score tap (center stack)
         centerStackView.isUserInteractionEnabled = true
@@ -298,8 +335,6 @@ final class LiveScoreCell: UICollectionViewCell {
     }
     
     private func setupConstraints() {
-        let imageSize = Constants.playerImageSize.dimension
-        
         NSLayoutConstraint.activate([
             // Container
             containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
@@ -307,19 +342,18 @@ final class LiveScoreCell: UICollectionViewCell {
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
             containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
             
-            // Main Stack
-            mainStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.verticalPadding),
-            mainStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.horizontalPadding),
-            mainStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.horizontalPadding),
-            mainStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.verticalPadding),
+            // Root Stack (contains mainStack + namesStack)
+            rootStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.verticalPadding),
+            rootStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.horizontalPadding),
+            rootStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.horizontalPadding),
+            rootStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.verticalPadding),
             
-            // Player Stacks width
-            homePlayerStackView.widthAnchor.constraint(equalToConstant: 100),
-            awayPlayerStackView.widthAnchor.constraint(equalToConstant: 100),
+            // Names stack needs minimum height for text with descenders
+            namesStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 24),
             
             // Home Player Image Container
-            homePlayerImageContainerView.widthAnchor.constraint(equalToConstant: imageSize),
-            homePlayerImageContainerView.heightAnchor.constraint(equalToConstant: imageSize),
+            homePlayerImageContainerView.widthAnchor.constraint(equalToConstant: Constants.playerImageSize.dimension),
+            homePlayerImageContainerView.heightAnchor.constraint(equalToConstant: Constants.playerImageSize.dimension),
             
             homePlayerImageView.topAnchor.constraint(equalTo: homePlayerImageContainerView.topAnchor),
             homePlayerImageView.leadingAnchor.constraint(equalTo: homePlayerImageContainerView.leadingAnchor),
@@ -332,9 +366,15 @@ final class LiveScoreCell: UICollectionViewCell {
             homePlayerFlagLabel.widthAnchor.constraint(equalToConstant: 22),
             homePlayerFlagLabel.heightAnchor.constraint(equalToConstant: 22),
             
+            // Home Player Rank - top left corner, overlapping image
+            homePlayerRankLabel.leadingAnchor.constraint(equalTo: homePlayerImageContainerView.leadingAnchor, constant: -4),
+            homePlayerRankLabel.topAnchor.constraint(equalTo: homePlayerImageContainerView.topAnchor, constant: -4),
+            homePlayerRankLabel.widthAnchor.constraint(equalToConstant: 22),
+            homePlayerRankLabel.heightAnchor.constraint(equalToConstant: 20),
+            
             // Away Player Image Container
-            awayPlayerImageContainerView.widthAnchor.constraint(equalToConstant: imageSize),
-            awayPlayerImageContainerView.heightAnchor.constraint(equalToConstant: imageSize),
+            awayPlayerImageContainerView.widthAnchor.constraint(equalToConstant: Constants.playerImageSize.dimension),
+            awayPlayerImageContainerView.heightAnchor.constraint(equalToConstant: Constants.playerImageSize.dimension),
             
             awayPlayerImageView.topAnchor.constraint(equalTo: awayPlayerImageContainerView.topAnchor),
             awayPlayerImageView.leadingAnchor.constraint(equalTo: awayPlayerImageContainerView.leadingAnchor),
@@ -346,6 +386,12 @@ final class LiveScoreCell: UICollectionViewCell {
             awayPlayerFlagLabel.bottomAnchor.constraint(equalTo: awayPlayerImageContainerView.bottomAnchor, constant: 2),
             awayPlayerFlagLabel.widthAnchor.constraint(equalToConstant: 22),
             awayPlayerFlagLabel.heightAnchor.constraint(equalToConstant: 22),
+            
+            // Away Player Rank - top left corner, overlapping image
+            awayPlayerRankLabel.leadingAnchor.constraint(equalTo: awayPlayerImageContainerView.leadingAnchor, constant: -4),
+            awayPlayerRankLabel.topAnchor.constraint(equalTo: awayPlayerImageContainerView.topAnchor, constant: -4),
+            awayPlayerRankLabel.widthAnchor.constraint(equalToConstant: 22),
+            awayPlayerRankLabel.heightAnchor.constraint(equalToConstant: 20),
             
             // Live Indicator
             liveIndicatorView.widthAnchor.constraint(equalToConstant: 10),
@@ -373,7 +419,7 @@ final class LiveScoreCell: UICollectionViewCell {
         
         // Home Player Rank
         if let rank = presentation.homePlayerRank {
-            homePlayerRankLabel.text = "#\(rank)"
+            homePlayerRankLabel.text = "\(rank)"
             homePlayerRankLabel.isHidden = false
         } else {
             homePlayerRankLabel.isHidden = true
@@ -396,7 +442,7 @@ final class LiveScoreCell: UICollectionViewCell {
         
         // Away Player Rank
         if let rank = presentation.awayPlayerRank {
-            awayPlayerRankLabel.text = "#\(rank)"
+            awayPlayerRankLabel.text = "\(rank)"
             awayPlayerRankLabel.isHidden = false
         } else {
             awayPlayerRankLabel.isHidden = true
@@ -474,7 +520,7 @@ final class LiveScoreCell: UICollectionViewCell {
             .foregroundColor: UIColor.label
         ]
         
-        attributedString.append(NSAttributedString(string: firstName + "\n", attributes: firstNameAttributes))
+        attributedString.append(NSAttributedString(string: firstName + " ", attributes: firstNameAttributes))
         attributedString.append(NSAttributedString(string: surname, attributes: surnameAttributes))
         
         return attributedString

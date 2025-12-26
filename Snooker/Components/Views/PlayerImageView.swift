@@ -13,7 +13,7 @@ enum PlayerImageSize {
   var dimension: CGFloat {
     switch self {
     case .small: return 50
-    case .medium: return 90
+    case .medium: return 80
     case .large: return 120
     case .extraLarge: return 150
     }
@@ -102,9 +102,9 @@ final class PlayerImageView: UIView {
     let widthConstraint = widthAnchor.constraint(equalToConstant: size.dimension)
     let heightConstraint = heightAnchor.constraint(equalToConstant: size.dimension)
     
-    // Her ikisine de high priority ver (tam kare olması için)
-    widthConstraint.priority = .required
-    heightConstraint.priority = .required
+    // Default high priority ver ama required değil (dışarıdan override edilebilsin)
+    widthConstraint.priority = .defaultHigh
+    heightConstraint.priority = .defaultHigh
     
     NSLayoutConstraint.activate([
       // Container size - Square olmalı
@@ -269,7 +269,7 @@ struct PlayerImageView_Previews: PreviewProvider {
           
           // Medium
           PreviewRow(
-            title: "Medium (90x90)",
+            title: "Medium (80x80)",
             urlString: "https://35coders.com/common/snooker/img/judd-trump.jpg",
             size: .medium
           )
