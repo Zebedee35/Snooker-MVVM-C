@@ -19,6 +19,9 @@ struct LiveScoreCellPresentation {
     let homePlayerScore: Int
     let homePlayerFlag: String?
     let homePlayerRank: Int?
+    let homePlayerCountry: String?
+    let homePlayerDob: String?
+    let homePlayerTurnedPro: Int?
     
     let awayPlayerId: String
     let awayPlayerName: String
@@ -27,6 +30,9 @@ struct LiveScoreCellPresentation {
     let awayPlayerScore: Int
     let awayPlayerFlag: String?
     let awayPlayerRank: Int?
+    let awayPlayerCountry: String?
+    let awayPlayerDob: String?
+    let awayPlayerTurnedPro: Int?
     
     let matchStatus: String
     let round: String
@@ -134,6 +140,9 @@ struct LiveScoreCellPresentation {
         self.homePlayerScore = match.homePlayerScore ?? 0
         self.homePlayerFlag = CountryFlagHelper.flagEmoji(for: match.homePlayer.countryCode)
         self.homePlayerRank = match.homePlayer.rank
+        self.homePlayerCountry = match.homePlayer.country
+        self.homePlayerDob = match.homePlayer.dob
+        self.homePlayerTurnedPro = match.homePlayer.turnedPro
         
         self.awayPlayerId = match.awayPlayerId
         self.awayPlayerName = match.awayPlayer.firstName
@@ -142,6 +151,9 @@ struct LiveScoreCellPresentation {
         self.awayPlayerScore = match.awayPlayerScore ?? 0
         self.awayPlayerFlag = CountryFlagHelper.flagEmoji(for: match.awayPlayer.countryCode)
         self.awayPlayerRank = match.awayPlayer.rank
+        self.awayPlayerCountry = match.awayPlayer.country
+        self.awayPlayerDob = match.awayPlayer.dob
+        self.awayPlayerTurnedPro = match.awayPlayer.turnedPro
         
         self.matchStatus = match.status
         self.round = match.round
@@ -158,6 +170,9 @@ struct LiveScoreCellPresentation {
         homePlayerScore: Int,
         homePlayerFlag: String?,
         homePlayerRank: Int?,
+        homePlayerCountry: String? = nil,
+        homePlayerDob: String? = nil,
+        homePlayerTurnedPro: Int? = nil,
         awayPlayerId: String = UUID().uuidString,
         awayPlayerName: String,
         awayPlayerSurname: String,
@@ -165,6 +180,9 @@ struct LiveScoreCellPresentation {
         awayPlayerScore: Int,
         awayPlayerFlag: String?,
         awayPlayerRank: Int?,
+        awayPlayerCountry: String? = nil,
+        awayPlayerDob: String? = nil,
+        awayPlayerTurnedPro: Int? = nil,
         matchStatus: String,
         round: String,
         startDateTime: String? = nil
@@ -177,6 +195,9 @@ struct LiveScoreCellPresentation {
         self.homePlayerScore = homePlayerScore
         self.homePlayerFlag = homePlayerFlag
         self.homePlayerRank = homePlayerRank
+        self.homePlayerCountry = homePlayerCountry
+        self.homePlayerDob = homePlayerDob
+        self.homePlayerTurnedPro = homePlayerTurnedPro
         self.awayPlayerId = awayPlayerId
         self.awayPlayerName = awayPlayerName
         self.awayPlayerSurname = awayPlayerSurname
@@ -184,9 +205,40 @@ struct LiveScoreCellPresentation {
         self.awayPlayerScore = awayPlayerScore
         self.awayPlayerFlag = awayPlayerFlag
         self.awayPlayerRank = awayPlayerRank
+        self.awayPlayerCountry = awayPlayerCountry
+        self.awayPlayerDob = awayPlayerDob
+        self.awayPlayerTurnedPro = awayPlayerTurnedPro
         self.matchStatus = matchStatus
         self.round = round
         self.startDateTime = startDateTime
+    }
+    
+    // MARK: - Player Detail Helpers
+    
+    func homePlayerDetailPresentation() -> PlayerDetailPresentation {
+        PlayerDetailPresentation(
+            firstName: homePlayerName,
+            surname: homePlayerSurname,
+            photoUrl: homePlayerPhotoUrl,
+            flagEmoji: homePlayerFlag,
+            country: homePlayerCountry,
+            rank: homePlayerRank,
+            dob: homePlayerDob,
+            turnedPro: homePlayerTurnedPro
+        )
+    }
+    
+    func awayPlayerDetailPresentation() -> PlayerDetailPresentation {
+        PlayerDetailPresentation(
+            firstName: awayPlayerName,
+            surname: awayPlayerSurname,
+            photoUrl: awayPlayerPhotoUrl,
+            flagEmoji: awayPlayerFlag,
+            country: awayPlayerCountry,
+            rank: awayPlayerRank,
+            dob: awayPlayerDob,
+            turnedPro: awayPlayerTurnedPro
+        )
     }
 }
 

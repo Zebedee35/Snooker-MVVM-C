@@ -41,7 +41,7 @@ enum LiveScoreViewModelOutput: Equatable, Sendable {
 
 enum LiveScoreRoute: Sendable {
     case matchDetail(matchId: String, homePlayerName: String, awayPlayerName: String)
-    case playerDetail(playerId: String, playerName: String)
+    case playerDetail(presentation: PlayerDetailPresentation)
 }
 
 @MainActor
@@ -107,22 +107,16 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     func selectHomePlayer(at index: Int) {
         guard index < cellPresentations.count else { return }
         let presentation = cellPresentations[index]
-        let playerFullName = "\(presentation.homePlayerName) \(presentation.homePlayerSurname)"
+        let playerPresentation = presentation.homePlayerDetailPresentation()
         
-        delegate?.navigate(to: .playerDetail(
-            playerId: presentation.homePlayerId,
-            playerName: playerFullName
-        ))
+        delegate?.navigate(to: .playerDetail(presentation: playerPresentation))
     }
     
     func selectAwayPlayer(at index: Int) {
         guard index < cellPresentations.count else { return }
         let presentation = cellPresentations[index]
-        let playerFullName = "\(presentation.awayPlayerName) \(presentation.awayPlayerSurname)"
+        let playerPresentation = presentation.awayPlayerDetailPresentation()
         
-        delegate?.navigate(to: .playerDetail(
-            playerId: presentation.awayPlayerId,
-            playerName: playerFullName
-        ))
+        delegate?.navigate(to: .playerDetail(presentation: playerPresentation))
     }
 }

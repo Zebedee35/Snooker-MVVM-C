@@ -27,7 +27,7 @@ enum HomeViewModelOutput: Sendable {
 
 enum HomeRoute: Sendable {
     case matchDetail(matchId: String, homePlayerName: String, awayPlayerName: String)
-    case playerDetail(playerId: String, playerName: String)
+    case playerDetail(presentation: PlayerDetailPresentation)
 }
 
 @MainActor
@@ -106,12 +106,9 @@ final class HomeViewModel: HomeViewModelProtocol {
               indexPath.row < sections[indexPath.section].matches.count else { return }
         
         let matchPresentation = sections[indexPath.section].matches[indexPath.row]
-        let playerFullName = "\(matchPresentation.homePlayerName) \(matchPresentation.homePlayerSurname)"
+        let presentation = matchPresentation.homePlayerDetailPresentation()
         
-        delegate?.navigate(to: .playerDetail(
-            playerId: matchPresentation.homePlayerId,
-            playerName: playerFullName
-        ))
+        delegate?.navigate(to: .playerDetail(presentation: presentation))
     }
     
     func selectAwayPlayer(at indexPath: IndexPath) {
@@ -119,12 +116,9 @@ final class HomeViewModel: HomeViewModelProtocol {
               indexPath.row < sections[indexPath.section].matches.count else { return }
         
         let matchPresentation = sections[indexPath.section].matches[indexPath.row]
-        let playerFullName = "\(matchPresentation.awayPlayerName) \(matchPresentation.awayPlayerSurname)"
+        let presentation = matchPresentation.awayPlayerDetailPresentation()
         
-        delegate?.navigate(to: .playerDetail(
-            playerId: matchPresentation.awayPlayerId,
-            playerName: playerFullName
-        ))
+        delegate?.navigate(to: .playerDetail(presentation: presentation))
     }
     
     // MARK: - Private Methods

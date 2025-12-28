@@ -68,6 +68,9 @@ struct HomeCellPresentation {
     let homePlayerScore: Int
     let homePlayerFlag: String?
     let homePlayerRank: Int?
+    let homePlayerCountry: String?
+    let homePlayerDob: String?
+    let homePlayerTurnedPro: Int?
     
     let awayPlayerId: String
     let awayPlayerName: String
@@ -76,6 +79,9 @@ struct HomeCellPresentation {
     let awayPlayerScore: Int
     let awayPlayerFlag: String?
     let awayPlayerRank: Int?
+    let awayPlayerCountry: String?
+    let awayPlayerDob: String?
+    let awayPlayerTurnedPro: Int?
     
     let status: String
     let round: String
@@ -125,6 +131,9 @@ struct HomeCellPresentation {
         self.homePlayerScore = match.homePlayerScore ?? 0
         self.homePlayerFlag = match.homePlayer.flagEmoji
         self.homePlayerRank = match.homePlayer.rank
+        self.homePlayerCountry = match.homePlayer.country
+        self.homePlayerDob = match.homePlayer.dob
+        self.homePlayerTurnedPro = match.homePlayer.turnedPro
         
         self.awayPlayerId = match.awayPlayerId
         self.awayPlayerName = match.awayPlayer.firstName
@@ -133,10 +142,41 @@ struct HomeCellPresentation {
         self.awayPlayerScore = match.awayPlayerScore ?? 0
         self.awayPlayerFlag = match.awayPlayer.flagEmoji
         self.awayPlayerRank = match.awayPlayer.rank
+        self.awayPlayerCountry = match.awayPlayer.country
+        self.awayPlayerDob = match.awayPlayer.dob
+        self.awayPlayerTurnedPro = match.awayPlayer.turnedPro
         
         self.status = match.status
         self.round = match.round
         self.roundType = RoundType.from(match.round)
         self.startDateTime = match.startDateTime
+    }
+    
+    // MARK: - Player Detail Presentation Helpers
+    
+    func homePlayerDetailPresentation() -> PlayerDetailPresentation {
+        PlayerDetailPresentation(
+            firstName: homePlayerName,
+            surname: homePlayerSurname,
+            photoUrl: homePlayerPhotoUrl,
+            flagEmoji: homePlayerFlag,
+            country: homePlayerCountry,
+            rank: homePlayerRank,
+            dob: homePlayerDob,
+            turnedPro: homePlayerTurnedPro
+        )
+    }
+    
+    func awayPlayerDetailPresentation() -> PlayerDetailPresentation {
+        PlayerDetailPresentation(
+            firstName: awayPlayerName,
+            surname: awayPlayerSurname,
+            photoUrl: awayPlayerPhotoUrl,
+            flagEmoji: awayPlayerFlag,
+            country: awayPlayerCountry,
+            rank: awayPlayerRank,
+            dob: awayPlayerDob,
+            turnedPro: awayPlayerTurnedPro
+        )
     }
 }

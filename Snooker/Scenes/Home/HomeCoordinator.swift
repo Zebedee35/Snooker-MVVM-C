@@ -28,9 +28,16 @@ final class HomeCoordinator: Coordinator {
             // TODO: MatchDetail ekranı oluşturulduğunda implement edilecek
             print("[HomeCoordinator] Navigate to match detail - ID: \(matchId) | \(homePlayerName) vs \(awayPlayerName)")
             
-        case .playerDetail(let playerId, let playerName):
-            // TODO: PlayerDetail ekranı oluşturulduğunda implement edilecek
-            print("[HomeCoordinator] Navigate to player detail - ID: \(playerId) | \(playerName)")
+        case .playerDetail(let presentation):
+            let playerDetailVC = PlayerDetailViewController(presentation: presentation)
+            
+            if let sheet = playerDetailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+                sheet.preferredCornerRadius = 20
+            }
+            
+            navigationController.present(playerDetailVC, animated: true)
         }
     }
 }
