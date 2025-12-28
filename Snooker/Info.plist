@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>UIApplicationSceneManifest</key>
 	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
+		<key>UIAppFonts</key>
+		<array>
+			<string>Geogrotesque-Thin.otf</string>
+			<string>Geogrotesque-UltraLight.otf</string>
+			<string>Geogrotesque-Light.otf</string>
+			<string>Geogrotesque-Regular.otf</string>
+			<string>Geogrotesque-Medium.otf</string>
+			<string>Geogrotesque-SemiBold.otf</string>
+			<string>Geogrotesque-Bold.otf</string>
+		</array>
+		<key>UIApplicationSceneManifest</key>
 		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-				</dict>
-			</array>
+			<key>UIApplicationSupportsMultipleScenes</key>
+			<false />
+			<key>UISceneConfigurations</key>
+			<dict>
+				<key>UIWindowSceneSessionRoleApplication</key>
+				<array>
+					<dict>
+						<key>UISceneConfigurationName</key>
+						<string>Default Configuration</string>
+						<key>UISceneDelegateClassName</key>
+						<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					</dict>
+				</array>
+			</dict>
 		</dict>
 	</dict>
-</dict>
 </plist>

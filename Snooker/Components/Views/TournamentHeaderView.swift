@@ -50,7 +50,7 @@ final class TournamentHeaderView: UICollectionReusableView {
     // Tournament Name
     private let tournamentNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 22, weight: .bold)
+        label.font = AppFont.bold(size: 22)
         label.textColor = .label
         label.numberOfLines = 2
         label.adjustsFontSizeToFitWidth = true
@@ -79,7 +79,7 @@ final class TournamentHeaderView: UICollectionReusableView {
     
     private let locationLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.font = AppFont.medium(size: 15)
         label.textColor = .label
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -107,7 +107,7 @@ final class TournamentHeaderView: UICollectionReusableView {
     
     private let venueLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .regular)
+        label.font = AppFont.regular(size: 15)
         label.textColor = .secondaryLabel
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -135,7 +135,7 @@ final class TournamentHeaderView: UICollectionReusableView {
     
     private let dateLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .medium)
+        label.font = AppFont.medium(size: 15)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

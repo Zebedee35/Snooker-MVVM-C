@@ -19,9 +19,70 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
     // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
     guard let windowScene = (scene as? UIWindowScene) else { return }
+    
+    // Configure global navigation bar appearance with custom font
+    configureNavigationBarAppearance()
+    
     let window = UIWindow(windowScene: windowScene)
     appCoordinator = AppCoordinator(window: window)
     appCoordinator?.start()
+  }
+  
+  private func configureNavigationBarAppearance() {
+    // Standard appearance (scrolled state)
+    let standardAppearance = UINavigationBarAppearance()
+    standardAppearance.configureWithDefaultBackground()
+    standardAppearance.backgroundColor = .systemBackground
+    
+    // Large title font
+    standardAppearance.largeTitleTextAttributes = [
+      .font: AppFont.bold(size: 34),
+      .foregroundColor: UIColor.label
+    ]
+    
+    // Standard title font
+    standardAppearance.titleTextAttributes = [
+      .font: AppFont.semiBold(size: 17),
+      .foregroundColor: UIColor.label
+    ]
+    
+    // Scroll edge appearance (top of scroll - large title visible)
+    let scrollEdgeAppearance = UINavigationBarAppearance()
+    scrollEdgeAppearance.configureWithTransparentBackground()
+    
+    scrollEdgeAppearance.largeTitleTextAttributes = [
+      .font: AppFont.bold(size: 34),
+      .foregroundColor: UIColor.label
+    ]
+    
+    scrollEdgeAppearance.titleTextAttributes = [
+      .font: AppFont.semiBold(size: 17),
+      .foregroundColor: UIColor.label
+    ]
+    
+    // Apply to all navigation bars
+    UINavigationBar.appearance().standardAppearance = standardAppearance
+    UINavigationBar.appearance().scrollEdgeAppearance = scrollEdgeAppearance
+    UINavigationBar.appearance().compactAppearance = standardAppearance
+    
+    // Configure TabBar appearance
+    let tabBarAppearance = UITabBarAppearance()
+    tabBarAppearance.configureWithDefaultBackground()
+    
+    let tabBarItemAppearance = UITabBarItemAppearance()
+    tabBarItemAppearance.normal.titleTextAttributes = [
+      .font: AppFont.medium(size: 10)
+    ]
+    tabBarItemAppearance.selected.titleTextAttributes = [
+      .font: AppFont.semiBold(size: 10)
+    ]
+    
+    tabBarAppearance.stackedLayoutAppearance = tabBarItemAppearance
+    tabBarAppearance.inlineLayoutAppearance = tabBarItemAppearance
+    tabBarAppearance.compactInlineLayoutAppearance = tabBarItemAppearance
+    
+    UITabBar.appearance().standardAppearance = tabBarAppearance
+    UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
   }
 
   func sceneDidDisconnect(_ scene: UIScene) {

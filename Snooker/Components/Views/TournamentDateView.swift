@@ -48,7 +48,7 @@ final class TournamentDateView: UIView {
     
     private let monthLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.monthFontSize, weight: .bold)
+        label.font = AppFont.bold(size: Constants.monthFontSize)
         label.textColor = .white
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,7 @@ final class TournamentDateView: UIView {
     
     private let dayLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.dayFontSize, weight: .bold)
+        label.font = AppFont.bold(size: Constants.dayFontSize)
         label.textColor = Constants.activeDayColor
         label.textAlignment = .center
         label.adjustsFontSizeToFitWidth = true

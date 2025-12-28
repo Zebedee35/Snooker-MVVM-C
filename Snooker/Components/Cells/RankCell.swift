@@ -48,7 +48,7 @@ final class RankCell: UICollectionViewCell {
     
     private let flagLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.flagFontSize)
+        label.font = AppFont.regular(size: Constants.flagFontSize)
         label.textAlignment = .center
         label.backgroundColor = .systemBackground
         label.layer.cornerRadius = 12
@@ -62,7 +62,7 @@ final class RankCell: UICollectionViewCell {
     // Player Info Stack (Name + Prize Money)
     private let playerNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.nameFontSize)
+        label.font = AppFont.regular(size: Constants.nameFontSize)
         label.textColor = .label
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -71,7 +71,7 @@ final class RankCell: UICollectionViewCell {
     
     private let playerSurnameLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: Constants.surnameFontSize)
+        label.font = AppFont.bold(size: Constants.surnameFontSize)
         label.textColor = .label
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -80,7 +80,7 @@ final class RankCell: UICollectionViewCell {
     
     private let prizeMoneyLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.moneyFontSize, weight: .medium)
+        label.font = AppFont.medium(size: Constants.moneyFontSize)
         label.textColor = .systemGreen
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -98,7 +98,7 @@ final class RankCell: UICollectionViewCell {
     // Rank Number (Right side, big)
     private let rankLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.rankFontSize, weight: .bold)
+        label.font = AppFont.bold(size: Constants.rankFontSize)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false

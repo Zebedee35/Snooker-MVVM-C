@@ -42,7 +42,7 @@ final class HomeViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "No active tournament"
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 17, weight: .medium)
+        label.font = AppFont.medium(size: 17)
         label.textAlignment = .center
         label.isHidden = true
         return label

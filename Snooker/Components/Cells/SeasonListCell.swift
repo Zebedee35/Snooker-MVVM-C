@@ -44,7 +44,7 @@ final class SeasonListCell: UICollectionViewCell {
     
     private let tournamentNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.titleFontSize, weight: .semibold)
+        label.font = AppFont.semiBold(size: Constants.titleFontSize)
         label.textColor = .label
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -53,7 +53,7 @@ final class SeasonListCell: UICollectionViewCell {
     
     private let locationLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.subtitleFontSize, weight: .regular)
+        label.font = AppFont.regular(size: Constants.subtitleFontSize)
         label.textColor = .secondaryLabel
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false

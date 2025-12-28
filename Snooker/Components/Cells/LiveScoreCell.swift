@@ -57,7 +57,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let homePlayerFlagLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.flagFontSize)
+        label.font = AppFont.regular(size: Constants.flagFontSize)
         label.textAlignment = .center
         label.backgroundColor = .systemBackground
         label.layer.cornerRadius = 10
@@ -68,7 +68,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let homePlayerRankLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 11, weight: .bold)
+        label.font = AppFont.bold(size: 11)
         label.textColor = .white
         label.textAlignment = .center
         label.backgroundColor = .systemGray
@@ -80,7 +80,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let homePlayerNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.playerFontSize)
+        label.font = AppFont.regular(size: Constants.playerFontSize)
         label.textColor = .label
         label.textAlignment = .left
         label.numberOfLines = 1
@@ -105,7 +105,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let awayPlayerFlagLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.flagFontSize)
+        label.font = AppFont.regular(size: Constants.flagFontSize)
         label.textAlignment = .center
         label.backgroundColor = .systemBackground
         label.layer.cornerRadius = 10
@@ -116,7 +116,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let awayPlayerRankLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 11, weight: .bold)
+        label.font = AppFont.bold(size: 11)
         label.textColor = .white
         label.textAlignment = .center
         label.backgroundColor = .systemGray
@@ -128,7 +128,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let awayPlayerNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.playerFontSize)
+        label.font = AppFont.regular(size: Constants.playerFontSize)
         label.textColor = .label
         label.textAlignment = .right
         label.numberOfLines = 1
@@ -143,7 +143,7 @@ final class LiveScoreCell: UICollectionViewCell {
     // Score Views
     private let homeScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .semibold)
+        label.font = AppFont.semiBold(size: Constants.scoreFontSize)
         label.textColor = .systemGreen
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -153,7 +153,7 @@ final class LiveScoreCell: UICollectionViewCell {
     private let scoreSeparatorLabel: UILabel = {
         let label = UILabel()
         label.text = "-"
-        label.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .regular)
+        label.font = AppFont.regular(size: Constants.scoreFontSize)
         label.textColor = .systemGreen
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -162,7 +162,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let awayScoreLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .semibold)
+        label.font = AppFont.semiBold(size: Constants.scoreFontSize)
         label.textColor = .systemGreen
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -180,7 +180,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let matchStatusLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: Constants.statusFontSize)
+        label.font = AppFont.regular(size: Constants.statusFontSize)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
         label.numberOfLines = 2
@@ -199,7 +199,7 @@ final class LiveScoreCell: UICollectionViewCell {
     private let liveLabel: UILabel = {
         let label = UILabel()
         label.text = "LIVE"
-        label.font = .systemFont(ofSize: 10, weight: .bold)
+        label.font = AppFont.bold(size: 10)
         label.textColor = .systemRed
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -462,7 +462,7 @@ final class LiveScoreCell: UICollectionViewCell {
             // Tarih kısmı (bugün değilse)
             if let datePart = presentation.formattedDatePart {
                 homeScoreLabel.text = datePart
-                homeScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 14, weight: .medium)
+                homeScoreLabel.font = AppFont.medium(size: Constants.scoreFontSize - 14)
                 homeScoreLabel.textColor = .secondaryLabel
                 homeScoreLabel.textAlignment = .center
             } else {
@@ -471,7 +471,7 @@ final class LiveScoreCell: UICollectionViewCell {
             
             // Saat kısmı
             awayScoreLabel.text = presentation.formattedTimePart ?? "TBD"
-            awayScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize - 8, weight: .semibold)
+            awayScoreLabel.font = AppFont.semiBold(size: Constants.scoreFontSize - 8)
             awayScoreLabel.textColor = .label
             awayScoreLabel.textAlignment = .center
             
@@ -489,10 +489,10 @@ final class LiveScoreCell: UICollectionViewCell {
             
             // Scores
             homeScoreLabel.text = String(presentation.homePlayerScore)
-            homeScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .semibold)
+            homeScoreLabel.font = AppFont.semiBold(size: Constants.scoreFontSize)
             homeScoreLabel.textAlignment = .center
             awayScoreLabel.text = String(presentation.awayPlayerScore)
-            awayScoreLabel.font = .systemFont(ofSize: Constants.scoreFontSize, weight: .semibold)
+            awayScoreLabel.font = AppFont.semiBold(size: Constants.scoreFontSize)
             awayScoreLabel.textAlignment = .center
             
             // Highlight winning score
@@ -501,7 +501,7 @@ final class LiveScoreCell: UICollectionViewCell {
             // Status
             matchStatusLabel.text = presentation.matchStatus
             matchStatusLabel.textColor = .secondaryLabel
-            matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize)
+            matchStatusLabel.font = AppFont.regular(size: Constants.statusFontSize)
         }
     }
     
@@ -511,12 +511,12 @@ final class LiveScoreCell: UICollectionViewCell {
         let attributedString = NSMutableAttributedString()
         
         let firstNameAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: Constants.playerFontSize),
+            .font: AppFont.regular(size: Constants.playerFontSize),
             .foregroundColor: UIColor.label
         ]
         
         let surnameAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: Constants.playerFontSize),
+            .font: AppFont.bold(size: Constants.playerFontSize),
             .foregroundColor: UIColor.label
         ]
         
@@ -587,7 +587,7 @@ final class LiveScoreCell: UICollectionViewCell {
         awayScoreLabel.isHidden = false
         scoreSeparatorLabel.isHidden = false
         matchStatusLabel.text = nil
-        matchStatusLabel.font = .systemFont(ofSize: Constants.statusFontSize)
+        matchStatusLabel.font = AppFont.regular(size: Constants.statusFontSize)
         onHomePlayerTapped = nil
         onAwayPlayerTapped = nil
         onScoreTapped = nil

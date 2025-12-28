@@ -38,7 +38,7 @@ final class LiveScoreViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "No live matches at the moment"
         label.textColor = .secondaryLabel
-        label.font = .systemFont(ofSize: 17, weight: .medium)
+        label.font = AppFont.medium(size: 17)
         label.textAlignment = .center
         label.isHidden = true
         return label
