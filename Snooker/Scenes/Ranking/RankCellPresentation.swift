@@ -16,6 +16,9 @@ struct RankCellPresentation {
     let playerPhotoUrl: String?
     let playerFlag: String?
     let prizeMoney: String
+    let playerCountry: String?
+    let playerDob: String?
+    let playerTurnedPro: Int?
     
     // MARK: - Initialization
     
@@ -25,6 +28,9 @@ struct RankCellPresentation {
         self.playerSurname = ranking.player.surname
         self.playerPhotoUrl = ranking.player.photoUrl
         self.playerFlag = CountryFlagHelper.flagEmoji(for: ranking.player.countryCode)
+        self.playerCountry = ranking.player.country
+        self.playerDob = ranking.player.dob
+        self.playerTurnedPro = ranking.player.turnedPro
         
         // Prize money formatla
         if let money = ranking.prizeMoney {
@@ -41,7 +47,10 @@ struct RankCellPresentation {
         playerSurname: String,
         playerPhotoUrl: String?,
         playerFlag: String?,
-        prizeMoney: String
+        prizeMoney: String,
+        playerCountry: String? = nil,
+        playerDob: String? = nil,
+        playerTurnedPro: Int? = nil
     ) {
         self.position = position
         self.playerName = playerName
@@ -49,6 +58,24 @@ struct RankCellPresentation {
         self.playerPhotoUrl = playerPhotoUrl
         self.playerFlag = playerFlag
         self.prizeMoney = prizeMoney
+        self.playerCountry = playerCountry
+        self.playerDob = playerDob
+        self.playerTurnedPro = playerTurnedPro
+    }
+    
+    // MARK: - Player Detail Helper
+    
+    func playerDetailPresentation() -> PlayerDetailPresentation {
+        PlayerDetailPresentation(
+            firstName: playerName,
+            surname: playerSurname,
+            photoUrl: playerPhotoUrl,
+            flagEmoji: playerFlag,
+            country: playerCountry,
+            rank: position,
+            dob: playerDob,
+            turnedPro: playerTurnedPro
+        )
     }
     
     // MARK: - Helpers

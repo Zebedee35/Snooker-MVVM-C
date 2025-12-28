@@ -27,7 +27,7 @@ extension RankingDTO {
             position,
             prize_money,
             player_id,
-            player:player_id(first_name, surname, photo_url, country, country_code, turned_pro)
+            player:player_id(first_name, surname, photo_url, country, country_code, dob, turned_pro)
         """
   
   static let preview: RankingDTO = .init(

@@ -38,7 +38,7 @@ enum RankingViewModelOutput: Equatable, Sendable {
 }
 
 enum RankingRoute: Sendable {
-    case playerDetail(RankingDTO)
+    case playerDetail(presentation: PlayerDetailPresentation)
 }
 
 @MainActor
@@ -90,6 +90,7 @@ final class RankingViewModel: RankingViewModelProtocol {
     func selectRanking(at index: Int) {
         guard index < rankings.count else { return }
         let ranking = rankings[index]
-        delegate?.navigate(to: .playerDetail(ranking))
+        let presentation = RankCellPresentation(ranking: ranking).playerDetailPresentation()
+        delegate?.navigate(to: .playerDetail(presentation: presentation))
     }
 }

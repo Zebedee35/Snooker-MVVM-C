@@ -24,11 +24,16 @@ final class RankingCoordinator: Coordinator {
     
     func handle(route: RankingRoute) {
         switch route {
-        case .playerDetail(let ranking):
-            // TODO: PlayerDetail ekranı oluşturulduğunda burası implement edilecek
-            print("Navigate to player detail: \(ranking.player.fullName)")
-            // let detailCoordinator = PlayerDetailCoordinator(navigationController: navigationController, player: ranking.player)
-            // detailCoordinator.start()
+        case .playerDetail(let presentation):
+            let playerDetailVC = PlayerDetailViewController(presentation: presentation)
+            
+            if let sheet = playerDetailVC.sheetPresentationController {
+                sheet.detents = [.medium(), .large()]
+                sheet.prefersGrabberVisible = true
+                sheet.preferredCornerRadius = 20
+            }
+            
+            navigationController.present(playerDetailVC, animated: true)
         }
     }
 }
