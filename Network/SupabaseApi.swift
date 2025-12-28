@@ -188,6 +188,20 @@ struct SupabaseAPI {
         )
     }
     
+    /// Oyuncunun son maçlarını çek
+    /// - Parameter playerId: Oyuncu ID
+    /// - Returns: Oyuncunun son maçları (en yeni önce)
+    static func fetchLatestMatches(playerId: String) async throws -> [PlayerMatchDTO] {
+        let params = ["p_player_id": playerId]
+        
+        let response: [PlayerMatchDTO] = try await client
+            .rpc("get_latest_matches", params: params)
+            .execute()
+            .value
+        
+        return response
+    }
+    
 //    /// Players tablosundan veri çek
 //    static func fetchPlayers() async throws -> [Player] {
 //        let response: [Player] = try await client

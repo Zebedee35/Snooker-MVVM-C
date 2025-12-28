@@ -10,6 +10,7 @@ import Foundation
 /// RankCell için Presentation modeli
 /// RankingDTO'dan UI'da gösterilecek verilere dönüşümü yapar
 struct RankCellPresentation {
+    let playerId: String
     let position: Int
     let playerName: String
     let playerSurname: String
@@ -23,6 +24,7 @@ struct RankCellPresentation {
     // MARK: - Initialization
     
     init(ranking: RankingDTO) {
+        self.playerId = ranking.playerId
         self.position = ranking.position
         self.playerName = ranking.player.firstName
         self.playerSurname = ranking.player.surname
@@ -42,6 +44,7 @@ struct RankCellPresentation {
     
     /// Manuel oluşturma için (test/preview amaçlı)
     init(
+        playerId: String = UUID().uuidString,
         position: Int,
         playerName: String,
         playerSurname: String,
@@ -52,6 +55,7 @@ struct RankCellPresentation {
         playerDob: String? = nil,
         playerTurnedPro: Int? = nil
     ) {
+        self.playerId = playerId
         self.position = position
         self.playerName = playerName
         self.playerSurname = playerSurname
@@ -67,6 +71,7 @@ struct RankCellPresentation {
     
     func playerDetailPresentation() -> PlayerDetailPresentation {
         PlayerDetailPresentation(
+            playerId: playerId,
             firstName: playerName,
             surname: playerSurname,
             photoUrl: playerPhotoUrl,

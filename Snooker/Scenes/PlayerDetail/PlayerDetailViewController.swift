@@ -17,6 +17,7 @@ final class PlayerDetailViewController: UIViewController {
         static let cornerRadius: CGFloat = 16
         static let spacing: CGFloat = 12
         static let statItemSpacing: CGFloat = 8
+        static let matchCellHeight: CGFloat = 80
     }
     
     // MARK: - UI Components
@@ -119,6 +120,64 @@ final class PlayerDetailViewController: UIViewController {
         return stack
     }()
     
+    // Recent Matches Section
+    private let matchesContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.cornerRadius = Constants.cornerRadius
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let matchesTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Recent Matches"
+        label.font = AppFont.semiBold(size: 18)
+        label.textColor = .label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let matchesLoadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
+    
+    private lazy var matchesCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 8
+        layout.headerReferenceSize = CGSize(width: 0, height: 44)
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
+        collectionView.showsVerticalScrollIndicator = false
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(PlayerMatchCell.self, forCellWithReuseIdentifier: PlayerMatchCell.reuseIdentifier)
+        collectionView.register(
+            MatchSectionHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: MatchSectionHeaderView.reuseIdentifier
+        )
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+    
+    private let matchesEmptyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "No recent matches"
+        label.font = AppFont.regular(size: 14)
+        label.textColor = .secondaryLabel
+        label.textAlignment = .center
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     // Close Button
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .system)
@@ -131,13 +190,20 @@ final class PlayerDetailViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let presentation: PlayerDetailPresentation
+    private let viewModel: PlayerDetailViewModelProtocol
+    private var matchSections: [PlayerMatchSection] = []
+    private var matchesCollectionViewHeightConstraint: NSLayoutConstraint?
     
     // MARK: - Init
     
-    init(presentation: PlayerDetailPresentation) {
-        self.presentation = presentation
+    init(viewModel: PlayerDetailViewModelProtocol) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    convenience init(presentation: PlayerDetailPresentation) {
+        let viewModel = PlayerDetailViewModel(presentation: presentation)
+        self.init(viewModel: viewModel)
     }
     
     required init?(coder: NSCoder) {
@@ -150,7 +216,9 @@ final class PlayerDetailViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
-        configure(with: presentation)
+        bindViewModel()
+        configure(with: viewModel.presentation)
+        viewModel.loadRecentMatches()
     }
     
     // MARK: - Setup
@@ -176,9 +244,20 @@ final class PlayerDetailViewController: UIViewController {
         contentView.addSubview(bioContainerView)
         bioContainerView.addSubview(bioTitleLabel)
         bioContainerView.addSubview(bioStackView)
+        
+        // Recent Matches
+        contentView.addSubview(matchesContainerView)
+        matchesContainerView.addSubview(matchesTitleLabel)
+        matchesContainerView.addSubview(matchesLoadingIndicator)
+        matchesContainerView.addSubview(matchesCollectionView)
+        matchesContainerView.addSubview(matchesEmptyLabel)
     }
     
     private func setupConstraints() {
+        // Height constraint for collection view (will be updated based on content)
+        matchesCollectionViewHeightConstraint = matchesCollectionView.heightAnchor.constraint(equalToConstant: 0)
+        matchesCollectionViewHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
             // Close Button
             closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 8),
@@ -236,7 +315,6 @@ final class PlayerDetailViewController: UIViewController {
             bioContainerView.topAnchor.constraint(equalTo: headerContainerView.bottomAnchor, constant: Constants.spacing),
             bioContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
             bioContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
-            bioContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalPadding),
             
             bioTitleLabel.topAnchor.constraint(equalTo: bioContainerView.topAnchor, constant: Constants.verticalPadding),
             bioTitleLabel.leadingAnchor.constraint(equalTo: bioContainerView.leadingAnchor, constant: Constants.horizontalPadding),
@@ -245,8 +323,33 @@ final class PlayerDetailViewController: UIViewController {
             bioStackView.topAnchor.constraint(equalTo: bioTitleLabel.bottomAnchor, constant: 12),
             bioStackView.leadingAnchor.constraint(equalTo: bioContainerView.leadingAnchor, constant: Constants.horizontalPadding),
             bioStackView.trailingAnchor.constraint(equalTo: bioContainerView.trailingAnchor, constant: -Constants.horizontalPadding),
-            bioStackView.bottomAnchor.constraint(equalTo: bioContainerView.bottomAnchor, constant: -Constants.verticalPadding)
+            bioStackView.bottomAnchor.constraint(equalTo: bioContainerView.bottomAnchor, constant: -Constants.verticalPadding),
+            
+            // Matches Container
+            matchesContainerView.topAnchor.constraint(equalTo: bioContainerView.bottomAnchor, constant: Constants.spacing),
+            matchesContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalPadding),
+            matchesContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalPadding),
+            matchesContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalPadding),
+            
+            matchesTitleLabel.topAnchor.constraint(equalTo: matchesContainerView.topAnchor, constant: Constants.verticalPadding),
+            matchesTitleLabel.leadingAnchor.constraint(equalTo: matchesContainerView.leadingAnchor, constant: Constants.horizontalPadding),
+            
+            matchesLoadingIndicator.centerYAnchor.constraint(equalTo: matchesTitleLabel.centerYAnchor),
+            matchesLoadingIndicator.trailingAnchor.constraint(equalTo: matchesContainerView.trailingAnchor, constant: -Constants.horizontalPadding),
+            
+            matchesCollectionView.topAnchor.constraint(equalTo: matchesTitleLabel.bottomAnchor, constant: 12),
+            matchesCollectionView.leadingAnchor.constraint(equalTo: matchesContainerView.leadingAnchor, constant: Constants.horizontalPadding),
+            matchesCollectionView.trailingAnchor.constraint(equalTo: matchesContainerView.trailingAnchor, constant: -Constants.horizontalPadding),
+            matchesCollectionView.bottomAnchor.constraint(equalTo: matchesContainerView.bottomAnchor, constant: -Constants.verticalPadding),
+            
+            matchesEmptyLabel.topAnchor.constraint(equalTo: matchesTitleLabel.bottomAnchor, constant: 20),
+            matchesEmptyLabel.leadingAnchor.constraint(equalTo: matchesContainerView.leadingAnchor, constant: Constants.horizontalPadding),
+            matchesEmptyLabel.trailingAnchor.constraint(equalTo: matchesContainerView.trailingAnchor, constant: -Constants.horizontalPadding)
         ])
+    }
+    
+    private func bindViewModel() {
+        viewModel.delegate = self
     }
     
     // MARK: - Actions
@@ -374,5 +477,116 @@ final class PlayerDetailViewController: UIViewController {
         ])
         
         return containerView
+    }
+    
+    private func updateMatchesCollectionViewHeight() {
+        var totalHeight: CGFloat = 0
+        
+        for (index, section) in matchSections.enumerated() {
+            // Header height (44) - skip for first section
+            if index > 0 {
+                totalHeight += 44
+            } else {
+                // First section has smaller header (no separator)
+                totalHeight += 36
+            }
+            
+            // Cells height
+            let cellsHeight = CGFloat(section.matches.count) * (Constants.matchCellHeight + 8)
+            totalHeight += cellsHeight
+        }
+        
+        matchesCollectionViewHeightConstraint?.constant = max(totalHeight, 0)
+        view.layoutIfNeeded()
+    }
+}
+
+// MARK: - PlayerDetailViewModelDelegate
+
+extension PlayerDetailViewController: PlayerDetailViewModelDelegate {
+    func handleOutput(_ output: PlayerDetailViewModelOutput) {
+        switch output {
+        case .showMatchesLoading(let isLoading):
+            if isLoading {
+                matchesLoadingIndicator.startAnimating()
+            } else {
+                matchesLoadingIndicator.stopAnimating()
+            }
+            
+        case .displayMatches(let sections):
+            matchSections = sections
+            matchesEmptyLabel.isHidden = true
+            matchesCollectionView.isHidden = false
+            matchesCollectionView.reloadData()
+            updateMatchesCollectionViewHeight()
+            
+        case .showMatchesError(let message):
+            matchesEmptyLabel.text = "Error: \(message)"
+            matchesEmptyLabel.isHidden = false
+            matchesCollectionView.isHidden = true
+            matchesCollectionViewHeightConstraint?.constant = 40
+            
+        case .showMatchesEmpty:
+            matchesEmptyLabel.text = "No recent matches"
+            matchesEmptyLabel.isHidden = false
+            matchesCollectionView.isHidden = true
+            matchesCollectionViewHeightConstraint?.constant = 40
+        }
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+
+extension PlayerDetailViewController: UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        matchSections.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        matchSections[section].matches.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: PlayerMatchCell.reuseIdentifier,
+            for: indexPath
+        ) as? PlayerMatchCell else {
+            return UICollectionViewCell()
+        }
+        
+        let presentation = matchSections[indexPath.section].matches[indexPath.item]
+        cell.configure(with: presentation)
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        guard kind == UICollectionView.elementKindSectionHeader,
+              let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: MatchSectionHeaderView.reuseIdentifier,
+                for: indexPath
+              ) as? MatchSectionHeaderView else {
+            return UICollectionReusableView()
+        }
+        
+        let section = matchSections[indexPath.section]
+        header.configure(with: section.sectionTitle, isFirstSection: indexPath.section == 0)
+        
+        return header
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+
+extension PlayerDetailViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width
+        return CGSize(width: width, height: Constants.matchCellHeight)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        let width = collectionView.bounds.width
+        return CGSize(width: width, height: section == 0 ? 36 : 44)
     }
 }

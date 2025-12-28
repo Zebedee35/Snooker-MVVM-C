@@ -217,6 +217,7 @@ struct LiveScoreCellPresentation {
     
     func homePlayerDetailPresentation() -> PlayerDetailPresentation {
         PlayerDetailPresentation(
+            playerId: homePlayerId,
             firstName: homePlayerName,
             surname: homePlayerSurname,
             photoUrl: homePlayerPhotoUrl,
@@ -230,6 +231,7 @@ struct LiveScoreCellPresentation {
     
     func awayPlayerDetailPresentation() -> PlayerDetailPresentation {
         PlayerDetailPresentation(
+            playerId: awayPlayerId,
             firstName: awayPlayerName,
             surname: awayPlayerSurname,
             photoUrl: awayPlayerPhotoUrl,

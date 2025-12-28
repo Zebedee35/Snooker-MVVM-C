@@ -10,6 +10,7 @@ import Foundation
 // MARK: - Player Detail Presentation
 
 struct PlayerDetailPresentation {
+    let playerId: String
     let firstName: String
     let surname: String
     let photoUrl: String?
