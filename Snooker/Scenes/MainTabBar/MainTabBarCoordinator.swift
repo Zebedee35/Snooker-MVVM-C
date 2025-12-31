@@ -60,11 +60,14 @@ final class MainTabBarCoordinator: Coordinator {
     
     rankingNavController.tabBarItem = UITabBarItem(title: "Ranking", image: UIImage(systemName: "chart.bar"), tag: 3)
 
-    let tab5 = UIViewController()
-    tab5.view.backgroundColor = .systemPurple
-    tab5.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 4)
+    // Settings tab
+    let settingsNavController = UINavigationController()
+    let settingsCoordinator = SettingsCoordinator(navigationController: settingsNavController)
+    settingsCoordinator.start()
     
-    mainController!.viewControllers = [seasonNavController, liveNavController, homeNavController, rankingNavController, tab5]
+    settingsNavController.tabBarItem = UITabBarItem(title: "Settings", image: UIImage(systemName: "gear"), tag: 4)
+    
+    mainController!.viewControllers = [seasonNavController, liveNavController, homeNavController, rankingNavController, settingsNavController]
     mainController!.selectedIndex = 2  
     
     navigationController.setViewControllers([viewController], animated: false)
@@ -72,6 +75,7 @@ final class MainTabBarCoordinator: Coordinator {
     childCoordinators[.live] = liveCoordinator
     childCoordinators[.home] = homeCoordinator
     childCoordinators[.ranking] = rankingCoordinator
+    childCoordinators[.settings] = settingsCoordinator
   }
   
 }

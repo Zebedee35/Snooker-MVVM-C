@@ -24,8 +24,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     configureNavigationBarAppearance()
     
     let window = UIWindow(windowScene: windowScene)
+    
+    // Apply saved Dark Mode preference
+    applyDarkModePreference(to: window)
+    
     appCoordinator = AppCoordinator(window: window)
     appCoordinator?.start()
+  }
+  
+  private func applyDarkModePreference(to window: UIWindow) {
+    let isDarkMode = UserDefaults.standard.bool(forKey: "dark_mode")
+    window.overrideUserInterfaceStyle = isDarkMode ? .dark : .unspecified
   }
   
   private func configureNavigationBarAppearance() {
