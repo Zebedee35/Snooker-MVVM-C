@@ -62,22 +62,36 @@ struct HeadToHeadMatchPresentation {
         self.tournamentSeason = dto.tournamentSeason
         self.round = dto.round
         
-        // Extract year from date or use season
-        if let date = dto.startDateTime {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "yyyy"
-            self.year = formatter.string(from: date)
+        // Extract year from startDateTime string or use season
+        if let dateString = dto.startDateTime {
+            // Parse ISO date string to get year
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            
+            var date = isoFormatter.date(from: dateString)
+            if date == nil {
+                isoFormatter.formatOptions = [.withInternetDateTime]
+                date = isoFormatter.date(from: dateString)
+            }
+            
+            if let parsedDate = date {
+                let yearFormatter = DateFormatter()
+                yearFormatter.dateFormat = "yyyy"
+                self.year = yearFormatter.string(from: parsedDate)
+            } else {
+                self.year = "\(dto.tournamentSeason)"
+            }
         } else {
             self.year = "\(dto.tournamentSeason)"
         }
         
         // Determine scores based on player1 position
         if dto.homePlayerId == player1Id {
-            self.player1Score = dto.homeScore
-            self.player2Score = dto.awayScore
+            self.player1Score = dto.homePlayerScore ?? 0
+            self.player2Score = dto.awayPlayerScore ?? 0
         } else {
-            self.player1Score = dto.awayScore
-            self.player2Score = dto.homeScore
+            self.player1Score = dto.awayPlayerScore ?? 0
+            self.player2Score = dto.homePlayerScore ?? 0
         }
     }
 }
