@@ -202,6 +202,25 @@ struct SupabaseAPI {
         return response
     }
     
+    /// İki oyuncu arasındaki head-to-head maç geçmişini çek
+    /// - Parameters:
+    ///   - player1Id: Birinci oyuncu ID
+    ///   - player2Id: İkinci oyuncu ID
+    /// - Returns: İki oyuncu arasındaki tüm tamamlanmış maçlar (en yeni önce)
+    static func fetchHeadToHead(player1Id: String, player2Id: String) async throws -> [HeadToHeadDTO] {
+        let params: [String: String] = [
+            "p_player1_id": player1Id,
+            "p_player2_id": player2Id
+        ]
+        
+        let response: [HeadToHeadDTO] = try await client
+            .rpc("get_head_to_head", params: params)
+            .execute()
+            .value
+        
+        return response
+    }
+    
 //    /// Players tablosundan veri çek
 //    static func fetchPlayers() async throws -> [Player] {
 //        let response: [Player] = try await client

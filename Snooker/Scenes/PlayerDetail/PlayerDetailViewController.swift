@@ -7,6 +7,14 @@
 
 import UIKit
 
+// MARK: - Navigation Delegate
+
+protocol PlayerDetailViewControllerDelegate: AnyObject {
+    func playerDetailViewController(_ viewController: PlayerDetailViewController, didRequestPvPWith presentation: HeadToHeadHeaderPresentation)
+}
+
+// MARK: - View Controller
+
 final class PlayerDetailViewController: UIViewController {
     
     // MARK: - Constants
@@ -193,6 +201,9 @@ final class PlayerDetailViewController: UIViewController {
     private let viewModel: PlayerDetailViewModelProtocol
     private var matchSections: [PlayerMatchSection] = []
     private var matchesCollectionViewHeightConstraint: NSLayoutConstraint?
+    
+    /// Delegate for navigation actions (e.g., opening PvP screen)
+    weak var navigationDelegate: PlayerDetailViewControllerDelegate?
     
     // MARK: - Init
     
@@ -588,5 +599,29 @@ extension PlayerDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let width = collectionView.bounds.width
         return CGSize(width: width, height: section == 0 ? 36 : 44)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let matchPresentation = matchSections[indexPath.section].matches[indexPath.item]
+        
+        // Opponent ID yoksa (TBD match) PvP açma
+        guard let opponentId = matchPresentation.opponentId else { return }
+        
+        let presentation = viewModel.presentation
+        
+        let headerPresentation = HeadToHeadHeaderPresentation(
+            player1Id: presentation.playerId,
+            player1Name: presentation.firstName,
+            player1Surname: presentation.surname,
+            player1PhotoUrl: presentation.photoUrl,
+            player1Flag: presentation.flagEmoji,
+            player2Id: opponentId,
+            player2Name: matchPresentation.opponentName,
+            player2Surname: matchPresentation.opponentSurname,
+            player2PhotoUrl: matchPresentation.opponentPhotoUrl,
+            player2Flag: matchPresentation.opponentFlag
+        )
+        
+        navigationDelegate?.playerDetailViewController(self, didRequestPvPWith: headerPresentation)
     }
 }

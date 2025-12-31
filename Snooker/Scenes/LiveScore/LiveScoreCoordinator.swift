@@ -10,6 +10,7 @@ import UIKit
 final class LiveScoreCoordinator: Coordinator {
     weak var navigationController: UINavigationController!
     weak var mainViewController: LiveScoreViewController?
+    var childCoordinators: [Coordinator] = []
     
     init(navigationController: UINavigationController!) {
         self.navigationController = navigationController
@@ -29,15 +30,10 @@ final class LiveScoreCoordinator: Coordinator {
             print("[LiveScoreCoordinator] Navigate to match detail - ID: \(matchId) | \(homePlayerName) vs \(awayPlayerName)")
             
         case .playerDetail(let presentation):
-            let playerDetailVC = PlayerDetailViewController(presentation: presentation)
-            
-            if let sheet = playerDetailVC.sheetPresentationController {
-                sheet.detents = [.medium(), .large()]
-                sheet.prefersGrabberVisible = true
-                sheet.preferredCornerRadius = 20
-            }
-            
-            navigationController.present(playerDetailVC, animated: true)
+            let playerDetailCoordinator = PlayerDetailCoordinator(navigationController: navigationController)
+            playerDetailCoordinator.parentCoordinator = self
+            childCoordinators.append(playerDetailCoordinator)
+            playerDetailCoordinator.start(with: presentation)
         }
     }
 }

@@ -25,8 +25,14 @@ struct PlayerMatchCellPresentation {
     let tournamentSeason: Int
     let round: String
     
+    /// Current player ID (PvP ekranı için)
+    let currentPlayerId: String
+    
     /// Seçili oyuncunun skoru (her zaman solda gösterilecek)
     let currentPlayerScore: Int
+    
+    /// Rakip oyuncunun ID'si (PvP ekranı için)
+    let opponentId: String?
     
     /// Rakip oyuncunun skoru (her zaman sağda gösterilecek)
     let opponentScore: Int
@@ -56,6 +62,7 @@ struct PlayerMatchCellPresentation {
         self.tournamentName = match.tournamentName
         self.tournamentSeason = match.tournamentSeason
         self.round = match.round
+        self.currentPlayerId = currentPlayerId
         
         let isCurrentPlayerHome = match.homePlayerId == currentPlayerId
         
@@ -63,6 +70,7 @@ struct PlayerMatchCellPresentation {
             // Seçili oyuncu home player
             self.currentPlayerScore = match.homePlayerScore ?? 0
             self.opponentScore = match.awayPlayerScore ?? 0
+            self.opponentId = match.awayPlayerId
             self.opponentName = match.awayPlayer?.firstName ?? "TBD"
             self.opponentSurname = match.awayPlayer?.surname ?? ""
             self.opponentPhotoUrl = match.awayPlayer?.photoUrl
@@ -71,6 +79,7 @@ struct PlayerMatchCellPresentation {
             // Seçili oyuncu away player
             self.currentPlayerScore = match.awayPlayerScore ?? 0
             self.opponentScore = match.homePlayerScore ?? 0
+            self.opponentId = match.homePlayerId
             self.opponentName = match.homePlayer.firstName
             self.opponentSurname = match.homePlayer.surname
             self.opponentPhotoUrl = match.homePlayer.photoUrl
