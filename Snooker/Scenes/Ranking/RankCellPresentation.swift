@@ -26,8 +26,8 @@ struct RankCellPresentation {
     init(ranking: RankingDTO) {
         self.playerId = ranking.playerId
         self.position = ranking.position
-        self.playerName = ranking.player.firstName
-        self.playerSurname = ranking.player.surname
+        self.playerName = ranking.player.firstName ?? "TBD"
+        self.playerSurname = ranking.player.surname ?? ""
         self.playerPhotoUrl = ranking.player.photoUrl
         self.playerFlag = CountryFlagHelper.flagEmoji(for: ranking.player.countryCode)
         self.playerCountry = ranking.player.country

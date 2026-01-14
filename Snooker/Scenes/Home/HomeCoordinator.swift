@@ -27,12 +27,12 @@ final class HomeCoordinator: Coordinator {
         switch route {
         case .matchDetail(let presentation):
             let headerPresentation = HeadToHeadHeaderPresentation(
-                player1Id: presentation.homePlayerId,
+                player1Id: presentation.homePlayerId ?? "",
                 player1Name: presentation.homePlayerName,
                 player1Surname: presentation.homePlayerSurname,
                 player1PhotoUrl: presentation.homePlayerPhotoUrl,
                 player1Flag: presentation.homePlayerFlag,
-                player2Id: presentation.awayPlayerId,
+                player2Id: presentation.awayPlayerId ?? "",
                 player2Name: presentation.awayPlayerName,
                 player2Surname: presentation.awayPlayerSurname,
                 player2PhotoUrl: presentation.awayPlayerPhotoUrl,

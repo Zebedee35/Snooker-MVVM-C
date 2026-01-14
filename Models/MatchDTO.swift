@@ -30,8 +30,8 @@ struct MatchDTO: Decodable, Identifiable {
   let round: String
   let status: String
   let startDateTime: String?
-  let homePlayerId: String
-  let awayPlayerId: String
+  let homePlayerId: String?
+  let awayPlayerId: String?
   let homePlayerScore: Int?
   let awayPlayerScore: Int?
   let homePlayer: PlayerDTO  // PlayerDTO kullanıyoruz artık

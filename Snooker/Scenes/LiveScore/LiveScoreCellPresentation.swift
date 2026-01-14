@@ -133,9 +133,9 @@ struct LiveScoreCellPresentation {
     init(match: MatchDTO) {
         self.matchId = match.id
         
-        self.homePlayerId = match.homePlayerId
-        self.homePlayerName = match.homePlayer.firstName
-        self.homePlayerSurname = match.homePlayer.surname
+        self.homePlayerId = match.homePlayerId ?? ""
+        self.homePlayerName = match.homePlayer.firstName ?? "TBD"
+        self.homePlayerSurname = match.homePlayer.surname ?? ""
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
         self.homePlayerScore = match.homePlayerScore ?? 0
         self.homePlayerFlag = CountryFlagHelper.flagEmoji(for: match.homePlayer.countryCode)
@@ -144,9 +144,9 @@ struct LiveScoreCellPresentation {
         self.homePlayerDob = match.homePlayer.dob
         self.homePlayerTurnedPro = match.homePlayer.turnedPro
         
-        self.awayPlayerId = match.awayPlayerId
-        self.awayPlayerName = match.awayPlayer.firstName
-        self.awayPlayerSurname = match.awayPlayer.surname
+        self.awayPlayerId = match.awayPlayerId ?? ""
+        self.awayPlayerName = match.awayPlayer.firstName ?? "TBD"
+        self.awayPlayerSurname = match.awayPlayer.surname ?? ""
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
         self.awayPlayerScore = match.awayPlayerScore ?? 0
         self.awayPlayerFlag = CountryFlagHelper.flagEmoji(for: match.awayPlayer.countryCode)

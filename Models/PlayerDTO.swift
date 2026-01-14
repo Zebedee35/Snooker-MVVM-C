@@ -6,8 +6,8 @@
 //
 
 struct PlayerDTO: Decodable {
-  let firstName: String
-  let surname: String
+  let firstName: String?
+  let surname: String?
   let country: String?
   let countryCode: String?  // ISO 3166-1 alpha-2 (örn: "GB", "TR", "CN")
   let dob: String?
@@ -28,7 +28,7 @@ struct PlayerDTO: Decodable {
   
   // Computed property for full name
   var fullName: String {
-    "\(firstName) \(surname)"
+    "\(firstName ?? "TBD") \(surname ?? "")"
   }
   
   // Bayrak emoji döndürür (önce countryCode, yoksa country'ye bakar)

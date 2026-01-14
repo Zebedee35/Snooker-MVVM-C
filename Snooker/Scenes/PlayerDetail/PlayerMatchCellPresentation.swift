@@ -80,8 +80,8 @@ struct PlayerMatchCellPresentation {
             self.currentPlayerScore = match.awayPlayerScore ?? 0
             self.opponentScore = match.homePlayerScore ?? 0
             self.opponentId = match.homePlayerId
-            self.opponentName = match.homePlayer.firstName
-            self.opponentSurname = match.homePlayer.surname
+            self.opponentName = match.homePlayer.firstName ?? "TBD"
+            self.opponentSurname = match.homePlayer.surname ?? ""
             self.opponentPhotoUrl = match.homePlayer.photoUrl
             self.opponentFlag = match.homePlayer.flagEmoji
         }

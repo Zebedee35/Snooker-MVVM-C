@@ -61,7 +61,7 @@ struct MatchSection {
 struct HomeCellPresentation {
     let matchId: String
     
-    let homePlayerId: String
+    let homePlayerId: String?
     let homePlayerName: String
     let homePlayerSurname: String
     let homePlayerPhotoUrl: String?
@@ -72,7 +72,7 @@ struct HomeCellPresentation {
     let homePlayerDob: String?
     let homePlayerTurnedPro: Int?
     
-    let awayPlayerId: String
+    let awayPlayerId: String?
     let awayPlayerName: String
     let awayPlayerSurname: String
     let awayPlayerPhotoUrl: String?
@@ -125,8 +125,8 @@ struct HomeCellPresentation {
         self.matchId = match.id
         
         self.homePlayerId = match.homePlayerId
-        self.homePlayerName = match.homePlayer.firstName
-        self.homePlayerSurname = match.homePlayer.surname
+        self.homePlayerName = match.homePlayer.firstName ?? "TBD"
+        self.homePlayerSurname = match.homePlayer.surname ?? ""
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
         self.homePlayerScore = match.homePlayerScore ?? 0
         self.homePlayerFlag = match.homePlayer.flagEmoji
@@ -136,8 +136,8 @@ struct HomeCellPresentation {
         self.homePlayerTurnedPro = match.homePlayer.turnedPro
         
         self.awayPlayerId = match.awayPlayerId
-        self.awayPlayerName = match.awayPlayer.firstName
-        self.awayPlayerSurname = match.awayPlayer.surname
+        self.awayPlayerName = match.awayPlayer.firstName ?? "TBD"
+        self.awayPlayerSurname = match.awayPlayer.surname ?? ""
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
         self.awayPlayerScore = match.awayPlayerScore ?? 0
         self.awayPlayerFlag = match.awayPlayer.flagEmoji
@@ -156,7 +156,7 @@ struct HomeCellPresentation {
     
     func homePlayerDetailPresentation() -> PlayerDetailPresentation {
         PlayerDetailPresentation(
-            playerId: homePlayerId,
+            playerId: homePlayerId ?? "",
             firstName: homePlayerName,
             surname: homePlayerSurname,
             photoUrl: homePlayerPhotoUrl,
@@ -170,7 +170,7 @@ struct HomeCellPresentation {
     
     func awayPlayerDetailPresentation() -> PlayerDetailPresentation {
         PlayerDetailPresentation(
-            playerId: awayPlayerId,
+            playerId: awayPlayerId ?? "",
             firstName: awayPlayerName,
             surname: awayPlayerSurname,
             photoUrl: awayPlayerPhotoUrl,
