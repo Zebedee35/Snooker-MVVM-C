@@ -136,7 +136,20 @@ final class SettingsViewModel: SettingsViewModelProtocol {
            let setting = NotificationSetting(rawValue: savedNotification) {
             notificationSetting = setting
         }
-        isDarkMode = UserDefaults.standard.bool(forKey: "dark_mode")
+        
+        // Dark Mode: İlk kez açılıyorsa sistemin modunu kullan ve kaydet
+        if UserDefaults.standard.object(forKey: "dark_mode") == nil {
+            // İlk açılış - sistemin modunu kontrol et
+            let systemIsDark = UITraitCollection.current.userInterfaceStyle == .dark
+            isDarkMode = systemIsDark
+            UserDefaults.standard.set(isDarkMode, forKey: "dark_mode")
+        } else {
+            isDarkMode = UserDefaults.standard.bool(forKey: "dark_mode")
+        }
+        
+        // Dark Mode'u uygula
+        applyDarkMode(isDarkMode)
+        
         hideTBDMatches = UserDefaults.standard.bool(forKey: "hide_tbd_matches")
     }
     
@@ -311,7 +324,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
               let window = windowScene.windows.first else { return }
         
         UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve) {
-            window.overrideUserInterfaceStyle = isDark ? .dark : .unspecified
+            window.overrideUserInterfaceStyle = isDark ? .dark : .light
         }
     }
 }
