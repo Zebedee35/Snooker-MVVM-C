@@ -73,6 +73,8 @@ final class LiveScoreViewController: UIViewController {
     var cellPresentations: [LiveScoreCellPresentation] = []
     var coordinator: LiveScoreCoordinator?
     private var isEmptyState: Bool = false
+    private var autoRefreshTimer: Timer?
+    private let autoRefreshInterval: TimeInterval = 60 // 1 minute
     
     // MARK: - Lifecycle
     
@@ -108,6 +110,39 @@ final class LiveScoreViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
+        
+        // Reload data when tab becomes visible
+        viewModel.loadData()
+        
+        // Start auto-refresh timer
+        startAutoRefreshTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Stop auto-refresh timer when leaving the screen
+        stopAutoRefreshTimer()
+    }
+    
+    // MARK: - Auto Refresh
+    
+    private func startAutoRefreshTimer() {
+        // Invalidate existing timer if any
+        stopAutoRefreshTimer()
+        
+        // Create new timer
+        autoRefreshTimer = Timer.scheduledTimer(
+            withTimeInterval: autoRefreshInterval,
+            repeats: true
+        ) { [weak self] _ in
+            self?.viewModel.loadData()
+        }
+    }
+    
+    private func stopAutoRefreshTimer() {
+        autoRefreshTimer?.invalidate()
+        autoRefreshTimer = nil
     }
     
     // MARK: - Setup

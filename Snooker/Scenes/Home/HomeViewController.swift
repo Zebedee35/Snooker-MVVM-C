@@ -113,6 +113,9 @@ final class HomeViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
+        
+        // Reload data when tab becomes visible
+        viewModel.loadData()
     }
     
     // MARK: - Setup
