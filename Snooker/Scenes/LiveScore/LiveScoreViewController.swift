@@ -136,7 +136,9 @@ final class LiveScoreViewController: UIViewController {
             withTimeInterval: autoRefreshInterval,
             repeats: true
         ) { [weak self] _ in
-            self?.viewModel.loadData()
+            Task { @MainActor in
+                self?.viewModel.loadData()
+            }
         }
     }
     
