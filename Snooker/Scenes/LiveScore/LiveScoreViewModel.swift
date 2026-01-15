@@ -57,8 +57,32 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     private let service: LiveScoreServiceProtocol
     private var cellPresentations: [LiveScoreCellPresentation] = []
     
+    private var hideTBDMatches: Bool {
+        UserDefaults.standard.bool(forKey: "hide_tbd_matches")
+    }
+    
     init(service: LiveScoreServiceProtocol) {
         self.service = service
+        setupNotifications()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTBDSettingChanged),
+            name: .hideTBDMatchesChanged,
+            object: nil
+        )
+    }
+    
+    @objc private func handleTBDSettingChanged() {
+        Task { @MainActor in
+            self.loadData()
+        }
     }
     
     func loadData() {
@@ -70,11 +94,16 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                 
                 delegate?.handleOutput(.showLoading(false))
                 
-                if matches.isEmpty {
+                // Apply TBD filter if enabled
+                let filteredMatches = hideTBDMatches 
+                    ? matches.filter { !$0.hasBothPlayersTBD }
+                    : matches
+                
+                if filteredMatches.isEmpty {
                     delegate?.handleOutput(.showEmptyState(true))
                 } else {
                     delegate?.handleOutput(.showEmptyState(false))
-                    let presentations = matches.map { LiveScoreCellPresentation(match: $0) }
+                    let presentations = filteredMatches.map { LiveScoreCellPresentation(match: $0) }
                     self.cellPresentations = presentations
                     delegate?.handleOutput(.displayMatches(presentations))
                 }

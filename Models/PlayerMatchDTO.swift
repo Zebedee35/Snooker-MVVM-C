@@ -41,6 +41,17 @@ struct PlayerMatchDTO: Decodable {
     }
 }
 
+// MARK: - Computed Properties
+
+extension PlayerMatchDTO {
+    /// Both home and away players are TBD (firstName is nil or empty)
+    var hasBothPlayersTBD: Bool {
+        let homeIsTBD = homePlayer.firstName == nil || homePlayer.firstName?.isEmpty == true
+        let awayIsTBD = awayPlayer == nil || awayPlayer?.firstName == nil || awayPlayer?.firstName?.isEmpty == true
+        return homeIsTBD && awayIsTBD
+    }
+}
+
 // MARK: - Preview Data
 
 #if DEBUG

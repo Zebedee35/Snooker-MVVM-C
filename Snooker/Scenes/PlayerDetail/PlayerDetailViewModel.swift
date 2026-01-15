@@ -45,11 +45,37 @@ final class PlayerDetailViewModel: PlayerDetailViewModelProtocol {
     private let service: PlayerDetailServiceProtocol
     private var matchSections: [PlayerMatchSection] = []
     
+    private var hideTBDMatches: Bool {
+        UserDefaults.standard.bool(forKey: "hide_tbd_matches")
+    }
+    
     // MARK: - Initialization
     
     init(presentation: PlayerDetailPresentation, service: PlayerDetailServiceProtocol = PlayerDetailService()) {
         self.presentation = presentation
         self.service = service
+        setupNotifications()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: - Private Setup
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTBDSettingChanged),
+            name: .hideTBDMatchesChanged,
+            object: nil
+        )
+    }
+    
+    @objc private func handleTBDSettingChanged() {
+        Task { @MainActor in
+            self.loadRecentMatches()
+        }
     }
     
     // MARK: - Public Methods
@@ -81,11 +107,16 @@ final class PlayerDetailViewModel: PlayerDetailViewModelProtocol {
     // MARK: - Private Methods
     
     private func createSections(from matches: [PlayerMatchDTO]) -> [PlayerMatchSection] {
+        // Apply TBD filter if enabled
+        let filteredMatches = hideTBDMatches 
+            ? matches.filter { !$0.hasBothPlayersTBD }
+            : matches
+        
         // Turnuva bazlı grupla (sırayı koru)
         var orderedTournaments: [String] = []
         var groupedMatches: [String: [PlayerMatchDTO]] = [:]
         
-        for match in matches {
+        for match in filteredMatches {
             let key = "\(match.tournamentId)"
             if groupedMatches[key] == nil {
                 orderedTournaments.append(key)

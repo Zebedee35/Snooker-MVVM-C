@@ -45,9 +45,33 @@ final class HomeViewModel: HomeViewModelProtocol {
     private var tournament: TournamentWithMatchesDTO?
     private var sections: [MatchSection] = []
     
+    private var hideTBDMatches: Bool {
+        UserDefaults.standard.bool(forKey: "hide_tbd_matches")
+    }
+    
     init(service: HomeServiceProtocol, tournamentId: String? = nil) {
         self.service = service
         self.tournamentId = tournamentId
+        setupNotifications()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTBDSettingChanged),
+            name: .hideTBDMatchesChanged,
+            object: nil
+        )
+    }
+    
+    @objc private func handleTBDSettingChanged() {
+        Task { @MainActor in
+            self.loadData()
+        }
     }
     
     func loadData() {
@@ -118,12 +142,17 @@ final class HomeViewModel: HomeViewModelProtocol {
     // MARK: - Private Methods
     
     private func createSections(from matches: [MatchDTO]) -> [MatchSection] {
+        // Apply TBD filter if enabled
+        let filteredMatches = hideTBDMatches 
+            ? matches.filter { !$0.hasBothPlayersTBD }
+            : matches
+        
         // API'den gelen sırayı koruyarak round'lara göre grupla
         // LinkedHashMap mantığı: ilk gelen round önce kalır
         var orderedRounds: [String] = []
         var groupedMatches: [String: [MatchDTO]] = [:]
         
-        for match in matches {
+        for match in filteredMatches {
             if groupedMatches[match.round] == nil {
                 orderedRounds.append(match.round)
                 groupedMatches[match.round] = []

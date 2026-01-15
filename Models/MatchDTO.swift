@@ -53,6 +53,15 @@ struct MatchDTO: Decodable, Identifiable {
   }
 }
 
+extension MatchDTO {
+    /// Both home and away players are TBD (firstName is nil or empty)
+    var hasBothPlayersTBD: Bool {
+        let homeIsTBD = homePlayer.firstName == nil || homePlayer.firstName?.isEmpty == true
+        let awayIsTBD = awayPlayer.firstName == nil || awayPlayer.firstName?.isEmpty == true
+        return homeIsTBD && awayIsTBD
+    }
+}
+
 struct TournamentWithMatchesDTO: Decodable, Identifiable {
   let id: String
   let name: String
