@@ -33,7 +33,7 @@ final class PushNotificationManager: NSObject {
     // MARK: - Public Methods
     
     /// Request notification permission and register for remote notifications
-    func requestAuthorization(completion: @escaping (Bool) -> Void) {
+    func requestAuthorization(completion: @escaping @Sendable (Bool) -> Void) {
         let center = UNUserNotificationCenter.current()
         
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
@@ -50,7 +50,7 @@ final class PushNotificationManager: NSObject {
     }
     
     /// Check current notification authorization status
-    func checkAuthorizationStatus(completion: @escaping (UNAuthorizationStatus) -> Void) {
+    func checkAuthorizationStatus(completion: @escaping @Sendable (UNAuthorizationStatus) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             let status = settings.authorizationStatus
             DispatchQueue.main.async {

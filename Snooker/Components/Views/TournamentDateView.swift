@@ -87,6 +87,7 @@ final class TournamentDateView: UIView {
         super.init(frame: frame)
         setupUI()
         setupConstraints()
+        registerTraitChanges()
     }
     
     required init?(coder: NSCoder) {
@@ -244,9 +245,20 @@ final class TournamentDateView: UIView {
         }
     }
     
+    private func registerTraitChanges() {
+        if #available(iOS 17.0, *) {
+            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _) in
+                self.containerView.layer.borderColor = self.isPast ? UIColor.systemGray4.cgColor : UIColor.separator.cgColor
+            }
+        }
+    }
+    
+    @available(iOS, deprecated: 17.0, message: "Use registerForTraitChanges instead")
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        containerView.layer.borderColor = isPast ? UIColor.systemGray4.cgColor : UIColor.separator.cgColor
+        if #unavailable(iOS 17.0) {
+            containerView.layer.borderColor = isPast ? UIColor.systemGray4.cgColor : UIColor.separator.cgColor
+        }
     }
 }
 
