@@ -274,6 +274,9 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 saveSettings()
                 buildSections()
                 delegate?.settingsDidUpdate()
+                
+                // Update notification setting on Supabase
+                PushNotificationManager.shared.updateNotificationSetting(setting)
             }
             
         // Other section
