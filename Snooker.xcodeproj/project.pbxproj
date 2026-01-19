@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA77FA5D2F1D38D500730596 /* Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AA77FA5C2F1D38D500730596 /* Icon.icon */; };
 		AAB319A42E96F1070014CA2A /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A32E96F1070014CA2A /* PostgREST */; };
 		AAB319A62E96F4770014CA2A /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A52E96F4770014CA2A /* Auth */; };
 		AAB319A82E96F4770014CA2A /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A72E96F4770014CA2A /* Functions */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AA77FA5C2F1D38D500730596 /* Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Icon.icon; sourceTree = "<group>"; };
 		AAC264A42E93031A0062804E /* Snooker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snooker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -78,6 +80,7 @@
 				AAC264A62E93031A0062804E /* Snooker */,
 				AAB319A92E96F4AF0014CA2A /* Frameworks */,
 				AAC264A52E93031A0062804E /* Products */,
+				AA77FA5C2F1D38D500730596 /* Icon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -162,6 +165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA77FA5D2F1D38D500730596 /* Icon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,8 +185,9 @@
 		AAC264B82E93031C0062804E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Snooker/Snooker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 40;
@@ -221,8 +226,9 @@
 		AAC264B92E93031C0062804E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Icon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Snooker/Snooker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 40;
