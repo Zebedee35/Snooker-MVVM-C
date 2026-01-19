@@ -77,7 +77,7 @@ async function generateAPNsToken(): Promise<string> {
 async function sendToAPNs(
   token: string,
   payload: APNsPayload,
-  apnsToken: string
+  apnsToken: string,
 ): Promise<{ success: boolean; error?: string }> {
   const bundleId = Deno.env.get("APNS_BUNDLE_ID") || "coders35.Snooker";
 
@@ -100,7 +100,7 @@ async function sendToAPNs(
     } else {
       const errorText = await response.text();
       console.error(
-        `APNs error for token ${token}: ${response.status} - ${errorText}`
+        `APNs error for token ${token}: ${response.status} - ${errorText}`,
       );
       return { success: false, error: `${response.status}: ${errorText}` };
     }
@@ -112,7 +112,7 @@ async function sendToAPNs(
 
 // Build notification content based on match status
 function buildNotificationPayload(
-  match: MatchNotificationPayload
+  match: MatchNotificationPayload,
 ): APNsPayload {
   let title: string;
   let body: string;
@@ -153,7 +153,7 @@ function buildNotificationPayload(
         subtitle,
         body,
       },
-      sound: "default",
+      sound: "pool.wav",
       "mutable-content": 1,
     },
     match_id: match.match_id,
@@ -183,7 +183,7 @@ serve(async (req) => {
       {
         p_tournament_name: matchData.tournament_name,
         p_round_name: matchData.round,
-      }
+      },
     );
 
     if (tokensError) {
@@ -220,8 +220,8 @@ serve(async (req) => {
 
       const results = await Promise.all(
         batch.map((t: { token: string }) =>
-          sendToAPNs(t.token, notificationPayload, apnsToken)
-        )
+          sendToAPNs(t.token, notificationPayload, apnsToken),
+        ),
       );
 
       results.forEach((result) => {
@@ -254,7 +254,7 @@ serve(async (req) => {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   } catch (error) {
     console.error("Edge function error:", error);
