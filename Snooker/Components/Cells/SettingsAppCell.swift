@@ -18,8 +18,17 @@ final class SettingsAppCell: UITableViewCell {
         let view = UIView()
         view.backgroundColor = .secondarySystemBackground
         view.layer.cornerRadius = 12
+        view.clipsToBounds = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+    
+    private let appIconImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     private let appIconLabel: UILabel = {
@@ -63,6 +72,7 @@ final class SettingsAppCell: UITableViewCell {
         accessoryType = .disclosureIndicator
         
         contentView.addSubview(appIconContainerView)
+        appIconContainerView.addSubview(appIconImageView)
         appIconContainerView.addSubview(appIconLabel)
         contentView.addSubview(titleLabel)
         contentView.addSubview(subtitleLabel)
@@ -72,6 +82,11 @@ final class SettingsAppCell: UITableViewCell {
             appIconContainerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             appIconContainerView.widthAnchor.constraint(equalToConstant: 50),
             appIconContainerView.heightAnchor.constraint(equalToConstant: 50),
+            
+            appIconImageView.topAnchor.constraint(equalTo: appIconContainerView.topAnchor),
+            appIconImageView.leadingAnchor.constraint(equalTo: appIconContainerView.leadingAnchor),
+            appIconImageView.trailingAnchor.constraint(equalTo: appIconContainerView.trailingAnchor),
+            appIconImageView.bottomAnchor.constraint(equalTo: appIconContainerView.bottomAnchor),
             
             appIconLabel.centerXAnchor.constraint(equalTo: appIconContainerView.centerXAnchor),
             appIconLabel.centerYAnchor.constraint(equalTo: appIconContainerView.centerYAnchor),
@@ -89,14 +104,26 @@ final class SettingsAppCell: UITableViewCell {
     // MARK: - Configure
     
     func configure(with item: SettingsItem) {
-        appIconLabel.text = item.icon
         titleLabel.text = item.title
         subtitleLabel.text = item.subtitle
+        
+        // Önce Assets'ten resim var mı kontrol et
+        if let iconName = item.appIconName, let image = UIImage(named: iconName) {
+            appIconImageView.image = image
+            appIconImageView.isHidden = false
+            appIconLabel.isHidden = true
+        } else {
+            // Resim yoksa emoji göster
+            appIconLabel.text = item.icon
+            appIconLabel.isHidden = false
+            appIconImageView.isHidden = true
+        }
     }
     
     override func prepareForReuse() {
         super.prepareForReuse()
         appIconLabel.text = nil
+        appIconImageView.image = nil
         titleLabel.text = nil
         subtitleLabel.text = nil
     }

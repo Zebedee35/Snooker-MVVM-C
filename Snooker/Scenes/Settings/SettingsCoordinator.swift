@@ -14,9 +14,9 @@ final class SettingsCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     // App Store IDs
-    private let filmBoxAppId = "1234567890"  // TODO: Replace with actual App ID
-    private let contactNameAppId = "0987654321"  // TODO: Replace with actual App ID
-    private let snookerAppId = "1111111111"  // TODO: Replace with actual App ID
+    private let filmBoxAppId     = "887580814"
+    private let contactNameAppId = "911678698"
+    private let snookerAppId    = "1459165666"
     
     init(navigationController: UINavigationController!) {
         self.navigationController = navigationController

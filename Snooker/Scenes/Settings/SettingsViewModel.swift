@@ -182,12 +182,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     
     private func buildOtherSection() -> SettingsSection {
         let items = [
-            SettingsItem(
+            /* SettingsItem(
                 id: "change_app_icon",
                 icon: "🌠",
                 title: "Change App Icon",
                 type: .navigation
             ),
+             */
             SettingsItem(
                 id: "dark_mode",
                 icon: "moon.fill",
@@ -212,19 +213,17 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         let items = [
             SettingsItem(
                 id: "filmbox_app",
-                icon: "🎬",
                 title: "FilmBox",
                 subtitle: "Smart Movie Manager",
                 type: .app,
-                appIconName: "filmbox_icon"
+                appIconName: "Filmbox"
             ),
             SettingsItem(
                 id: "contactname_app",
-                icon: "👤",
                 title: "ContactName",
                 subtitle: "Update Your Contacts",
                 type: .app,
-                appIconName: "contactname_icon"
+                appIconName: "ContactName"
             )
         ]
         return SettingsSection(title: "OUR APPS", items: items)
