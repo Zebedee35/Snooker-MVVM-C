@@ -100,6 +100,8 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                     : matches
                 
                 if filteredMatches.isEmpty {
+                    self.cellPresentations = []
+                    delegate?.handleOutput(.displayMatches([]))
                     delegate?.handleOutput(.showEmptyState(true))
                 } else {
                     delegate?.handleOutput(.showEmptyState(false))
