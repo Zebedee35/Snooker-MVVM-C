@@ -17,10 +17,6 @@ import * as jose from "https://deno.land/x/jose@v4.14.4/index.ts";
 // APNs Configuration
 const APNS_HOST_PRODUCTION = "api.push.apple.com";
 const APNS_HOST_SANDBOX = "api.sandbox.push.apple.com";
-const APNS_HOST =
-  Deno.env.get("APNS_ENVIRONMENT") === "production"
-    ? APNS_HOST_PRODUCTION
-    : APNS_HOST_SANDBOX;
 
 interface MatchNotificationPayload {
   match_id: string;
@@ -74,6 +70,7 @@ async function generateAPNsToken(): Promise<string> {
 }
 
 // Send push notification to APNs
+// Try production first, if it fails with BadDeviceToken, try sandbox
 async function sendToAPNs(
   token: string,
   payload: APNsPayload,
@@ -81,8 +78,49 @@ async function sendToAPNs(
 ): Promise<{ success: boolean; error?: string }> {
   const bundleId = Deno.env.get("APNS_BUNDLE_ID") || "coders35.Snooker";
 
+  // Try production first (TestFlight & App Store)
+  const productionResult = await sendToAPNsEndpoint(
+    token,
+    payload,
+    apnsToken,
+    bundleId,
+    APNS_HOST_PRODUCTION,
+  );
+
+  if (productionResult.success) {
+    return productionResult;
+  }
+
+  // If production fails with BadDeviceToken, try sandbox (Simulator & Development)
+  if (
+    productionResult.error?.includes("BadDeviceToken") ||
+    productionResult.error?.includes("400")
+  ) {
+    console.log(
+      `Production failed for token, trying sandbox: ${token.substring(0, 10)}...`,
+    );
+    return await sendToAPNsEndpoint(
+      token,
+      payload,
+      apnsToken,
+      bundleId,
+      APNS_HOST_SANDBOX,
+    );
+  }
+
+  return productionResult;
+}
+
+// Send to specific APNs endpoint
+async function sendToAPNsEndpoint(
+  token: string,
+  payload: APNsPayload,
+  apnsToken: string,
+  bundleId: string,
+  host: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const response = await fetch(`https://${APNS_HOST}/3/device/${token}`, {
+    const response = await fetch(`https://${host}/3/device/${token}`, {
       method: "POST",
       headers: {
         authorization: `bearer ${apnsToken}`,
@@ -100,12 +138,12 @@ async function sendToAPNs(
     } else {
       const errorText = await response.text();
       console.error(
-        `APNs error for token ${token}: ${response.status} - ${errorText}`,
+        `APNs error (${host}) for token ${token.substring(0, 10)}...: ${response.status} - ${errorText}`,
       );
       return { success: false, error: `${response.status}: ${errorText}` };
     }
   } catch (error) {
-    console.error(`Failed to send to APNs: ${error}`);
+    console.error(`Failed to send to APNs (${host}): ${error}`);
     return { success: false, error: error.message };
   }
 }
