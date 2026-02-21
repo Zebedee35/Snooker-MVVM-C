@@ -406,7 +406,8 @@ final class LiveScoreCell: UICollectionViewCell {
         homePlayerImageView.configure(with: presentation.homePlayerPhotoUrl)
         homePlayerNameLabel.attributedText = createPlayerNameAttributedString(
             firstName: presentation.homePlayerName,
-            surname: presentation.homePlayerSurname
+            surname: presentation.homePlayerSurname,
+            flagEmoji: presentation.homePlayerFlag
         )
         
         // Home Player Flag
@@ -429,7 +430,8 @@ final class LiveScoreCell: UICollectionViewCell {
         awayPlayerImageView.configure(with: presentation.awayPlayerPhotoUrl)
         awayPlayerNameLabel.attributedText = createPlayerNameAttributedString(
             firstName: presentation.awayPlayerName,
-            surname: presentation.awayPlayerSurname
+            surname: presentation.awayPlayerSurname,
+            flagEmoji: presentation.awayPlayerFlag
         )
         
         // Away Player Flag
@@ -507,21 +509,35 @@ final class LiveScoreCell: UICollectionViewCell {
     
     // MARK: - Helpers
     
-    private func createPlayerNameAttributedString(firstName: String, surname: String) -> NSAttributedString {
+    /// Oyuncu adını formatlar
+    /// Çinli oyuncular: "**Ding** Junhui" (soyisim bold, önce)
+    /// Diğer oyuncular: "Judd **Trump**" (soyisim bold, sonda)
+    private func createPlayerNameAttributedString(firstName: String, surname: String, flagEmoji: String?) -> NSAttributedString {
         let attributedString = NSMutableAttributedString()
         
-        let firstNameAttributes: [NSAttributedString.Key: Any] = [
+        let regularAttributes: [NSAttributedString.Key: Any] = [
             .font: AppFont.regular(size: Constants.playerFontSize),
             .foregroundColor: UIColor.label
         ]
         
-        let surnameAttributes: [NSAttributedString.Key: Any] = [
+        let boldAttributes: [NSAttributedString.Key: Any] = [
             .font: AppFont.bold(size: Constants.playerFontSize),
             .foregroundColor: UIColor.label
         ]
         
-        attributedString.append(NSAttributedString(string: firstName + " ", attributes: firstNameAttributes))
-        attributedString.append(NSAttributedString(string: surname, attributes: surnameAttributes))
+        let isChinese = PlayerNameHelper.isChinesePlayer(flagEmoji: flagEmoji)
+        
+        if isChinese {
+            // Çinli oyuncu: Soyisim bold ve önce, isim regular ve sonda
+            // "**Ding** Junhui"
+            attributedString.append(NSAttributedString(string: surname + " ", attributes: boldAttributes))
+            attributedString.append(NSAttributedString(string: firstName, attributes: regularAttributes))
+        } else {
+            // Diğer oyuncular: İsim regular ve önce, soyisim bold ve sonda
+            // "Judd **Trump**"
+            attributedString.append(NSAttributedString(string: firstName + " ", attributes: regularAttributes))
+            attributedString.append(NSAttributedString(string: surname, attributes: boldAttributes))
+        }
         
         return attributedString
     }

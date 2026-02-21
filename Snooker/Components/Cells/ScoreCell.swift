@@ -259,11 +259,11 @@ final class ScoreCell: UICollectionViewCell {
     func configure(with presentation: LiveScoreCellPresentation) {
         // Home Player
         homePlayerImageView.configure(with: presentation.homePlayerPhotoUrl)
-        homePlayerNameLabel.text = "\(presentation.homePlayerName.prefix(1)). \(presentation.homePlayerSurname)"
+        homePlayerNameLabel.text = presentation.homePlayerShortName
         
         // Away Player
         awayPlayerImageView.configure(with: presentation.awayPlayerPhotoUrl)
-        awayPlayerNameLabel.text = "\(presentation.awayPlayerName.prefix(1)). \(presentation.awayPlayerSurname)"
+        awayPlayerNameLabel.text = presentation.awayPlayerShortName
         
         // Scheduled maçlarda skor yerine tarih göster
         if presentation.isScheduled {

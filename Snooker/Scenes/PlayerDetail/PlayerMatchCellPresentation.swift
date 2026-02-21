@@ -52,7 +52,13 @@ struct PlayerMatchCellPresentation {
     
     /// Rakip oyuncunun tam adı
     var opponentFullName: String {
-        "\(opponentName) \(opponentSurname)"
+        PlayerNameHelper.fullName(firstName: opponentName, surname: opponentSurname, flagEmoji: opponentFlag)
+    }
+    
+    /// Rakip oyuncunun kısaltılmış adı
+    /// Çinli: "Ding J.", Diğer: "J. Trump"
+    var opponentShortName: String {
+        PlayerNameHelper.shortenedName(firstName: opponentName, surname: opponentSurname, flagEmoji: opponentFlag)
     }
     
     // MARK: - Initialization

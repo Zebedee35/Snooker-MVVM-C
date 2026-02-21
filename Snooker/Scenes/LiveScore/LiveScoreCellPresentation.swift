@@ -43,6 +43,18 @@ struct LiveScoreCellPresentation {
         matchStatus.lowercased() == "scheduled"
     }
     
+    /// Home oyuncunun kısaltılmış adı
+    /// Çinli: "Ding J.", Diğer: "J. Trump"
+    var homePlayerShortName: String {
+        PlayerNameHelper.shortenedName(firstName: homePlayerName, surname: homePlayerSurname, flagEmoji: homePlayerFlag)
+    }
+    
+    /// Away oyuncunun kısaltılmış adı
+    /// Çinli: "Ding J.", Diğer: "J. Trump"
+    var awayPlayerShortName: String {
+        PlayerNameHelper.shortenedName(firstName: awayPlayerName, surname: awayPlayerSurname, flagEmoji: awayPlayerFlag)
+    }
+    
     /// Scheduled maçlar için formatlanmış başlangıç zamanı
     /// Bugün ise: "14:00", farklı gün ise: "2 Dec / 14:00"
     var formattedStartTime: String? {
