@@ -157,7 +157,7 @@ final class PlayerDetailViewController: UIViewController {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 8
-        layout.headerReferenceSize = CGSize(width: 0, height: 44)
+        layout.headerReferenceSize = CGSize(width: 0, height: 52)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -494,12 +494,12 @@ final class PlayerDetailViewController: UIViewController {
         var totalHeight: CGFloat = 0
         
         for (index, section) in matchSections.enumerated() {
-            // Header height (44) - skip for first section
+            // Header height
             if index > 0 {
-                totalHeight += 44
+                totalHeight += 52
             } else {
                 // First section has smaller header (no separator)
-                totalHeight += 36
+                totalHeight += 40
             }
             
             // Cells height
@@ -598,7 +598,7 @@ extension PlayerDetailViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let width = collectionView.bounds.width
-        return CGSize(width: width, height: section == 0 ? 36 : 44)
+        return CGSize(width: width, height: 52)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -52,10 +52,10 @@ final class MatchSectionHeaderView: UICollectionReusableView {
             separatorView.trailingAnchor.constraint(equalTo: trailingAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 0.5),
             
-            titleLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 12),
+            titleLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 14),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            titleLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -6)
         ])
     }
     
