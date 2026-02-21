@@ -58,10 +58,19 @@ final class RankingViewController: UIViewController {
         }
     }
     
+    private var allCellPresentations: [RankCellPresentation] = []
     var cellPresentations: [RankCellPresentation] = []
     var coordinator: RankingCoordinator?
     
     private var hasLoadedData = false
+    
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search players..."
+        return searchController
+    }()
     
     // MARK: - Lifecycle
     
@@ -95,6 +104,11 @@ final class RankingViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
+        
+        // Setup search controller
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = true
+        definesPresentationContext = true
         
         // Lazy loading - sadece ilk görünümde yükle
         if !hasLoadedData {
@@ -177,8 +191,8 @@ extension RankingViewController: RankingViewModelDelegate {
             }
             
         case .displayRankings(let presentations):
-            cellPresentations = presentations
-            collectionView.reloadData()
+            allCellPresentations = presentations
+            filterContentForSearchText(searchController.searchBar.text)
             
         case .showError(let message):
             // TODO: Show error alert or banner
@@ -192,6 +206,37 @@ extension RankingViewController: RankingViewModelDelegate {
     
     func navigate(to route: RankingRoute) {
         coordinator?.handle(route: route)
+    }
+}
+
+// MARK: - UISearchResultsUpdating
+
+extension RankingViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text)
+    }
+    
+    private func filterContentForSearchText(_ searchText: String?) {
+        guard let searchText = searchText, !searchText.isEmpty else {
+            cellPresentations = allCellPresentations
+            collectionView.reloadData()
+            emptyStateLabel.isHidden = !allCellPresentations.isEmpty
+            collectionView.isHidden = allCellPresentations.isEmpty
+            return
+        }
+        
+        let lowercasedSearchText = searchText.lowercased()
+        cellPresentations = allCellPresentations.filter { presentation in
+            let fullName = "\(presentation.playerName) \(presentation.playerSurname)".lowercased()
+            return fullName.contains(lowercasedSearchText)
+        }
+        
+        collectionView.reloadData()
+        
+        let isEmpty = cellPresentations.isEmpty
+        emptyStateLabel.text = isEmpty ? "No players found" : "No rankings available"
+        emptyStateLabel.isHidden = !isEmpty
+        collectionView.isHidden = isEmpty
     }
 }
 
