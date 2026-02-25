@@ -100,8 +100,17 @@ final class ScoreCell: UICollectionViewCell {
         return stack
     }()
     
+    private lazy var statusStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [liveIndicatorView, matchStatusLabel])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 4
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
     private lazy var centerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [scoreStackView, matchStatusLabel])
+        let stack = UIStackView(arrangedSubviews: [scoreStackView, statusStackView])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 2
@@ -164,7 +173,6 @@ final class ScoreCell: UICollectionViewCell {
         containerView.addSubview(centerStackView)
         containerView.addSubview(awayPlayerNameLabel)
         containerView.addSubview(awayPlayerImageView)
-        containerView.addSubview(liveIndicatorView)
         
         setupGestures()
     }
@@ -240,9 +248,7 @@ final class ScoreCell: UICollectionViewCell {
             awayPlayerImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.horizontalPadding),
             awayPlayerImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             
-            // Live Indicator (top-right corner of container)
-            liveIndicatorView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 6),
-            liveIndicatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -6),
+            // Live Indicator size
             liveIndicatorView.widthAnchor.constraint(equalToConstant: 8),
             liveIndicatorView.heightAnchor.constraint(equalToConstant: 8),
         ])
@@ -358,15 +364,21 @@ final class ScoreCell: UICollectionViewCell {
     }
     
     private func startLiveAnimation() {
-        liveIndicatorView.alpha = 1.0
-        UIView.animate(withDuration: 0.8, delay: 0, options: [.repeat, .autoreverse, .allowUserInteraction]) {
-            self.liveIndicatorView.alpha = 0.3
-        }
+        liveIndicatorView.layer.removeAllAnimations()
+        
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = 1.0
+        animation.toValue = 0.2
+        animation.duration = 0.4
+        animation.autoreverses = true
+        animation.repeatCount = .infinity
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        
+        liveIndicatorView.layer.add(animation, forKey: "pulseAnimation")
     }
     
     private func stopLiveAnimation() {
         liveIndicatorView.layer.removeAllAnimations()
-        liveIndicatorView.alpha = 1.0
     }
     
     // MARK: - Reuse

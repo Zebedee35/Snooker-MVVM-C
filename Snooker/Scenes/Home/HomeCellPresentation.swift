@@ -95,7 +95,7 @@ struct HomeCellPresentation {
     
     /// Maç canlı mı?
     var isLive: Bool {
-        status.lowercased() == "live"
+        status.lowercased() == "live" || status.lowercased() == "suspended"
     }
     
     /// LiveScoreCell için presentation dönüşümü

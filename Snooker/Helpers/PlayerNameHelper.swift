@@ -38,8 +38,8 @@ enum PlayerNameHelper {
         if isChinese {
             // Çinli oyuncu: "Ding Junhui" -> "Ding J."
             // Soyisim tam, ismin ilk harfi
-            let firstInitial = String(first.prefix(1))
-            return "\(last) \(firstInitial)."
+            let lastInitial = String(last.prefix(1))
+            return "\(first) \(lastInitial)."
         } else {
             // Diğer oyuncular: "Judd Trump" -> "J. Trump"
             // İsmin ilk harfi, soyisim tam
@@ -77,7 +77,8 @@ enum PlayerNameHelper {
         
         if isChinese {
             // Çinli oyuncu: soyisim önce
-            return "\(last) \(first)"
+            // return "\(last) \(first)"
+            return "\(first) \(last)"
         } else {
             // Diğer oyuncular: isim önce
             return "\(first) \(last)"

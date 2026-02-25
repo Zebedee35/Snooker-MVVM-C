@@ -562,22 +562,22 @@ final class LiveScoreCell: UICollectionViewCell {
     
     func startLiveAnimation() {
         liveContainerView.isHidden = false
-        liveIndicatorView.alpha = 1.0
+        liveIndicatorView.layer.removeAllAnimations()
         
-        UIView.animate(
-            withDuration: 0.8,
-            delay: 0,
-            options: [.repeat, .autoreverse, .allowUserInteraction],
-            animations: { [weak self] in
-                self?.liveIndicatorView.alpha = 0.3
-            }
-        )
+        let animation = CABasicAnimation(keyPath: "opacity")
+        animation.fromValue = 1.0
+        animation.toValue = 0.2
+        animation.duration = 0.4
+        animation.autoreverses = true
+        animation.repeatCount = .infinity
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        
+        liveIndicatorView.layer.add(animation, forKey: "pulseAnimation")
     }
     
     func stopLiveAnimation() {
         liveIndicatorView.layer.removeAllAnimations()
         liveContainerView.isHidden = true
-        liveIndicatorView.alpha = 1.0
     }
     
     // MARK: - Reuse

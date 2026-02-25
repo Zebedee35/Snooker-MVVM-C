@@ -377,7 +377,11 @@ final class PlayerDetailViewController: UIViewController {
         flagLabel.text = presentation.flagEmoji
         
         // Name with styled surname
-        let attributedName = createStyledName(firstName: presentation.firstName, surname: presentation.surname)
+        let attributedName = createStyledName(
+            firstName: presentation.firstName,
+            surname: presentation.surname,
+            flagEmoji: presentation.flagEmoji
+        )
         nameLabel.attributedText = attributedName
         
         countryLabel.text = presentation.country
@@ -394,21 +398,31 @@ final class PlayerDetailViewController: UIViewController {
         configureBioSection(with: presentation)
     }
     
-    private func createStyledName(firstName: String, surname: String) -> NSAttributedString {
+    /// İsmi formatlar - Çinli oyuncularda soyisim bold ve önce, diğerlerinde soyisim bold ve sonda
+    private func createStyledName(firstName: String, surname: String, flagEmoji: String?) -> NSAttributedString {
         let attributedString = NSMutableAttributedString()
         
-        let firstNameAttrs: [NSAttributedString.Key: Any] = [
+        let regularAttrs: [NSAttributedString.Key: Any] = [
             .font: AppFont.regular(size: 24),
             .foregroundColor: UIColor.label
         ]
         
-        let surnameAttrs: [NSAttributedString.Key: Any] = [
+        let boldAttrs: [NSAttributedString.Key: Any] = [
             .font: AppFont.bold(size: 24),
             .foregroundColor: UIColor.label
         ]
         
-        attributedString.append(NSAttributedString(string: firstName + " ", attributes: firstNameAttrs))
-        attributedString.append(NSAttributedString(string: surname.uppercased(), attributes: surnameAttrs))
+        let isChinese = PlayerNameHelper.isChinesePlayer(flagEmoji: flagEmoji)
+        
+        if isChinese {
+            // Çinli oyuncu: SURNAME (bold) + FirstName (regular)
+            attributedString.append(NSAttributedString(string: firstName.uppercased() + " ", attributes: boldAttrs))
+            attributedString.append(NSAttributedString(string: surname, attributes: regularAttrs))
+        } else {
+            // Diğer oyuncular: FirstName (regular) + SURNAME (bold)
+            attributedString.append(NSAttributedString(string: firstName + " ", attributes: regularAttrs))
+            attributedString.append(NSAttributedString(string: surname.uppercased(), attributes: boldAttrs))
+        }
         
         return attributedString
     }
