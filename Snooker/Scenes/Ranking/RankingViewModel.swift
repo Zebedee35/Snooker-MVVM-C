@@ -12,7 +12,7 @@ protocol RankingViewModelProtocol: AnyObject {
     var delegate: RankingViewModelDelegate? { get set }
     func loadData()
     func refreshData()
-    func selectRanking(at index: Int)
+    func selectRanking(presentation: RankCellPresentation)
 }
 
 enum RankingViewModelOutput: Equatable, Sendable {
@@ -87,10 +87,8 @@ final class RankingViewModel: RankingViewModelProtocol {
         loadData()
     }
     
-    func selectRanking(at index: Int) {
-        guard index < rankings.count else { return }
-        let ranking = rankings[index]
-        let presentation = RankCellPresentation(ranking: ranking).playerDetailPresentation()
-        delegate?.navigate(to: .playerDetail(presentation: presentation))
+    func selectRanking(presentation: RankCellPresentation) {
+        let playerDetailPresentation = presentation.playerDetailPresentation()
+        delegate?.navigate(to: .playerDetail(presentation: playerDetailPresentation))
     }
 }

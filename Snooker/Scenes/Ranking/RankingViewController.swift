@@ -165,7 +165,8 @@ extension RankingViewController: UICollectionViewDataSource {
 
 extension RankingViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.selectRanking(at: indexPath.item)
+        let presentation = cellPresentations[indexPath.item]
+        viewModel.selectRanking(presentation: presentation)
     }
 }
 
