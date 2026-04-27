@@ -21,6 +21,7 @@ enum SupabaseEndpoint: String {
     case players = "players"
     case rankings = "rankings"
     case tournaments = "tournaments"
+    case appAnnouncements = "app_announcements"
     
     var path: String {
         return "/rest/v1/\(self.rawValue)"
@@ -154,6 +155,31 @@ struct SupabaseAPI {
             .execute()
             .value
         return response
+    }
+
+    /// Uygulama genelinde gösterilecek aktif duyuruları çek
+    static func fetchActiveAnnouncements() async throws -> [AppAnnouncementDTO] {
+        do {
+            let response: [AppAnnouncementDTO] = try await client
+                .rpc("get_active_announcements")
+                .execute()
+                .value
+
+            return response
+        } catch {
+            print("[SupabaseAPI] RPC get_active_announcements failed, falling back to table query: \(error)")
+
+            let fallbackResponse: [AppAnnouncementDTO] = try await client
+                .from(SupabaseEndpoint.appAnnouncements.rawValue)
+                .select(AppAnnouncementDTO.sqlFields)
+                .eq("is_active", value: true)
+                .order("display_rank", ascending: false)
+                .order("created_at", ascending: false)
+                .execute()
+                .value
+
+            return fallbackResponse
+        }
     }
     
     /// Aktif turnuva veya belirli bir turnuvanın detaylarını maçlarıyla birlikte çek

@@ -32,6 +32,8 @@ final class AppCoordinator: Coordinator {
     let mainTabBarCoordinator = MainTabBarCoordinator(navigationController: navigationController)
     childCoordinators[.tabBar] = mainTabBarCoordinator
     mainTabBarCoordinator.start()
+
+    AnnouncementManager.shared.start(in: window)
   }
   
   private func applyInitialDarkMode() {
