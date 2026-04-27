@@ -7,12 +7,32 @@
 
 import UIKit
 
+// MARK: - DismissedAnnouncementRecord
+
+struct DismissedAnnouncementRecord: Codable {
+    let id: String
+    let kind: String
+    let content: String
+    let dismissedAt: Date
+
+    var announcementType: AnnouncementType {
+        AnnouncementType(rawValue: kind) ?? .info
+    }
+}
+
+// MARK: - AnnouncementManager
+
 final class AnnouncementManager {
 
     static let shared = AnnouncementManager()
 
     private enum UserDefaultsKeys {
         static let dismissedOneTimeAnnouncementIDs = "dismissed_one_time_announcement_ids"
+        static let dismissedOneTimeAnnouncementsHistory = "dismissed_one_time_announcements_history"
+    }
+
+    private enum Limits {
+        static let maxDismissedHistoryCount = 50
     }
 
     private weak var window: UIWindow?
@@ -95,6 +115,10 @@ final class AnnouncementManager {
         }
 
         currentAnnouncement = announcement
+
+        if announcement.displayMode == .oneTime {
+            saveDismissedOneTimeAnnouncementRecord(announcement)
+        }
 
         guard let window else { return }
 
@@ -212,5 +236,49 @@ final class AnnouncementManager {
         var ids = dismissedOneTimeAnnouncementIDs()
         ids.insert(id)
         UserDefaults.standard.set(Array(ids), forKey: UserDefaultsKeys.dismissedOneTimeAnnouncementIDs)
+    }
+
+    private func saveDismissedOneTimeAnnouncementRecord(_ announcement: AppAnnouncementDTO) {
+        var records = loadDismissedAnnouncementsHistory()
+        guard !records.contains(where: { $0.id == announcement.id }) else { return }
+        let record = DismissedAnnouncementRecord(
+            id: announcement.id,
+            kind: announcement.announcementKind.rawValue,
+            content: announcement.sanitizedContent,
+            dismissedAt: Date()
+        )
+        records.append(record)
+        saveDismissedAnnouncementsHistory(records)
+    }
+
+    private func loadDismissedAnnouncementsHistory() -> [DismissedAnnouncementRecord] {
+        guard let data = UserDefaults.standard.data(forKey: UserDefaultsKeys.dismissedOneTimeAnnouncementsHistory),
+              let records = try? JSONDecoder().decode([DismissedAnnouncementRecord].self, from: data) else {
+            return []
+        }
+
+        let trimmedRecords = trimDismissedAnnouncementsHistory(records)
+
+        if trimmedRecords.count != records.count {
+            saveDismissedAnnouncementsHistory(trimmedRecords)
+        }
+
+        return trimmedRecords
+    }
+
+    private func saveDismissedAnnouncementsHistory(_ records: [DismissedAnnouncementRecord]) {
+        let trimmedRecords = trimDismissedAnnouncementsHistory(records)
+        if let data = try? JSONEncoder().encode(trimmedRecords) {
+            UserDefaults.standard.set(data, forKey: UserDefaultsKeys.dismissedOneTimeAnnouncementsHistory)
+        }
+    }
+
+    private func trimDismissedAnnouncementsHistory(_ records: [DismissedAnnouncementRecord]) -> [DismissedAnnouncementRecord] {
+        let sortedRecords = records.sorted { $0.dismissedAt > $1.dismissedAt }
+        return Array(sortedRecords.prefix(Limits.maxDismissedHistoryCount))
+    }
+
+    func dismissedAnnouncementsHistory() -> [DismissedAnnouncementRecord] {
+        loadDismissedAnnouncementsHistory().sorted { $0.dismissedAt > $1.dismissedAt }
     }
 }

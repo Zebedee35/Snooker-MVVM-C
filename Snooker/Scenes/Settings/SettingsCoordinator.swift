@@ -52,6 +52,9 @@ final class SettingsCoordinator: Coordinator {
             
         case .website:
             openWebsite()
+
+        case .announcementsHistory:
+            showAnnouncementsHistory()
         }
     }
     
@@ -111,6 +114,11 @@ final class SettingsCoordinator: Coordinator {
         if let url = URL(string: "https://35coders.com") {
             UIApplication.shared.open(url)
         }
+    }
+
+    private func showAnnouncementsHistory() {
+        let viewController = AnnouncementsHistoryViewController()
+        navigationController.pushViewController(viewController, animated: true)
     }
 }
 

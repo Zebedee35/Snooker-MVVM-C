@@ -106,6 +106,7 @@ enum SettingsRoute {
     case shareApp
     case giveFeedback
     case website
+    case announcementsHistory
 }
 
 // MARK: - ViewModel
@@ -232,6 +233,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     private func buildAboutSection() -> SettingsSection {
         let items = [
             SettingsItem(
+                id: "announcements_history",
+                icon: "bell.badge",
+                iconColor: .systemPurple,
+                title: "Announcements",
+                type: .navigation
+            ),
+            SettingsItem(
                 id: "rate_us",
                 icon: "star.fill",
                 iconColor: .systemYellow,
@@ -289,6 +297,9 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             delegate?.navigateTo(route: .contactNameApp)
             
         // About section
+        case "announcements_history":
+            delegate?.navigateTo(route: .announcementsHistory)
+
         case "rate_us":
             delegate?.navigateTo(route: .rateUs)
         case "share_app":

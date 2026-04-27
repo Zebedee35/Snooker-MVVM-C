@@ -60,7 +60,7 @@ final class FloatingAnnouncementView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = AppFont.regular(size: 14)
         label.textColor = .label
-        label.numberOfLines = 4
+        label.numberOfLines = 6
         label.lineBreakMode = .byWordWrapping
         return label
     }()
