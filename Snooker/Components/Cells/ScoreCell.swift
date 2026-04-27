@@ -87,6 +87,8 @@ final class ScoreCell: UICollectionViewCell {
         label.font = AppFont.medium(size: Constants.statusFontSize)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
+        label.numberOfLines = 2
+        label.lineBreakMode = .byWordWrapping
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -330,6 +332,15 @@ final class ScoreCell: UICollectionViewCell {
                 matchStatusLabel.textColor = .systemRed
                 liveIndicatorView.isHidden = false
                 startLiveAnimation()
+            } else if status == "suspended" {
+                let datePart = presentation.formattedDatePart ?? "Today"
+                let timePart = presentation.formattedTimePart ?? ""
+
+                matchStatusLabel.text = "Suspended\n\(datePart) \(timePart)"
+
+                matchStatusLabel.textColor = .secondaryLabel
+                liveIndicatorView.isHidden = true
+                stopLiveAnimation()
             } else if status == "completed" || status == "done" {
                 matchStatusLabel.text = "Completed"
                 matchStatusLabel.textColor = .secondaryLabel
