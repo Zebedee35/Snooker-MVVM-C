@@ -124,6 +124,18 @@ struct SupabaseAPI {
     }
     
     // MARK: - Helper Methods
+
+    /// Yeni seasons tablosundan veri çeker.
+    /// SQL karşılığı: select * from seasons order by name desc
+    static func fetchSeasonsTableRows() async throws -> [SeasonsDTO] {
+        let response: [SeasonsDTO] = try await client
+            .from("seasons")
+            .select(SeasonsDTO.sqlFields)
+            .order("name", ascending: false)
+            .execute()
+            .value
+        return response
+    }
     
     /// Seasons tablosundan veri çek
     static func fetchSeasons() async throws -> [TournamentDTO] {
