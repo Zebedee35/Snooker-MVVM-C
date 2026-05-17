@@ -8,11 +8,16 @@
 import Foundation
 
 protocol SeasonListServiceProtocol: Sendable {
-  func fetchSeasons() async throws -> [TournamentDTO]
+  func fetchAvailableSeasons() async throws -> [SeasonsDTO]
+  func fetchTournaments(for seasonId: Int) async throws -> [TournamentDTO]
 }
 
 final class SeasonListService: SeasonListServiceProtocol {
-  func fetchSeasons() async throws -> [TournamentDTO] {
-    return try await SupabaseAPI.fetchSeasons()
+  func fetchAvailableSeasons() async throws -> [SeasonsDTO] {
+    return try await SupabaseAPI.fetchSeasonsTableRows()
+  }
+
+  func fetchTournaments(for seasonId: Int) async throws -> [TournamentDTO] {
+    return try await SupabaseAPI.fetchTournaments(seasonId: seasonId)
   }
 }

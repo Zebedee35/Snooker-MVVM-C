@@ -12,18 +12,22 @@ protocol SeasonListViewModelProtocol: AnyObject {
   var delegate: SeasonListViewModelDelegate? { get set }
   func loadData()
   func selectSeason(at index: Int)
+  func changeSeasonFilter(_ season: SeasonsDTO)
 }
 
 enum SeasonListViewModelOutput: Equatable, Sendable {
   case displaySeasons([SeasonListCellPresentation])
   case showLoading(Bool)
-  
+  case displaySeasonFilter([SeasonsDTO], selected: SeasonsDTO)
+
   static func == (lhs: SeasonListViewModelOutput, rhs: SeasonListViewModelOutput) -> Bool {
     switch (lhs, rhs) {
-    case (.displaySeasons(let lhsSeasons), .displaySeasons(let rhsSeasons)):
-      return lhsSeasons.count == rhsSeasons.count
-    case (.showLoading(let lhsLoading), .showLoading(let rhsLoading)):
-      return lhsLoading == rhsLoading
+    case (.displaySeasons(let l), .displaySeasons(let r)):
+      return l.count == r.count
+    case (.showLoading(let l), .showLoading(let r)):
+      return l == r
+    case (.displaySeasonFilter(let lSeasons, let lSel), .displaySeasonFilter(let rSeasons, let rSel)):
+      return lSeasons.count == rSeasons.count && lSel == rSel
     default:
       return false
     }
@@ -43,24 +47,36 @@ protocol SeasonListViewModelDelegate: AnyObject {
 @MainActor
 final class SeasonListViewModel: SeasonListViewModelProtocol {
   weak var delegate: SeasonListViewModelDelegate?
-  
+
   private let service: SeasonListServiceProtocol
   private var tournaments: [TournamentDTO] = []
-  
+  private var availableSeasons: [SeasonsDTO] = []
+  private var selectedSeason: SeasonsDTO?
+
   init(service: SeasonListServiceProtocol) {
     self.service = service
   }
-  
+
   func loadData() {
     delegate?.handleOutput(.showLoading(true))
-    
+
     Task {
       do {
-        let tournaments = try await service.fetchSeasons()
-        self.tournaments = tournaments
-        let cellPresentations = tournaments.map { SeasonListCellPresentation(tournament: $0) }
+        let seasons = try await service.fetchAvailableSeasons()
+        availableSeasons = seasons
+
+        guard let season = seasons.first(where: { $0.current }) ?? seasons.first else {
+          delegate?.handleOutput(.showLoading(false))
+          return
+        }
+
+        selectedSeason = season
+        delegate?.handleOutput(.displaySeasonFilter(seasons, selected: season))
+
+        let fetched = try await service.fetchTournaments(for: season.id)
+        tournaments = fetched
         delegate?.handleOutput(.showLoading(false))
-        delegate?.handleOutput(.displaySeasons(cellPresentations))
+        delegate?.handleOutput(.displaySeasons(fetched.map { SeasonListCellPresentation(tournament: $0) }))
       } catch {
         delegate?.handleOutput(.showLoading(false))
         print("Error fetching seasons: \(error)")
@@ -68,11 +84,27 @@ final class SeasonListViewModel: SeasonListViewModelProtocol {
       }
     }
   }
-  
+
+  func changeSeasonFilter(_ season: SeasonsDTO) {
+    guard season != selectedSeason else { return }
+    selectedSeason = season
+    delegate?.handleOutput(.displaySeasonFilter(availableSeasons, selected: season))
+    delegate?.handleOutput(.showLoading(true))
+
+    Task {
+      do {
+        let fetched = try await service.fetchTournaments(for: season.id)
+        tournaments = fetched
+        delegate?.handleOutput(.showLoading(false))
+        delegate?.handleOutput(.displaySeasons(fetched.map { SeasonListCellPresentation(tournament: $0) }))
+      } catch {
+        delegate?.handleOutput(.showLoading(false))
+      }
+    }
+  }
+
   func selectSeason(at index: Int) {
     guard index < tournaments.count else { return }
-    let tournament = tournaments[index]
-    delegate?.navigate(to: .seasonDetail(tournament))
+    delegate?.navigate(to: .seasonDetail(tournaments[index]))
   }
 }
-

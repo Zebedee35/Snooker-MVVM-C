@@ -17,6 +17,12 @@ struct SeasonsDTO: Decodable, Identifiable, Sendable {
     let updatedAt: String?
 }
 
+extension SeasonsDTO: Equatable {
+    static func == (lhs: SeasonsDTO, rhs: SeasonsDTO) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 extension SeasonsDTO {
     static let sqlFields = """
         id,

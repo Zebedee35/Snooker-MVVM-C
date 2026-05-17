@@ -137,6 +137,17 @@ struct SupabaseAPI {
         return response
     }
     
+    /// Belirli bir sezonun turnuvalarını çek
+    static func fetchTournaments(seasonId: Int) async throws -> [TournamentDTO] {
+        return try await client
+            .from(SupabaseEndpoint.seasons.rawValue)
+            .select(TournamentDTO.sqlFields)
+            .eq("season", value: seasonId)
+            .order("start_date", ascending: true)
+            .execute()
+            .value
+    }
+
     /// Seasons tablosundan veri çek
     static func fetchSeasons() async throws -> [TournamentDTO] {
         let response: [TournamentDTO] = try await client
