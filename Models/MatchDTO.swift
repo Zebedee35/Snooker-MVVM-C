@@ -78,11 +78,31 @@ struct TournamentWithMatchesDTO: Decodable, Identifiable {
     case name
     case season
     case startDate
-    case endDate 
+    case endDate
     case city
     case venue
     case country
     case matches
+  }
+    
+  init(id: String, name: String, season: Int, startDate: String, endDate: String, city: String?, venue: String?, country: String?, matches: [MatchDTO]) {
+    self.id = id; self.name = name; self.season = season
+    self.startDate = startDate; self.endDate = endDate
+    self.city = city; self.venue = venue; self.country = country
+    self.matches = matches
+  }
+
+  init(from decoder: Decoder) throws {
+      let c = try decoder.container(keyedBy: CodingKeys.self)
+      id = try c.decode(String.self, forKey: .id)
+      name = try c.decode(String.self, forKey: .name)
+      season = try c.decode(Int.self, forKey: .season)
+      startDate = try c.decode(String.self, forKey: .startDate)
+      endDate = try c.decode(String.self, forKey: .endDate)
+      city = try c.decodeIfPresent(String.self, forKey: .city)
+      venue = try c.decodeIfPresent(String.self, forKey: .venue)
+      country = try c.decodeIfPresent(String.self, forKey: .country)
+      matches = (try c.decodeIfPresent([MatchDTO].self, forKey: .matches)) ?? []
   }
 }
 
