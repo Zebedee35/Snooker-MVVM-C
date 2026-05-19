@@ -110,7 +110,9 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                     delegate?.handleOutput(.displayMatches(presentations))
                 }
             } catch {
+                self.cellPresentations = []
                 delegate?.handleOutput(.showLoading(false))
+                delegate?.handleOutput(.displayMatches([]))
                 delegate?.handleOutput(.showEmptyState(true))
                 delegate?.handleOutput(.showError(error.localizedDescription))
                 print("Error fetching live matches: \(error)")
