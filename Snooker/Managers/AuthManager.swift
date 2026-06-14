@@ -55,7 +55,7 @@ final class AuthManager {
 
     /// Completes a Sign in with Apple handshake against Supabase, then upserts
     /// the profile and reconciles local/cloud settings.
-    func signInWithApple(idToken: String, nonce: String, fullName: String?, email: String?) async throws {
+    func signInWithApple(idToken: String, nonce: String, fullName: String?, email: String?, authorizationCode: String?) async throws {
         let session = try await SupabaseAPI.client.auth.signInWithIdToken(
             credentials: .init(provider: .apple, idToken: idToken, nonce: nonce)
         )
@@ -63,6 +63,13 @@ final class AuthManager {
 
         await upsertProfile()
         await reconcileSettingsOnSignIn()
+
+        // Store an Apple refresh token so the account can be revoked on deletion.
+        // Only available on the first authorization, so we never overwrite an
+        // existing token with nothing.
+        if let authorizationCode {
+            await exchangeAndStoreAppleToken(authorizationCode: authorizationCode)
+        }
 
         PushNotificationManager.shared.linkDeviceToUser(userId: userId)
     }
@@ -124,6 +131,22 @@ final class AuthManager {
         UserDefaults.standard.removeObject(forKey: DefaultsKey.email)
 
         notifyAuthStateChanged()
+    }
+
+    /// Sends the Apple `authorizationCode` to the `apple-token-exchange` Edge
+    /// Function, which swaps it for a refresh token (using the Apple client
+    /// secret) and stores it on the user's profile. Best effort — failures here
+    /// must never break sign-in; they only mean Apple revocation won't run on
+    /// account deletion.
+    private func exchangeAndStoreAppleToken(authorizationCode: String) async {
+        do {
+            try await SupabaseAPI.client.functions.invoke(
+                "apple-token-exchange",
+                options: .init(body: AppleCodeExchangeRequest(code: authorizationCode))
+            )
+        } catch {
+            print("[AuthManager] Apple token exchange failed: \(error.localizedDescription)")
+        }
     }
 
     // MARK: - Settings Sync
@@ -298,6 +321,10 @@ enum AuthError: LocalizedError {
 }
 
 // MARK: - Row Models
+
+private struct AppleCodeExchangeRequest: Encodable {
+    let code: String
+}
 
 private struct ProfileRow: Encodable {
     let id: String

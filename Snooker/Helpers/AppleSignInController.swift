@@ -18,6 +18,10 @@ struct AppleSignInResult {
     let rawNonce: String
     let fullName: String?
     let email: String?
+    /// Single-use code exchanged server-side for an Apple refresh token so the
+    /// account can later be revoked on deletion. Only present on the first
+    /// authorization for the app.
+    let authorizationCode: String?
 }
 
 // MARK: - Apple Sign In Controller
@@ -122,11 +126,15 @@ extension AppleSignInController: ASAuthorizationControllerDelegate {
             .compactMap { $0 }
             .joined(separator: " ")
 
+        let authorizationCode = credential.authorizationCode
+            .flatMap { String(data: $0, encoding: .utf8) }
+
         let result = AppleSignInResult(
             idToken: idToken,
             rawNonce: rawNonce,
             fullName: fullName.isEmpty ? nil : fullName,
-            email: credential.email
+            email: credential.email,
+            authorizationCode: authorizationCode
         )
         onSuccess?(result)
     }

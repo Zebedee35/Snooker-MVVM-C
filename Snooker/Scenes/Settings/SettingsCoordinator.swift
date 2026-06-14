@@ -144,7 +144,8 @@ final class SettingsCoordinator: Coordinator {
                         idToken: result.idToken,
                         nonce: result.rawNonce,
                         fullName: result.fullName,
-                        email: result.email
+                        email: result.email,
+                        authorizationCode: result.authorizationCode
                     )
                 } catch {
                     self?.presentError(message: "Sign in failed. Please try again.")
