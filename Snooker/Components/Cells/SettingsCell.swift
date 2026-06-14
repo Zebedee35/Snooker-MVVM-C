@@ -90,7 +90,8 @@ final class SettingsCell: UITableViewCell {
     
     func configure(with item: SettingsItem) {
         titleLabel.text = item.title
-        
+        titleLabel.textColor = item.isDestructive ? .systemRed : .label
+
         // Icon handling
         if let icon = item.icon {
             if icon.count == 1 || icon.unicodeScalars.first?.properties.isEmoji == true {
@@ -119,7 +120,7 @@ final class SettingsCell: UITableViewCell {
             accessoryType = .none
             checkmarkImageView.isHidden = !item.isSelected
         case .action:
-            accessoryType = .disclosureIndicator
+            accessoryType = item.isDestructive ? .none : .disclosureIndicator
             checkmarkImageView.isHidden = true
         default:
             accessoryType = .none

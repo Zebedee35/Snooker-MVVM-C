@@ -27,6 +27,8 @@ final class SettingsViewController: UIViewController {
         tableView.register(SettingsCell.self, forCellReuseIdentifier: SettingsCell.reuseIdentifier)
         tableView.register(SettingsToggleCell.self, forCellReuseIdentifier: SettingsToggleCell.reuseIdentifier)
         tableView.register(SettingsAppCell.self, forCellReuseIdentifier: SettingsAppCell.reuseIdentifier)
+        tableView.register(SettingsAppleSignInCell.self, forCellReuseIdentifier: SettingsAppleSignInCell.reuseIdentifier)
+        tableView.register(SettingsProfileCell.self, forCellReuseIdentifier: SettingsProfileCell.reuseIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -124,6 +126,28 @@ extension SettingsViewController: UITableViewDataSource {
             }
             cell.configure(with: item)
             return cell
+
+        case .appleSignIn:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: SettingsAppleSignInCell.reuseIdentifier,
+                for: indexPath
+            ) as? SettingsAppleSignInCell else {
+                return UITableViewCell()
+            }
+            cell.onSignIn = { [weak self] in
+                self?.viewModel.handleSelection(item: item)
+            }
+            return cell
+
+        case .profile:
+            guard let cell = tableView.dequeueReusableCell(
+                withIdentifier: SettingsProfileCell.reuseIdentifier,
+                for: indexPath
+            ) as? SettingsProfileCell else {
+                return UITableViewCell()
+            }
+            cell.configure(with: item)
+            return cell
         }
     }
     
@@ -183,6 +207,13 @@ extension SettingsViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = viewModel.sections[indexPath.section].items[indexPath.row]
-        return item.type == .app ? 70 : Constants.cellHeight
+        switch item.type {
+        case .app, .profile:
+            return 70
+        case .appleSignIn:
+            return 56
+        default:
+            return Constants.cellHeight
+        }
     }
 }

@@ -98,8 +98,31 @@ final class PushNotificationManager: NSObject {
         }
     }
     
+    /// Stamp the current device token row with the signed-in user (or clear it
+    /// on sign-out) so the notification preference can follow the account.
+    func linkDeviceToUser(userId: String?) {
+        guard let token = deviceToken ?? UserDefaults.standard.string(forKey: "device_token") else {
+            print("[PushNotificationManager] No device token available to link")
+            return
+        }
+
+        Task {
+            do {
+                try await SupabaseAPI.client
+                    .from("device_tokens")
+                    .update(["user_id": userId])
+                    .eq("token", value: token)
+                    .execute()
+
+                print("[PushNotificationManager] Device token linked to user: \(userId ?? "nil")")
+            } catch {
+                print("[PushNotificationManager] Failed to link device token to user: \(error)")
+            }
+        }
+    }
+
     // MARK: - Private Methods
-    
+
     private func registerTokenToSupabase(token: String) async {
         let setting = getCurrentNotificationSetting()
         

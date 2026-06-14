@@ -7,6 +7,7 @@
 
 import UIKit
 import StoreKit
+import AuthenticationServices
 
 final class SettingsCoordinator: Coordinator {
     weak var navigationController: UINavigationController!
@@ -55,6 +56,12 @@ final class SettingsCoordinator: Coordinator {
 
         case .announcementsHistory:
             showAnnouncementsHistory()
+
+        case .signInWithApple:
+            startSignInWithApple()
+
+        case .signOut:
+            confirmSignOut()
         }
     }
     
@@ -119,6 +126,53 @@ final class SettingsCoordinator: Coordinator {
     private func showAnnouncementsHistory() {
         let viewController = AnnouncementsHistoryViewController()
         navigationController.pushViewController(viewController, animated: true)
+    }
+
+    // MARK: - Sign in with Apple
+
+    private func startSignInWithApple() {
+        let controller = AppleSignInController()
+        let anchor = navigationController.view.window
+
+        controller.start(anchor: anchor) { [weak self] result in
+            Task { @MainActor in
+                do {
+                    try await AuthManager.shared.signInWithApple(
+                        idToken: result.idToken,
+                        nonce: result.rawNonce,
+                        fullName: result.fullName,
+                        email: result.email
+                    )
+                } catch {
+                    self?.presentError(message: "Sign in failed. Please try again.")
+                }
+            }
+        } onFailure: { [weak self] error in
+            // The user cancelling the sheet is not an error worth surfacing.
+            if (error as NSError).code == ASAuthorizationError.canceled.rawValue { return }
+            DispatchQueue.main.async {
+                self?.presentError(message: "Sign in failed. Please try again.")
+            }
+        }
+    }
+
+    private func confirmSignOut() {
+        let alert = UIAlertController(
+            title: "Sign Out",
+            message: "Are you sure you want to sign out?",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive) { _ in
+            Task { await AuthManager.shared.signOut() }
+        })
+        navigationController.present(alert, animated: true)
+    }
+
+    private func presentError(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        navigationController.present(alert, animated: true)
     }
 }
 

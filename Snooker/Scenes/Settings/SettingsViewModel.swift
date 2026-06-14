@@ -15,6 +15,8 @@ enum SettingsItemType {
     case radio        // Radio button (checkmark)
     case action       // Tek action (share, rate vs)
     case app          // App promotion
+    case appleSignIn  // Sign in with Apple button
+    case profile      // Signed-in user profile (name + email)
 }
 
 // MARK: - Settings Item
@@ -26,10 +28,11 @@ struct SettingsItem {
     let title: String
     let subtitle: String?
     let type: SettingsItemType
-    var isSelected: Bool     // Radio için
-    var isOn: Bool           // Toggle için
-    let appIconName: String? // App cell için
-    
+    var isSelected: Bool      // Radio için
+    var isOn: Bool            // Toggle için
+    let appIconName: String?  // App cell için
+    let isDestructive: Bool   // Kırmızı action (Sign Out) için
+
     init(
         id: String,
         icon: String? = nil,
@@ -39,7 +42,8 @@ struct SettingsItem {
         type: SettingsItemType,
         isSelected: Bool = false,
         isOn: Bool = false,
-        appIconName: String? = nil
+        appIconName: String? = nil,
+        isDestructive: Bool = false
     ) {
         self.id = id
         self.icon = icon
@@ -50,6 +54,7 @@ struct SettingsItem {
         self.isSelected = isSelected
         self.isOn = isOn
         self.appIconName = appIconName
+        self.isDestructive = isDestructive
     }
 }
 
@@ -107,6 +112,8 @@ enum SettingsRoute {
     case giveFeedback
     case website
     case announcementsHistory
+    case signInWithApple
+    case signOut
 }
 
 // MARK: - ViewModel
@@ -129,8 +136,26 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     init() {
         loadSettings()
         buildSections()
+
+        // Rebuild when auth state or cloud-synced settings change.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAuthStateChanged),
+            name: .authStateChanged,
+            object: nil
+        )
     }
-    
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func handleAuthStateChanged() {
+        loadSettings()
+        buildSections()
+        delegate?.settingsDidUpdate()
+    }
+
     private func loadSettings() {
         // TODO: Load from UserDefaults
         if let savedNotification = UserDefaults.standard.string(forKey: "notification_setting"),
@@ -162,11 +187,45 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     
     private func buildSections() {
         sections = [
+            buildAccountSection(),
             buildNotificationSection(),
             buildOtherSection(),
             buildOurAppsSection(),
             buildAboutSection()
         ]
+    }
+
+    private func buildAccountSection() -> SettingsSection {
+        if AuthManager.shared.isSignedIn {
+            let name = AuthManager.shared.displayName
+            let email = AuthManager.shared.email
+            let items = [
+                SettingsItem(
+                    id: "profile",
+                    title: (name?.isEmpty == false ? name : nil) ?? "Signed in",
+                    subtitle: email,
+                    type: .profile
+                ),
+                SettingsItem(
+                    id: "sign_out",
+                    icon: "rectangle.portrait.and.arrow.right",
+                    iconColor: .systemRed,
+                    title: "Sign Out",
+                    type: .action,
+                    isDestructive: true
+                )
+            ]
+            return SettingsSection(title: "ACCOUNT", items: items)
+        } else {
+            let items = [
+                SettingsItem(
+                    id: "apple_signin",
+                    title: "Sign in with Apple",
+                    type: .appleSignIn
+                )
+            ]
+            return SettingsSection(title: "ACCOUNT", items: items)
+        }
     }
     
     private func buildNotificationSection() -> SettingsSection {
@@ -284,8 +343,15 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 
                 // Update notification setting on Supabase
                 PushNotificationManager.shared.updateNotificationSetting(setting)
+                syncSettingsToCloud()
             }
-            
+
+        // Account section
+        case "apple_signin":
+            delegate?.navigateTo(route: .signInWithApple)
+        case "sign_out":
+            delegate?.navigateTo(route: .signOut)
+
         // Other section
         case "change_app_icon":
             delegate?.navigateTo(route: .changeAppIcon)
@@ -320,16 +386,27 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             isDarkMode = isOn
             saveSettings()
             applyDarkMode(isOn)
-            
+            syncSettingsToCloud()
+
         case "hide_tbd":
             hideTBDMatches = isOn
             saveSettings()
             // TODO: Notify other screens about TBD filter change
             NotificationCenter.default.post(name: .hideTBDMatchesChanged, object: nil, userInfo: ["isHidden": isOn])
-            
+            syncSettingsToCloud()
+
         default:
             break
         }
+    }
+
+    /// Push the current local preferences to the signed-in user's cloud record.
+    private func syncSettingsToCloud() {
+        AuthManager.shared.syncSettingsToCloud(
+            notification: notificationSetting.rawValue,
+            darkMode: isDarkMode,
+            hideTBD: hideTBDMatches
+        )
     }
     
     private func applyDarkMode(_ isDark: Bool) {

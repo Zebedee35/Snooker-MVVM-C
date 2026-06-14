@@ -14,7 +14,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Setup Push Notifications
     setupPushNotifications()
-    
+
+    // Restore any persisted Sign in with Apple session and re-apply cloud settings
+    Task {
+      await AuthManager.shared.restoreSession()
+    }
+
     return true
   }
 
