@@ -21,7 +21,10 @@ final class SettingsViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .systemBackground
+        // Grouped background so cells (secondarySystemGroupedBackground) stand
+        // out from the screen in BOTH light and dark — plain systemBackground
+        // is white-on-white in light mode.
+        tableView.backgroundColor = .systemGroupedBackground
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(SettingsCell.self, forCellReuseIdentifier: SettingsCell.reuseIdentifier)
@@ -61,7 +64,7 @@ final class SettingsViewController: UIViewController {
     
     private func setupUI() {
         title = "Settings"
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGroupedBackground
         view.addSubview(tableView)
     }
     

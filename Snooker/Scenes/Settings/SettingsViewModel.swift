@@ -81,6 +81,24 @@ enum NotificationSetting: String, CaseIterable {
         case .none: return "None (Never send Notifications)"
         }
     }
+
+    var icon: String {
+        switch self {
+        case .allResults: return "bell.badge.fill"
+        case .mainEvents: return "star.fill"
+        case .finalsOnly: return "trophy.fill"
+        case .none: return "bell.slash.fill"
+        }
+    }
+
+    var iconColor: UIColor {
+        switch self {
+        case .allResults: return .systemRed
+        case .mainEvents: return .systemOrange
+        case .finalsOnly: return .systemYellow
+        case .none: return .systemGray
+        }
+    }
 }
 
 // MARK: - Protocol
@@ -263,6 +281,8 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         let items = NotificationSetting.allCases.map { setting in
             SettingsItem(
                 id: "notification_\(setting.rawValue)",
+                icon: setting.icon,
+                iconColor: setting.iconColor,
                 title: setting.title,
                 type: .radio,
                 isSelected: notificationSetting == setting
@@ -445,6 +465,11 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         default:
             break
         }
+
+        // Rebuild the model so reused cells reflect the new toggle state.
+        // (No reload here — the visible switch already shows the new value;
+        //  this just keeps `sections` from handing a stale isOn to cell reuse.)
+        buildSections()
     }
 
     /// Push the current local preferences to the signed-in user's cloud record.
