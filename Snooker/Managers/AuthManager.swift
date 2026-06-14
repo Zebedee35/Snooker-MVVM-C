@@ -152,10 +152,10 @@ final class AuthManager {
     // MARK: - Settings Sync
 
     /// Pushes the latest local preferences to the cloud (no-op when signed out).
-    func syncSettingsToCloud(notification: String, darkMode: Bool, hideTBD: Bool) {
+    func syncSettingsToCloud(notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String]) {
         guard isSignedIn else { return }
         Task {
-            await pushSettings(notification: notification, darkMode: darkMode, hideTBD: hideTBD)
+            await pushSettings(notification: notification, darkMode: darkMode, hideTBD: hideTBD, autoRounds: autoRounds)
         }
     }
 
@@ -211,7 +211,7 @@ final class AuthManager {
             applyCloudSettings(cloud)
         } else {
             let local = currentLocalSettings()
-            await pushSettings(notification: local.notification, darkMode: local.darkMode, hideTBD: local.hideTBD)
+            await pushSettings(notification: local.notification, darkMode: local.darkMode, hideTBD: local.hideTBD, autoRounds: local.autoRounds)
         }
     }
 
@@ -237,13 +237,14 @@ final class AuthManager {
         }
     }
 
-    private func pushSettings(notification: String, darkMode: Bool, hideTBD: Bool) async {
+    private func pushSettings(notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String]) async {
         guard let userId else { return }
         let row = SettingsUpsertRow(
             userId: userId,
             notificationSetting: notification,
             darkMode: darkMode,
-            hideTbd: hideTBD
+            hideTbd: hideTBD,
+            laAutoRounds: autoRounds
         )
         do {
             try await SupabaseAPI.client
@@ -268,6 +269,13 @@ final class AuthManager {
             PushNotificationManager.shared.updateNotificationSetting(setting)
         }
 
+        // Restore the auto-follow round selection and mirror it to THIS device's
+        // backend row so push-to-start targets the right matches.
+        if let rounds = settings.laAutoRounds {
+            LiveActivityAutoRounds.selected = Set(rounds.compactMap { MatchRoundCategory(rawValue: $0) })
+            PushNotificationManager.shared.updateLiveActivityAutoRounds(LiveActivityAutoRounds.selectedRawValues)
+        }
+
         DispatchQueue.main.async {
             if let dark = settings.darkMode {
                 self.applyDarkMode(dark)
@@ -279,17 +287,21 @@ final class AuthManager {
                     userInfo: ["isHidden": hide]
                 )
             }
+            if settings.laAutoRounds != nil {
+                NotificationCenter.default.post(name: .liveActivityAutoRoundsChanged, object: nil)
+            }
             // Let the Settings screen rebuild its rows to reflect synced values.
             NotificationCenter.default.post(name: .authStateChanged, object: nil)
         }
     }
 
-    private func currentLocalSettings() -> (notification: String, darkMode: Bool, hideTBD: Bool) {
+    private func currentLocalSettings() -> (notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String]) {
         let notification = UserDefaults.standard.string(forKey: DefaultsKey.notificationSetting)
             ?? NotificationSetting.allResults.rawValue
         let darkMode = UserDefaults.standard.bool(forKey: DefaultsKey.darkMode)
         let hideTBD = UserDefaults.standard.bool(forKey: DefaultsKey.hideTBD)
-        return (notification, darkMode, hideTBD)
+        let autoRounds = LiveActivityAutoRounds.selectedRawValues
+        return (notification, darkMode, hideTBD, autoRounds)
     }
 
     private func applyDarkMode(_ isDark: Bool) {
@@ -343,12 +355,14 @@ private struct SettingsUpsertRow: Encodable {
     let notificationSetting: String
     let darkMode: Bool
     let hideTbd: Bool
+    let laAutoRounds: [String]
 
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
         case notificationSetting = "notification_setting"
         case darkMode = "dark_mode"
         case hideTbd = "hide_tbd"
+        case laAutoRounds = "la_auto_rounds"
     }
 }
 
@@ -358,6 +372,7 @@ private struct SettingsResponse: Decodable {
     let notificationSetting: String
     let darkMode: Bool?
     let hideTbd: Bool?
+    let laAutoRounds: [String]?
 }
 
 // MARK: - Notification Names

@@ -195,7 +195,18 @@ extension LiveScoreViewController: UICollectionViewDataSource {
         cell.onScoreTapped = { [weak self] in
             self?.viewModel.selectMatch(at: indexPath.item)
         }
-        
+
+        // Follow (Live Activity) — only for ongoing matches on a supported OS.
+        let status = presentation.matchStatus.lowercased()
+        let isOngoing = (status == "live" || status == "break")
+        let osSupported: Bool
+        if #available(iOS 16.2, *) { osSupported = true } else { osSupported = false }
+        cell.setFollowAvailable(isOngoing && osSupported)
+        cell.setFollowing(viewModel.isFollowing(at: indexPath.item))
+        cell.onFollowTapped = { [weak self] in
+            self?.viewModel.toggleFollow(at: indexPath.item)
+        }
+
         return cell
     }
 }
@@ -241,6 +252,12 @@ extension LiveScoreViewController: LiveScoreViewModelDelegate {
             isEmptyState = isEmpty
             emptyStateLabel.isHidden = !isEmpty
             collectionView.reloadData()
+
+        case .updateFollow(let index, let isFollowing):
+            let indexPath = IndexPath(item: index, section: 0)
+            if let cell = collectionView.cellForItem(at: indexPath) as? LiveScoreCell {
+                cell.setFollowing(isFollowing)
+            }
         }
     }
     

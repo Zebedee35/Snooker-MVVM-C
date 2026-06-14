@@ -190,10 +190,32 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         sections = [
             buildAccountSection(),
             buildNotificationSection(),
+            buildLiveActivitySection(),
             buildOtherSection(),
             buildOurAppsSection(),
             buildAboutSection()
         ]
+    }
+
+    /// Rounds the user wants to *always* see on the Lock Screen (auto Live
+    /// Activity). Any other match can still be followed manually via the bell.
+    private func buildLiveActivitySection() -> SettingsSection {
+        let rows: [(MatchRoundCategory, String, UIColor)] = [
+            (.final, "trophy.fill", .systemYellow),
+            (.semiFinal, "rosette", .systemOrange),
+            (.quarterFinal, "flag.checkered", .systemTeal)
+        ]
+        let items = rows.map { category, icon, color in
+            SettingsItem(
+                id: "la_round_\(category.rawValue)",
+                icon: icon,
+                iconColor: color,
+                title: category.title,
+                type: .toggle,
+                isOn: LiveActivityAutoRounds.isOn(category)
+            )
+        }
+        return SettingsSection(title: "AUTO LOCK SCREEN (LIVE ACTIVITY)", items: items)
     }
 
     private func buildAccountSection() -> SettingsSection {
@@ -406,6 +428,20 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             NotificationCenter.default.post(name: .hideTBDMatchesChanged, object: nil, userInfo: ["isHidden": isOn])
             syncSettingsToCloud()
 
+        case let id where id.hasPrefix("la_round_"):
+            let raw = String(id.dropFirst("la_round_".count))
+            if let category = MatchRoundCategory(rawValue: raw) {
+                LiveActivityAutoRounds.set(category, on: isOn)
+                // Mirror to the backend so it can push-to-start while closed.
+                PushNotificationManager.shared.updateLiveActivityAutoRounds(
+                    LiveActivityAutoRounds.selectedRawValues
+                )
+                // Follow the account across devices via user_settings.
+                syncSettingsToCloud()
+                // Tell the Live screen to start any now-qualifying activities.
+                NotificationCenter.default.post(name: .liveActivityAutoRoundsChanged, object: nil)
+            }
+
         default:
             break
         }
@@ -416,7 +452,8 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         AuthManager.shared.syncSettingsToCloud(
             notification: notificationSetting.rawValue,
             darkMode: isDarkMode,
-            hideTBD: hideTBDMatches
+            hideTBD: hideTBDMatches,
+            autoRounds: LiveActivityAutoRounds.selectedRawValues
         )
     }
     

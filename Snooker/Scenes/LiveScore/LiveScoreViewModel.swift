@@ -15,6 +15,8 @@ protocol LiveScoreViewModelProtocol: AnyObject {
     func selectMatch(at index: Int)
     func selectHomePlayer(at index: Int)
     func selectAwayPlayer(at index: Int)
+    func isFollowing(at index: Int) -> Bool
+    func toggleFollow(at index: Int)
 }
 
 enum LiveScoreViewModelOutput: Equatable, Sendable {
@@ -22,7 +24,8 @@ enum LiveScoreViewModelOutput: Equatable, Sendable {
     case showLoading(Bool)
     case showError(String)
     case showEmptyState(Bool)
-    
+    case updateFollow(index: Int, isFollowing: Bool)
+
     static func == (lhs: LiveScoreViewModelOutput, rhs: LiveScoreViewModelOutput) -> Bool {
         switch (lhs, rhs) {
         case (.displayMatches(let lhsMatches), .displayMatches(let rhsMatches)):
@@ -33,6 +36,8 @@ enum LiveScoreViewModelOutput: Equatable, Sendable {
             return lhsError == rhsError
         case (.showEmptyState(let lhsEmpty), .showEmptyState(let rhsEmpty)):
             return lhsEmpty == rhsEmpty
+        case (.updateFollow(let li, let lf), .updateFollow(let ri, let rf)):
+            return li == ri && lf == rf
         default:
             return false
         }
@@ -77,11 +82,26 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
             name: .hideTBDMatchesChanged,
             object: nil
         )
+        // Re-evaluate auto-follow the moment the user changes the round selection.
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAutoRoundsChanged),
+            name: .liveActivityAutoRoundsChanged,
+            object: nil
+        )
     }
-    
+
     @objc private func handleTBDSettingChanged() {
         Task { @MainActor in
             self.loadData()
+        }
+    }
+
+    @objc private func handleAutoRoundsChanged() {
+        Task { @MainActor in
+            // Start activities for already-loaded matches that now qualify,
+            // without a full network refresh.
+            self.autoStartLiveActivities(with: self.cellPresentations)
         }
     }
     
@@ -108,6 +128,8 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                     let presentations = filteredMatches.map { LiveScoreCellPresentation(match: $0) }
                     self.cellPresentations = presentations
                     delegate?.handleOutput(.displayMatches(presentations))
+                    autoStartLiveActivities(with: presentations)
+                    syncLiveActivities(with: presentations)
                 }
             } catch {
                 self.cellPresentations = []
@@ -143,7 +165,114 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
         guard index < cellPresentations.count else { return }
         let presentation = cellPresentations[index]
         let playerPresentation = presentation.awayPlayerDetailPresentation()
-        
+
         delegate?.navigate(to: .playerDetail(presentation: playerPresentation))
+    }
+
+    // MARK: - Live Activity Follow
+
+    /// Whether a Live Activity is currently running for the match at `index`.
+    func isFollowing(at index: Int) -> Bool {
+        guard index < cellPresentations.count else { return false }
+        guard #available(iOS 16.2, *) else { return false }
+        return LiveActivityManager.shared.isActive(matchId: cellPresentations[index].matchId)
+    }
+
+    /// Start the Live Activity if not following, otherwise end it.
+    func toggleFollow(at index: Int) {
+        guard index < cellPresentations.count else { return }
+        guard #available(iOS 16.2, *) else { return }
+
+        let presentation = cellPresentations[index]
+        let manager = LiveActivityManager.shared
+
+        if manager.isActive(matchId: presentation.matchId) {
+            // User stopped following -> remember it so auto-follow won't re-start it.
+            manager.markManualOptOut(matchId: presentation.matchId)
+            manager.end(matchId: presentation.matchId)
+        } else {
+            // User opted back in manually -> clear any prior opt-out.
+            manager.clearManualOptOut(matchId: presentation.matchId)
+            manager.start(for: presentation, framesToWin: Self.framesToWin(for: presentation.round))
+        }
+
+        // Reflect the resulting state back to the cell.
+        delegate?.handleOutput(.updateFollow(
+            index: index,
+            isFollowing: manager.isActive(matchId: presentation.matchId)
+        ))
+    }
+
+    /// Automatically start a Live Activity for every ongoing match whose round
+    /// the user opted into (Settings → Live Activity). This is the foreground /
+    /// iOS 16.2+ path; the backend push-to-start handles the app-closed case on
+    /// iOS 17.2+. The manual "bell" follow still works for any other match.
+    private func autoStartLiveActivities(with presentations: [LiveScoreCellPresentation]) {
+        guard #available(iOS 16.2, *) else { return }
+        let manager = LiveActivityManager.shared
+
+        // Keep the manual opt-out set bounded to matches that are still live.
+        let ongoingIds = Set(presentations
+            .filter { ["live", "break"].contains($0.matchStatus.lowercased()) }
+            .map { $0.matchId })
+        manager.pruneOptOuts(keepingOngoing: ongoingIds)
+
+        for p in presentations {
+            let status = p.matchStatus.lowercased()
+            let isOngoing = (status == "live" || status == "break")
+            guard isOngoing,
+                  LiveActivityAutoRounds.shouldAutoFollow(round: p.round),
+                  !manager.isManuallyOptedOut(matchId: p.matchId),
+                  !manager.isActive(matchId: p.matchId)
+            else { continue }
+
+            manager.start(for: p, framesToWin: Self.framesToWin(for: p.round))
+            delegate?.handleOutput(.updateFollow(
+                index: presentations.firstIndex(where: { $0.matchId == p.matchId }) ?? 0,
+                isFollowing: true
+            ))
+        }
+    }
+
+    /// Keep any running Live Activities in sync with freshly fetched scores.
+    ///
+    /// The backend APNs push is the source of truth while the app is closed,
+    /// but when the app is in the foreground (or recently backgrounded) a push
+    /// may lag or be coalesced. So on every refresh we locally update the
+    /// activity for matches we're following, and locally END it the moment a
+    /// followed match comes back Completed/Finished — this is the foreground
+    /// counterpart to the `event:"end"` push, so the activity doesn't linger
+    /// if the push is missed.
+    private func syncLiveActivities(with presentations: [LiveScoreCellPresentation]) {
+        guard #available(iOS 16.2, *) else { return }
+        let manager = LiveActivityManager.shared
+
+        for p in presentations where manager.isActive(matchId: p.matchId) {
+            let state = MatchLiveActivityAttributes.ContentState(
+                homeScore: p.homePlayerScore,
+                awayScore: p.awayPlayerScore,
+                status: p.matchStatus,
+                round: p.round,
+                currentBreak: nil,
+                atTable: nil
+            )
+
+            let status = p.matchStatus.lowercased()
+            if status == "completed" || status == "finished" {
+                manager.end(matchId: p.matchId, finalState: state)
+            } else {
+                manager.updateLocally(matchId: p.matchId, state: state)
+            }
+        }
+    }
+
+    /// Best-of frames needed to win, by round. Heuristic until the real
+    /// best-of is exposed on MatchDTO / get_live_matches.
+    private static func framesToWin(for round: String) -> Int {
+        let r = round.lowercased()
+        if r.contains("final"), !r.contains("semi"), !r.contains("quarter") { return 10 }
+        if r.contains("semi") { return 6 }
+        if r.contains("quarter") { return 5 }
+        return 4
     }
 }

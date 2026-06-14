@@ -125,7 +125,7 @@ final class PushNotificationManager: NSObject {
 
     private func registerTokenToSupabase(token: String) async {
         let setting = getCurrentNotificationSetting()
-        
+
         do {
             try await SupabaseAPI.client
                 .from("device_tokens")
@@ -137,10 +137,56 @@ final class PushNotificationManager: NSObject {
                     "updated_at": ISO8601DateFormatter().string(from: Date())
                 ], onConflict: "token")
                 .execute()
-            
+
             print("[PushNotificationManager] Token registered to Supabase successfully")
+
+            // Keep the backend's auto-round selection in sync so it can
+            // push-to-start Live Activities while the app is closed.
+            await updateLiveActivityAutoRoundsOnSupabase(
+                token: token,
+                rounds: LiveActivityAutoRounds.selectedRawValues
+            )
         } catch {
             print("[PushNotificationManager] Failed to register token to Supabase: \(error)")
+        }
+    }
+
+    /// Push the user's auto-follow round selection to `device_tokens.la_auto_rounds`.
+    /// Used both on token registration and whenever the Settings toggles change.
+    func updateLiveActivityAutoRounds(_ rounds: [String]) {
+        guard let token = deviceToken ?? UserDefaults.standard.string(forKey: "device_token") else {
+            print("[PushNotificationManager] No device token to update auto-rounds")
+            return
+        }
+        Task {
+            await updateLiveActivityAutoRoundsOnSupabase(token: token, rounds: rounds)
+        }
+    }
+
+    private struct AutoRoundsUpdate: Encodable {
+        let laAutoRounds: [String]
+        let updatedAt: String
+
+        enum CodingKeys: String, CodingKey {
+            case laAutoRounds = "la_auto_rounds"
+            case updatedAt = "updated_at"
+        }
+    }
+
+    private func updateLiveActivityAutoRoundsOnSupabase(token: String, rounds: [String]) async {
+        do {
+            let payload = AutoRoundsUpdate(
+                laAutoRounds: rounds,
+                updatedAt: ISO8601DateFormatter().string(from: Date())
+            )
+            try await SupabaseAPI.client
+                .from("device_tokens")
+                .update(payload)
+                .eq("token", value: token)
+                .execute()
+            print("[PushNotificationManager] Live Activity auto-rounds updated: \(rounds)")
+        } catch {
+            print("[PushNotificationManager] Failed to update auto-rounds: \(error)")
         }
     }
     

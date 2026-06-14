@@ -20,6 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       await AuthManager.shared.restoreSession()
     }
 
+    // Re-attach to any Live Activities that survived a relaunch and start
+    // observing the push-to-start token (iOS 17.2+).
+    if #available(iOS 16.2, *) {
+      LiveActivityManager.shared.bootstrap()
+    }
+
     return true
   }
 

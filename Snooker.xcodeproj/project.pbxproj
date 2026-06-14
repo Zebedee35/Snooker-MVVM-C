@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA74DA522FD3329800C71C6C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA74DA512FD3329700C71C6C /* WidgetKit.framework */; };
+		AA74DA542FD3329800C71C6C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA74DA532FD3329800C71C6C /* SwiftUI.framework */; };
+		AA74DA612FD3329A00C71C6C /* SnookerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA74DA502FD3329700C71C6C /* SnookerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA77FA5D2F1D38D500730596 /* Icon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AA77FA5C2F1D38D500730596 /* Icon.icon */; };
 		AAB319A42E96F1070014CA2A /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A32E96F1070014CA2A /* PostgREST */; };
 		AAB319A62E96F4770014CA2A /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319A52E96F4770014CA2A /* Auth */; };
@@ -14,12 +17,53 @@
 		AAB319AB2E96F4AF0014CA2A /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = AAB319AA2E96F4AF0014CA2A /* Supabase */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		AA74DA5F2FD3329A00C71C6C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AAC2649C2E93031A0062804E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA74DA4F2FD3329700C71C6C;
+			remoteInfo = SnookerWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AA74DA662FD3329A00C71C6C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA74DA612FD3329A00C71C6C /* SnookerWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		AA74DA502FD3329700C71C6C /* SnookerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SnookerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA74DA512FD3329700C71C6C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		AA74DA532FD3329800C71C6C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		AA77FA5C2F1D38D500730596 /* Icon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Icon.icon; sourceTree = "<group>"; };
 		AAC264A42E93031A0062804E /* Snooker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snooker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AA74DA652FD3329A00C71C6C /* Exceptions for "SnookerWidget" folder in "SnookerWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA74DA4F2FD3329700C71C6C /* SnookerWidgetExtension */;
+		};
+		AA74DA6C2FD332F900C71C6C /* Exceptions for "SnookerWidget" folder in "Snooker" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MatchLiveActivityAttributes.swift,
+			);
+			target = AAC264A32E93031A0062804E /* Snooker */;
+		};
 		AAC264B62E93031C0062804E /* Exceptions for "Snooker" folder in "Snooker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -30,6 +74,15 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AA74DA552FD3329800C71C6C /* SnookerWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA74DA6C2FD332F900C71C6C /* Exceptions for "SnookerWidget" folder in "Snooker" target */,
+				AA74DA652FD3329A00C71C6C /* Exceptions for "SnookerWidget" folder in "SnookerWidgetExtension" target */,
+			);
+			path = SnookerWidget;
+			sourceTree = "<group>";
+		};
 		AABD5E762EB919C300B0045D /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Models;
@@ -51,6 +104,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AA74DA4D2FD3329700C71C6C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA74DA542FD3329800C71C6C /* SwiftUI.framework in Frameworks */,
+				AA74DA522FD3329800C71C6C /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAC264A12E93031A0062804E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -70,6 +132,8 @@
 			children = (
 				AABD5E762EB919C300B0045D /* Models */,
 				AABD5E7A2EB919D000B0045D /* Network */,
+				AA74DA512FD3329700C71C6C /* WidgetKit.framework */,
+				AA74DA532FD3329800C71C6C /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -78,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				AAC264A62E93031A0062804E /* Snooker */,
+				AA74DA552FD3329800C71C6C /* SnookerWidget */,
 				AAB319A92E96F4AF0014CA2A /* Frameworks */,
 				AAC264A52E93031A0062804E /* Products */,
 				AA77FA5C2F1D38D500730596 /* Icon.icon */,
@@ -88,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				AAC264A42E93031A0062804E /* Snooker.app */,
+				AA74DA502FD3329700C71C6C /* SnookerWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,6 +161,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AA74DA4F2FD3329700C71C6C /* SnookerWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA74DA622FD3329A00C71C6C /* Build configuration list for PBXNativeTarget "SnookerWidgetExtension" */;
+			buildPhases = (
+				AA74DA4C2FD3329700C71C6C /* Sources */,
+				AA74DA4D2FD3329700C71C6C /* Frameworks */,
+				AA74DA4E2FD3329700C71C6C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA74DA552FD3329800C71C6C /* SnookerWidget */,
+			);
+			name = SnookerWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = SnookerWidgetExtension;
+			productReference = AA74DA502FD3329700C71C6C /* SnookerWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		AAC264A32E93031A0062804E /* Snooker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AAC264B72E93031C0062804E /* Build configuration list for PBXNativeTarget "Snooker" */;
@@ -102,10 +190,12 @@
 				AAC264A02E93031A0062804E /* Sources */,
 				AAC264A12E93031A0062804E /* Frameworks */,
 				AAC264A22E93031A0062804E /* Resources */,
+				AA74DA662FD3329A00C71C6C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AA74DA602FD3329A00C71C6C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AABD5E762EB919C300B0045D /* Models */,
@@ -130,9 +220,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					AA74DA4F2FD3329700C71C6C = {
+						CreatedOnToolsVersion = 26.2;
+					};
 					AAC264A32E93031A0062804E = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
@@ -156,11 +249,19 @@
 			projectRoot = "";
 			targets = (
 				AAC264A32E93031A0062804E /* Snooker */,
+				AA74DA4F2FD3329700C71C6C /* SnookerWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AA74DA4E2FD3329700C71C6C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAC264A22E93031A0062804E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -172,6 +273,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AA74DA4C2FD3329700C71C6C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AAC264A02E93031A0062804E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -181,7 +289,77 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		AA74DA602FD3329A00C71C6C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA74DA4F2FD3329700C71C6C /* SnookerWidgetExtension */;
+			targetProxy = AA74DA5F2FD3329A00C71C6C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		AA74DA632FD3329A00C71C6C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 45RXZSPTHZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SnookerWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SnookerWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = coders35.Snooker.SnookerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA74DA642FD3329A00C71C6C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 45RXZSPTHZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SnookerWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SnookerWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = coders35.Snooker.SnookerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		AAC264B82E93031C0062804E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -190,7 +368,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Snooker/Snooker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_TEAM = 45RXZSPTHZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Snooker/Info.plist;
@@ -206,7 +384,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.2;
+				MARKETING_VERSION = 4.5;
 				PRODUCT_BUNDLE_IDENTIFIER = coders35.Snooker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -231,7 +409,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Snooker/Snooker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 44;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_TEAM = 45RXZSPTHZ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Snooker/Info.plist;
@@ -247,7 +425,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.2;
+				MARKETING_VERSION = 4.5;
 				PRODUCT_BUNDLE_IDENTIFIER = coders35.Snooker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -390,6 +568,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AA74DA622FD3329A00C71C6C /* Build configuration list for PBXNativeTarget "SnookerWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA74DA632FD3329A00C71C6C /* Debug */,
+				AA74DA642FD3329A00C71C6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AAC2649F2E93031A0062804E /* Build configuration list for PBXProject "Snooker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
