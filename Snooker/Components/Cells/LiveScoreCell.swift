@@ -195,6 +195,18 @@ final class LiveScoreCell: UICollectionViewCell {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+
+    /// Follow (Live Activity) toggle — top-right corner of the card.
+    /// Mirrors the overlapping-badge style used for flag/rank.
+    private let followButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+        button.setImage(UIImage(systemName: "bell", withConfiguration: config), for: .normal)
+        button.tintColor = .tertiaryLabel
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        return button
+    }()
     
     private let liveLabel: UILabel = {
         let label = UILabel()
@@ -261,6 +273,7 @@ final class LiveScoreCell: UICollectionViewCell {
     var onHomePlayerTapped: (() -> Void)?
     var onAwayPlayerTapped: (() -> Void)?
     var onScoreTapped: (() -> Void)?
+    var onFollowTapped: (() -> Void)?
     
     // MARK: - Initialization
     
@@ -283,6 +296,9 @@ final class LiveScoreCell: UICollectionViewCell {
         
         contentView.addSubview(containerView)
         containerView.addSubview(rootStackView)
+        // Added after rootStack so it sits on top in the corner.
+        containerView.addSubview(followButton)
+        followButton.addTarget(self, action: #selector(followTapped), for: .touchUpInside)
         
         // Home player image container setup
         homePlayerImageContainerView.addSubview(homePlayerImageView)
@@ -332,6 +348,10 @@ final class LiveScoreCell: UICollectionViewCell {
     
     @objc private func scoreTapped() {
         onScoreTapped?()
+    }
+
+    @objc private func followTapped() {
+        onFollowTapped?()
     }
     
     private func setupConstraints() {
@@ -396,6 +416,12 @@ final class LiveScoreCell: UICollectionViewCell {
             // Live Indicator
             liveIndicatorView.widthAnchor.constraint(equalToConstant: 10),
             liveIndicatorView.heightAnchor.constraint(equalToConstant: 10),
+
+            // Follow button - top right corner of the card
+            followButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8),
+            followButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
+            followButton.widthAnchor.constraint(equalToConstant: 30),
+            followButton.heightAnchor.constraint(equalToConstant: 30),
         ])
     }
     
@@ -507,8 +533,24 @@ final class LiveScoreCell: UICollectionViewCell {
         }
     }
     
+    // MARK: - Follow Button
+
+    /// Show/hide the follow control. Only live & break matches are followable
+    /// (and only on iOS that supports Live Activities — caller decides).
+    func setFollowAvailable(_ available: Bool) {
+        followButton.isHidden = !available
+    }
+
+    /// Update the follow toggle's icon/tint to reflect the current state.
+    func setFollowing(_ following: Bool) {
+        let config = UIImage.SymbolConfiguration(pointSize: 15, weight: .semibold)
+        let symbol = following ? "bell.fill" : "bell"
+        followButton.setImage(UIImage(systemName: symbol, withConfiguration: config), for: .normal)
+        followButton.tintColor = following ? .systemGreen : .tertiaryLabel
+    }
+
     // MARK: - Helpers
-    
+
     /// Oyuncu adını formatlar
     /// Çinli oyuncular: "**Ding** Junhui" (soyisim bold, önce)
     /// Diğer oyuncular: "Judd **Trump**" (soyisim bold, sonda)
@@ -604,9 +646,12 @@ final class LiveScoreCell: UICollectionViewCell {
         scoreSeparatorLabel.isHidden = false
         matchStatusLabel.text = nil
         matchStatusLabel.font = AppFont.regular(size: Constants.statusFontSize)
+        followButton.isHidden = true
+        setFollowing(false)
         onHomePlayerTapped = nil
         onAwayPlayerTapped = nil
         onScoreTapped = nil
+        onFollowTapped = nil
     }
 }
 
