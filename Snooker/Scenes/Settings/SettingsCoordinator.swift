@@ -62,6 +62,9 @@ final class SettingsCoordinator: Coordinator {
 
         case .signOut:
             confirmSignOut()
+
+        case .deleteAccount:
+            confirmDeleteAccount()
         }
     }
     
@@ -167,6 +170,41 @@ final class SettingsCoordinator: Coordinator {
             Task { await AuthManager.shared.signOut() }
         })
         navigationController.present(alert, animated: true)
+    }
+
+    // MARK: - Delete Account
+
+    private func confirmDeleteAccount() {
+        let alert = UIAlertController(
+            title: "Delete Account",
+            message: "This permanently deletes your account and all associated data. This action cannot be undone.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Delete Account", style: .destructive) { [weak self] _ in
+            self?.performDeleteAccount()
+        })
+        navigationController.present(alert, animated: true)
+    }
+
+    private func performDeleteAccount() {
+        let progress = UIAlertController(
+            title: nil,
+            message: "Deleting your account…",
+            preferredStyle: .alert
+        )
+        navigationController.present(progress, animated: true)
+
+        Task { @MainActor in
+            do {
+                try await AuthManager.shared.deleteAccount()
+                progress.dismiss(animated: true)
+            } catch {
+                progress.dismiss(animated: true) { [weak self] in
+                    self?.presentError(message: "Could not delete your account. Please try again.")
+                }
+            }
+        }
     }
 
     private func presentError(message: String) {

@@ -114,6 +114,7 @@ enum SettingsRoute {
     case announcementsHistory
     case signInWithApple
     case signOut
+    case deleteAccount
 }
 
 // MARK: - ViewModel
@@ -211,6 +212,14 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                     icon: "rectangle.portrait.and.arrow.right",
                     iconColor: .systemRed,
                     title: "Sign Out",
+                    type: .action,
+                    isDestructive: true
+                ),
+                SettingsItem(
+                    id: "delete_account",
+                    icon: "trash",
+                    iconColor: .systemRed,
+                    title: "Delete Account",
                     type: .action,
                     isDestructive: true
                 )
@@ -351,6 +360,8 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             delegate?.navigateTo(route: .signInWithApple)
         case "sign_out":
             delegate?.navigateTo(route: .signOut)
+        case "delete_account":
+            delegate?.navigateTo(route: .deleteAccount)
 
         // Other section
         case "change_app_icon":

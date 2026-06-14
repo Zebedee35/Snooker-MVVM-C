@@ -87,6 +87,45 @@ final class AuthManager {
         notifyAuthStateChanged()
     }
 
+    // MARK: - Delete Account
+
+    /// Permanently deletes the signed-in user's account.
+    ///
+    /// The anon-key client cannot remove an auth user, so this calls the
+    /// `delete-account` Edge Function (authenticated with the user's JWT). The
+    /// function uses the service role key to `auth.admin.deleteUser(uid)` — the
+    /// `ON DELETE CASCADE` foreign keys then drop the `user_profiles` /
+    /// `user_settings` rows — and best-effort revokes the Apple token.
+    ///
+    /// Once the server confirms deletion we sign out locally so the app returns
+    /// to a signed-out state. Throws if the user is not signed in or the
+    /// function call fails (so the UI can keep the account and show an error).
+    func deleteAccount() async throws {
+        guard isSignedIn else { throw AuthError.notSignedIn }
+
+        // Unlink the device first so a deleted account leaves no dangling token.
+        PushNotificationManager.shared.linkDeviceToUser(userId: nil)
+
+        try await SupabaseAPI.client.functions.invoke("delete-account")
+
+        // Server-side deletion succeeded — tear down the local session.
+        do {
+            try await SupabaseAPI.client.auth.signOut()
+        } catch {
+            // The auth user is already gone; a failed sign-out just means the
+            // local token is stale. Clear local state regardless.
+            print("[AuthManager] Sign out after deletion failed: \(error.localizedDescription)")
+        }
+
+        userId = nil
+        displayName = nil
+        email = nil
+        UserDefaults.standard.removeObject(forKey: DefaultsKey.name)
+        UserDefaults.standard.removeObject(forKey: DefaultsKey.email)
+
+        notifyAuthStateChanged()
+    }
+
     // MARK: - Settings Sync
 
     /// Pushes the latest local preferences to the cloud (no-op when signed out).
@@ -241,6 +280,19 @@ final class AuthManager {
     private func notifyAuthStateChanged() {
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: .authStateChanged, object: nil)
+        }
+    }
+}
+
+// MARK: - Errors
+
+enum AuthError: LocalizedError {
+    case notSignedIn
+
+    var errorDescription: String? {
+        switch self {
+        case .notSignedIn:
+            return "You are not signed in."
         }
     }
 }
