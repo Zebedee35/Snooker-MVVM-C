@@ -68,7 +68,9 @@ DECLARE
     v_away_name TEXT;
     v_has_target BOOLEAN;
     v_payload JSONB;
-    v_service_key TEXT := current_setting('app.settings.service_role_key', true);
+    -- See note in 03_: the Edge Function uses its own env service-role key for
+    -- DB work; this header only needs a valid project JWT (anon is fine).
+    v_service_key TEXT := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsdnJ3dnFnemR4ZnZvdGp1ZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3Mjk2NTAsImV4cCI6MjA1NTMwNTY1MH0.ZdDg3droSvP5gb2VehBA_J_ekj4oJuPJE4wzPhXeT48';
     v_live_states TEXT[] := ARRAY['Live', 'Break'];
 BEGIN
     -- Only on the transition INTO a live state (not on every score tick).

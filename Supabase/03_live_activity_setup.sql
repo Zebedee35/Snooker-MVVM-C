@@ -55,7 +55,11 @@ DECLARE
     v_event TEXT;
     v_has_activity BOOLEAN;
     v_payload JSONB;
-    v_service_key TEXT := current_setting('app.settings.service_role_key', true);
+    -- The Edge Function authenticates DB work with its OWN env service-role key;
+    -- this header only needs a valid project JWT to pass the function's auth
+    -- gate, so the public anon key (same one the app uses) is sufficient and
+    -- avoids needing a DB-level GUC (which Supabase blocks).
+    v_service_key TEXT := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsdnJ3dnFnemR4ZnZvdGp1ZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3Mjk2NTAsImV4cCI6MjA1NTMwNTY1MH0.ZdDg3droSvP5gb2VehBA_J_ekj4oJuPJE4wzPhXeT48';
 BEGIN
     -- Only act if there is at least one ACTIVE Live Activity for this match.
     SELECT EXISTS(

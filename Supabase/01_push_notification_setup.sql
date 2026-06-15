@@ -150,14 +150,18 @@ $$ LANGUAGE plpgsql;
 -- 7. Create trigger function for match status changes
 -- ============================================================
 
-CCREATE OR REPLACE FUNCTION notify_match_status_change()
+CREATE OR REPLACE FUNCTION notify_match_status_change()
 RETURNS TRIGGER AS $$
 DECLARE
     v_tournament_name TEXT;
     v_home_player_name TEXT;
     v_away_player_name TEXT;
     v_payload JSONB;
-    v_service_key TEXT := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsdnJ3dnFnemR4ZnZvdGp1ZW1sIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczOTcyOTY1MCwiZXhwIjoyMDU1MzA1NjUwfQ.LkYeYAJ1Dxe-kVU8WZnNh0YVYUtwazQdjGRcydfUIOo';
+    -- The Edge Function authenticates DB work with its OWN env service-role key;
+    -- this header only needs a valid project JWT to pass the function's auth
+    -- gate, so the public anon key (same one the app uses) is sufficient. Avoids
+    -- embedding the secret service_role key in a DB function definition.
+    v_service_key TEXT := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsdnJ3dnFnemR4ZnZvdGp1ZW1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk3Mjk2NTAsImV4cCI6MjA1NTMwNTY1MH0.ZdDg3droSvP5gb2VehBA_J_ekj4oJuPJE4wzPhXeT48';
 BEGIN
     IF OLD.status IS DISTINCT FROM NEW.status 
        AND NEW.status IN ('Break', 'Completed', 'Finished') THEN
