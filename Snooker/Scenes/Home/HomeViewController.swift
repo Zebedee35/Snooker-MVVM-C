@@ -17,6 +17,7 @@ final class HomeViewController: UIViewController {
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.headerReferenceSize = CGSize(width: 0, height: 50)
+        layout.sectionHeadersPinToVisibleBounds = true
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -265,7 +266,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: collectionView.bounds.width, height: TournamentHeaderView.preferredHeight)
         }
         // Section 1+: Round Headers
-        return CGSize(width: collectionView.bounds.width, height: 100)
+        return CGSize(width: collectionView.bounds.width, height: 56)
     }
 }
 

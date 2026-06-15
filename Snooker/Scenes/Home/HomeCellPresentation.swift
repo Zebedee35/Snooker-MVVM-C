@@ -54,7 +54,7 @@ struct MatchSection {
     let roundType: RoundType
     let matches: [HomeCellPresentation]
 
-    /// Round'daki maçların "Best Of" frame sayısı (round genelde tek değere sahip)
+    /// Round'daki maçların "Best of" frame sayısı (round genelde tek değere sahip)
     let numberOfFrames: Int?
 }
 
