@@ -231,7 +231,8 @@ extension HomeViewController: UICollectionViewDataSource {
         guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: RoundHeaderView.identifier, for: indexPath) as? RoundHeaderView else {
             return UICollectionReusableView()
         }
-        headerView.configure(roundName: sections[indexPath.section - 1].roundName)
+        let section = sections[indexPath.section - 1]
+        headerView.configure(roundName: section.roundName, numberOfFrames: section.numberOfFrames)
         return headerView
     }
 }
@@ -264,7 +265,7 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: collectionView.bounds.width, height: TournamentHeaderView.preferredHeight)
         }
         // Section 1+: Round Headers
-        return CGSize(width: collectionView.bounds.width, height: 50)
+        return CGSize(width: collectionView.bounds.width, height: 100)
     }
 }
 

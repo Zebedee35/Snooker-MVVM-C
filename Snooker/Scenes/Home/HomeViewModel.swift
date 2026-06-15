@@ -168,11 +168,12 @@ final class HomeViewModel: HomeViewModelProtocol {
             
             let roundType = RoundType.from(roundName)
             let matchPresentations = roundMatches.map { HomeCellPresentation(match: $0) }
-            
+
             let section = MatchSection(
                 roundName: roundName,
                 roundType: roundType,
-                matches: matchPresentations
+                matches: matchPresentations,
+                numberOfFrames: roundMatches.first?.numberOfFrames
             )
             
             sections.append(section)

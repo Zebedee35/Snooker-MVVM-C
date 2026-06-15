@@ -29,6 +29,7 @@ struct MatchDTO: Decodable, Identifiable {
   let id: String
   let round: String
   let status: String
+  let numberOfFrames: Int?
   let startDateTime: String?
   let homePlayerId: String?
   let awayPlayerId: String?
@@ -42,6 +43,7 @@ struct MatchDTO: Decodable, Identifiable {
     case id
     case round
     case status
+    case numberOfFrames
     case startDateTime
     case homePlayerId
     case awayPlayerId
@@ -123,6 +125,7 @@ extension TournamentWithMatchesDTO {
       id: "fa23f5e4-1526-424d-9c6a-619c2b24d15b",
       round: "Final",
       status: "Completed",
+      numberOfFrames: 35,
       startDateTime: "2024-04-23T13:30:00+00:00",
       homePlayerId: "a8c0d3a6-706b-4bf0-8dce-9cde97fe88c4",
       awayPlayerId: "036bc430-6c51-4d63-a366-a6ca218f7f39",
@@ -165,6 +168,7 @@ extension TournamentWithMatchesDTO {
         id: "a4e81d0f-c20e-4f2a-88eb-84d3fbee53bc",
         round: "Semi Finals",
         status: "Completed",
+        numberOfFrames: 19,
         startDateTime: "2024-04-26T18:00:00+00:00",
         homePlayerId: "036bc430-6c51-4d63-a366-a6ca218f7f39",
         awayPlayerId: "ac932300-dacb-4e91-803b-99a03fa20853",
@@ -196,6 +200,7 @@ extension TournamentWithMatchesDTO {
         id: "407bf6e2-2b5f-4f6b-9638-4e34d46bf51a",
         round: "Round 1",
         status: "Completed",
+        numberOfFrames: 15,
         startDateTime: "2024-05-01T09:00:00+00:00",
         homePlayerId: "9b2532c1-a189-4573-8320-f254d2f9bfde",
         awayPlayerId: "c07238de-bca9-4067-9749-00841bd06d28",
@@ -227,6 +232,7 @@ extension TournamentWithMatchesDTO {
         id: "407bf6e2-2b5f-4f6b-9638-2394839aa",
         round: "Round 1",
         status: "Live",
+        numberOfFrames: 15, 
         startDateTime: "2024-04-27T09:00:00+00:00",
         homePlayerId: "9b2532c1-a189-4573-8320-f254d2f9bfde",
         awayPlayerId: "c07238de-bca9-4067-9749-00841bd06d28",
@@ -258,6 +264,7 @@ extension TournamentWithMatchesDTO {
         id: "fa23f5e4-1526-424d-9c6a-619c2b24d15b",
         round: "Final",
         status: "Completed",
+        numberOfFrames: 35, 
         startDateTime: "2024-04-26T18:00:00+00:00",
         homePlayerId: "a8c0d3a6-706b-4bf0-8dce-9cde97fe88c4",
         awayPlayerId: "036bc430-6c51-4d63-a366-a6ca218f7f39",
@@ -293,6 +300,7 @@ extension TournamentWithMatchesDTO {
       id: "a58af8e3-e369-47f1-8b0b-8393e7a832c4",
       round: "Final",
       status: "Live",
+      numberOfFrames: 9,
       startDateTime: "2025-06-22T09:00:00+00:00",
       homePlayerId: "a85bdd17-6038-43c8-9cec-d492e4a8a2df",
       awayPlayerId: "96a6ed0f-faff-4dea-b155-04d7b5d52752",

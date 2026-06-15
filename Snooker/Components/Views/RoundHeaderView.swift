@@ -23,12 +23,20 @@ final class RoundHeaderView: UICollectionReusableView {
     
     private let roundNameLabel: UILabel = {
         let label = UILabel()
-        label.font = AppFont.bold(size: 18)
+        label.font = AppFont.bold(size: 26)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
+    private let subtitleLabel: UILabel = {
+        let label = UILabel()
+        label.font = AppFont.semiBold(size: 13)
+        label.textColor = .secondaryLabel
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     private let separatorView: UIView = {
         let view = UIView()
         view.backgroundColor = .separator
@@ -53,6 +61,7 @@ final class RoundHeaderView: UICollectionReusableView {
     private func setupUI() {
         addSubview(containerView)
         containerView.addSubview(roundNameLabel)
+        containerView.addSubview(subtitleLabel)
         containerView.addSubview(separatorView)
     }
     
@@ -66,8 +75,12 @@ final class RoundHeaderView: UICollectionReusableView {
             roundNameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
             roundNameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
             roundNameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            roundNameLabel.bottomAnchor.constraint(equalTo: separatorView.topAnchor, constant: -8),
-            
+
+            subtitleLabel.topAnchor.constraint(equalTo: roundNameLabel.bottomAnchor, constant: -2),
+            subtitleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            subtitleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            subtitleLabel.bottomAnchor.constraint(equalTo: separatorView.topAnchor, constant: -8),
+
             separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
             separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
             separatorView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
@@ -77,15 +90,25 @@ final class RoundHeaderView: UICollectionReusableView {
     
     // MARK: - Configuration
     
-    func configure(roundName: String) {
+    func configure(roundName: String, numberOfFrames: Int? = nil) {
         roundNameLabel.text = roundName
+
+        if let numberOfFrames {
+            subtitleLabel.text = "Best Of \(numberOfFrames)"
+            subtitleLabel.isHidden = false
+        } else {
+            subtitleLabel.text = nil
+            subtitleLabel.isHidden = true
+        }
     }
-    
+
     // MARK: - Reuse
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         roundNameLabel.text = nil
+        subtitleLabel.text = nil
+        subtitleLabel.isHidden = false
     }
 }
 
