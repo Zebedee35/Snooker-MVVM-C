@@ -33,6 +33,9 @@ final class SettingsCoordinator: Coordinator {
     
     func handle(route: SettingsRoute) {
         switch route {
+        case .tipJar:
+            showTipJar()
+
         case .changeAppIcon:
             showAppIconPicker()
             
@@ -128,6 +131,11 @@ final class SettingsCoordinator: Coordinator {
 
     private func showAnnouncementsHistory() {
         let viewController = AnnouncementsHistoryViewController()
+        navigationController.pushViewController(viewController, animated: true)
+    }
+
+    private func showTipJar() {
+        let viewController = TipJarViewController()
         navigationController.pushViewController(viewController, animated: true)
     }
 

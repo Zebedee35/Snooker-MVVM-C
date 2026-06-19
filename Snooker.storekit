@@ -1,0 +1,176 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "B7E1B2A0-0001-4A00-9000-000000000000",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "B7E1B2A0-1001-4A00-9000-000000000001",
+      "localizations" : [
+        {
+          "description" : "A small tip, but it means a lot.",
+          "displayName" : "Small Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "coders35.Snooker.tip.small",
+      "referenceName" : "Tip Small",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "3.99",
+      "familyShareable" : false,
+      "internalID" : "B7E1B2A0-1001-4A00-9000-000000000002",
+      "localizations" : [
+        {
+          "description" : "A generous thank-you in the form of a tip.",
+          "displayName" : "Medium Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "coders35.Snooker.tip.medium",
+      "referenceName" : "Tip Medium",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "9.99",
+      "familyShareable" : false,
+      "internalID" : "B7E1B2A0-1001-4A00-9000-000000000003",
+      "localizations" : [
+        {
+          "description" : "A big-hearted thank-you — you're amazing!",
+          "displayName" : "Large Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "coders35.Snooker.tip.large",
+      "referenceName" : "Tip Large",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "B7E1B2A0-2000-4A00-9000-000000000000",
+      "localizations" : [
+
+      ],
+      "name" : "Monthly Support",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "0.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B7E1B2A0-2001-4A00-9000-000000000001",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "A small monthly contribution, steady and valued.",
+              "displayName" : "Steady",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "coders35.Snooker.support.monthly.small",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Support Monthly Small",
+          "subscriptionGroupID" : "B7E1B2A0-2000-4A00-9000-000000000000",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "3.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B7E1B2A0-2001-4A00-9000-000000000002",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Regular support that really helps.",
+              "displayName" : "Loyal",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "coders35.Snooker.support.monthly.medium",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Support Monthly Medium",
+          "subscriptionGroupID" : "B7E1B2A0-2000-4A00-9000-000000000000",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B7E1B2A0-2001-4A00-9000-000000000003",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Wonderful ongoing support — thank you!",
+              "displayName" : "Champion",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "coders35.Snooker.support.monthly.large",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Support Monthly Large",
+          "subscriptionGroupID" : "B7E1B2A0-2000-4A00-9000-000000000000",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

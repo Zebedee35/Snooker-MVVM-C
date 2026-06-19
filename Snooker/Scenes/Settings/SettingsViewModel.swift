@@ -122,6 +122,7 @@ protocol SettingsViewModelDelegate: AnyObject {
 // MARK: - Route
 
 enum SettingsRoute {
+    case tipJar
     case changeAppIcon
     case filmBoxApp
     case contactNameApp
@@ -207,6 +208,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     private func buildSections() {
         sections = [
             buildAccountSection(),
+            buildSupportSection(),
             buildNotificationSection(),
             buildLiveActivitySection(),
             buildOtherSection(),
@@ -234,6 +236,20 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             )
         }
         return SettingsSection(title: "AUTO LOCK SCREEN (LIVE ACTIVITY)", items: items)
+    }
+
+    /// Optional tip jar — sits right under ACCOUNT so a happy user sees it early.
+    private func buildSupportSection() -> SettingsSection {
+        let items = [
+            SettingsItem(
+                id: "support_tip",
+                icon: "heart.fill",
+                iconColor: .systemRed,
+                title: "Support the App",
+                type: .navigation
+            )
+        ]
+        return SettingsSection(title: "SUPPORT", items: items)
     }
 
     private func buildAccountSection() -> SettingsSection {
@@ -383,6 +399,10 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     
     func handleSelection(item: SettingsItem) {
         switch item.id {
+        // Support section
+        case "support_tip":
+            delegate?.navigateTo(route: .tipJar)
+
         // Notification radio buttons
         case let id where id.hasPrefix("notification_"):
             let settingId = String(id.dropFirst("notification_".count))

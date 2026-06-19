@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA4376662FE5FEE000BF4EB1 /* Snooker.storekit in Resources */ = {isa = PBXBuildFile; fileRef = AA4376652FE5FEE000BF4EB1 /* Snooker.storekit */; };
 		AA74DA522FD3329800C71C6C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA74DA512FD3329700C71C6C /* WidgetKit.framework */; };
 		AA74DA542FD3329800C71C6C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA74DA532FD3329800C71C6C /* SwiftUI.framework */; };
 		AA74DA612FD3329A00C71C6C /* SnookerWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AA74DA502FD3329700C71C6C /* SnookerWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -42,6 +43,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AA4376652FE5FEE000BF4EB1 /* Snooker.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Snooker.storekit; sourceTree = "<group>"; };
 		AA74DA502FD3329700C71C6C /* SnookerWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SnookerWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA74DA512FD3329700C71C6C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		AA74DA532FD3329800C71C6C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -146,6 +148,7 @@
 				AAB319A92E96F4AF0014CA2A /* Frameworks */,
 				AAC264A52E93031A0062804E /* Products */,
 				AA77FA5C2F1D38D500730596 /* Icon.icon */,
+				AA4376652FE5FEE000BF4EB1 /* Snooker.storekit */,
 			);
 			sourceTree = "<group>";
 		};
@@ -267,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA77FA5D2F1D38D500730596 /* Icon.icon in Resources */,
+				AA4376662FE5FEE000BF4EB1 /* Snooker.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
