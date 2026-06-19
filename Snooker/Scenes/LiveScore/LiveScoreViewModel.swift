@@ -61,7 +61,13 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     
     private let service: LiveScoreServiceProtocol
     private var cellPresentations: [LiveScoreCellPresentation] = []
-    
+
+    /// Egress guard: çok sık tekrarlanan fetch'leri (viewDidLoad + viewWillAppear +
+    /// tab geçişi gibi) atlamak için. Pull-to-refresh ve ayar değişikliği `force`
+    /// ile bunu bypass eder.
+    private var lastFetchDate: Date?
+    private let minFetchInterval: TimeInterval = 30
+
     private var hideTBDMatches: Bool {
         UserDefaults.standard.bool(forKey: "hide_tbd_matches")
     }
@@ -93,7 +99,8 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
 
     @objc private func handleTBDSettingChanged() {
         Task { @MainActor in
-            self.loadData()
+            // Filtre değişti; sonucu hemen yansıt, throttle'a takılma.
+            self.performLoad(force: true)
         }
     }
 
@@ -106,8 +113,23 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     }
     
     func loadData() {
+        performLoad(force: false)
+    }
+
+    func refreshData() {
+        // Pull-to-refresh: kullanıcı bilinçli istedi, throttle'ı bypass et.
+        performLoad(force: true)
+    }
+
+    private func performLoad(force: Bool) {
+        // Son fetch'in üstünden minFetchInterval geçmediyse gereksiz isteği atla.
+        if !force, let last = lastFetchDate, Date().timeIntervalSince(last) < minFetchInterval {
+            return
+        }
+        lastFetchDate = Date()
+
         delegate?.handleOutput(.showLoading(true))
-        
+
         Task {
             do {
                 let matches = try await service.fetchLiveMatches()
@@ -140,10 +162,6 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
                 print("Error fetching live matches: \(error)")
             }
         }
-    }
-    
-    func refreshData() {
-        loadData()
     }
     
     func selectMatch(at index: Int) {

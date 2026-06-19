@@ -73,8 +73,15 @@ final class LiveScoreViewController: UIViewController {
     var cellPresentations: [LiveScoreCellPresentation] = []
     var coordinator: LiveScoreCoordinator?
     private var isEmptyState: Bool = false
+    private var isViewVisible: Bool = false
     private var autoRefreshTimer: Timer?
-    private let autoRefreshInterval: TimeInterval = 60 // 1 minute
+    /// Canlı maç varken kullanılan yenileme aralığı.
+    private let activeRefreshInterval: TimeInterval = 120 // 2 minutes
+    /// Canlı maç yokken kullanılan boşta aralık — sadece yeni maç başladı mı diye
+    /// seyrek yoklar, hızlı polling'i (ve egress'i) durdurur.
+    private let idleRefreshInterval: TimeInterval = 300 // 5 minutes
+    /// Timer'ın o an hangi aralıkla kurulduğu; gereksiz yeniden kurmayı önler.
+    private var currentRefreshInterval: TimeInterval?
     
     // MARK: - Lifecycle
     
@@ -111,29 +118,38 @@ final class LiveScoreViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         
-        // Reload data when tab becomes visible
+        isViewVisible = true
+
+        // Reload data when tab becomes visible (throttle'lı; sık tekrarları VM atar)
         viewModel.loadData()
-        
+
         // Start auto-refresh timer
-        startAutoRefreshTimer()
+        updateAutoRefreshTimer()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
+        isViewVisible = false
+
         // Stop auto-refresh timer when leaving the screen
         stopAutoRefreshTimer()
     }
-    
+
     // MARK: - Auto Refresh
-    
-    private func startAutoRefreshTimer() {
-        // Invalidate existing timer if any
-        stopAutoRefreshTimer()
-        
-        // Create new timer
+
+    /// Timer'ı mevcut duruma göre kurar: canlı maç varsa `activeRefreshInterval`,
+    /// yoksa `idleRefreshInterval`. Aralık değişmediyse mevcut timer'a dokunmaz.
+    private func updateAutoRefreshTimer() {
+        guard isViewVisible else { return }
+
+        let desiredInterval = isEmptyState ? idleRefreshInterval : activeRefreshInterval
+        if currentRefreshInterval == desiredInterval, autoRefreshTimer != nil { return }
+
+        currentRefreshInterval = desiredInterval
+        autoRefreshTimer?.invalidate()
         autoRefreshTimer = Timer.scheduledTimer(
-            withTimeInterval: autoRefreshInterval,
+            withTimeInterval: desiredInterval,
             repeats: true
         ) { [weak self] _ in
             Task { @MainActor in
@@ -141,10 +157,11 @@ final class LiveScoreViewController: UIViewController {
             }
         }
     }
-    
+
     private func stopAutoRefreshTimer() {
         autoRefreshTimer?.invalidate()
         autoRefreshTimer = nil
+        currentRefreshInterval = nil
     }
     
     // MARK: - Setup
@@ -252,6 +269,8 @@ extension LiveScoreViewController: LiveScoreViewModelDelegate {
             isEmptyState = isEmpty
             emptyStateLabel.isHidden = !isEmpty
             collectionView.reloadData()
+            // Canlı maç varlığına göre polling hızını ayarla (egress).
+            updateAutoRefreshTimer()
 
         case .updateFollow(let index, let isFollowing):
             let indexPath = IndexPath(item: index, section: 0)
