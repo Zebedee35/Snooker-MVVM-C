@@ -109,6 +109,11 @@ final class HomeViewController: UIViewController {
     @objc private func handleRefresh() {
         viewModel.refreshData()
     }
+
+    private func showBracket() {
+        let title = tournamentPresentation?.name ?? "Bracket"
+        coordinator?.showBracket(matches: viewModel.bracketMatches, title: title)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -223,7 +228,11 @@ extension HomeViewController: UICollectionViewDataSource {
                 return UICollectionReusableView()
             }
             if let presentation = tournamentPresentation {
-                headerView.configure(with: presentation)
+                // TODO: gate the bracket button per-tournament once we decide which ones get it.
+                headerView.configure(with: presentation, showsBracketButton: true)
+            }
+            headerView.onBracketTapped = { [weak self] in
+                self?.showBracket()
             }
             return headerView
         }

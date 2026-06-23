@@ -12,7 +12,7 @@ import UIKit
 final class TournamentHeaderView: UICollectionReusableView {
     
     static let identifier = "TournamentHeaderView"
-    static let preferredHeight: CGFloat = 180
+    static let preferredHeight: CGFloat = 214
     
     // MARK: - Constants
     
@@ -47,6 +47,9 @@ final class TournamentHeaderView: UICollectionReusableView {
         return layer
     }()
     
+    /// Called when the bracket row is tapped.
+    var onBracketTapped: (() -> Void)?
+
     // Tournament Name
     private let tournamentNameLabel: UILabel = {
         let label = UILabel()
@@ -149,10 +152,49 @@ final class TournamentHeaderView: UICollectionReusableView {
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
-    
+
+    // Bracket Row (tappable — opens the bracket tree screen)
+    private let bracketIconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "arrow.triangle.branch")
+        imageView.tintColor = .systemIndigo
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
+    private let bracketLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Tournament Bracket"
+        label.font = AppFont.medium(size: 15)
+        label.textColor = .label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    private let bracketChevron: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "chevron.right")
+        imageView.tintColor = .tertiaryLabel
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+
+    private lazy var bracketStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [bracketIconView, bracketLabel, bracketChevron])
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = 8
+        stack.isHidden = true
+        stack.isUserInteractionEnabled = true
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
     // Info Container Stack
     private lazy var infoStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [locationStack, venueStack, dateStack])
+        let stack = UIStackView(arrangedSubviews: [locationStack, venueStack, dateStack, bracketStack])
         stack.axis = .vertical
         stack.alignment = .leading
         stack.spacing = Constants.spacing
@@ -189,6 +231,13 @@ final class TournamentHeaderView: UICollectionReusableView {
         containerView.addSubview(tournamentNameLabel)
         containerView.addSubview(dividerView)
         containerView.addSubview(infoStackView)
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(bracketRowTapped))
+        bracketStack.addGestureRecognizer(tap)
+    }
+
+    @objc private func bracketRowTapped() {
+        onBracketTapped?()
     }
     
     private func setupConstraints() {
@@ -203,7 +252,7 @@ final class TournamentHeaderView: UICollectionReusableView {
             tournamentNameLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.verticalPadding),
             tournamentNameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.horizontalPadding),
             tournamentNameLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.horizontalPadding),
-            
+
             // Divider
             dividerView.topAnchor.constraint(equalTo: tournamentNameLabel.bottomAnchor, constant: 12),
             dividerView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.horizontalPadding),
@@ -222,6 +271,10 @@ final class TournamentHeaderView: UICollectionReusableView {
             venueIconView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
             dateIconView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
             dateIconView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
+            bracketIconView.widthAnchor.constraint(equalToConstant: Constants.iconSize),
+            bracketIconView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
+            bracketChevron.widthAnchor.constraint(equalToConstant: 12),
+            bracketChevron.heightAnchor.constraint(equalToConstant: 12),
         ])
     }
     
@@ -233,9 +286,11 @@ final class TournamentHeaderView: UICollectionReusableView {
         city: String?,
         venue: String?,
         startDate: String,
-        endDate: String
+        endDate: String,
+        showsBracketButton: Bool = false
     ) {
         tournamentNameLabel.text = name
+        bracketStack.isHidden = !showsBracketButton
         
         // Location (City, Country)
         var locationParts: [String] = []
@@ -260,14 +315,15 @@ final class TournamentHeaderView: UICollectionReusableView {
     }
     
     /// TournamentWithMatchesDTO için convenience method
-    func configure(with tournament: TournamentHeaderPresentation) {
+    func configure(with tournament: TournamentHeaderPresentation, showsBracketButton: Bool = false) {
         configure(
             name: tournament.name,
             country: tournament.country,
             city: tournament.city,
             venue: tournament.venue,
             startDate: tournament.startDate,
-            endDate: tournament.endDate
+            endDate: tournament.endDate,
+            showsBracketButton: showsBracketButton
         )
     }
     

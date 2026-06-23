@@ -23,6 +23,11 @@ final class HomeCoordinator: Coordinator {
         navigationController.setViewControllers([viewController], animated: true)
     }
     
+    func showBracket(matches: [MatchDTO], title: String) {
+        let viewController = BracketViewController(matches: matches, title: title)
+        navigationController.pushViewController(viewController, animated: true)
+    }
+
     func handle(route: HomeRoute) {
         switch route {
         case .matchDetail(let presentation):

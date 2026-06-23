@@ -30,6 +30,10 @@ struct MatchDTO: Decodable, Identifiable {
   let round: String
   let status: String
   let numberOfFrames: Int?
+  /// Draw position within the tournament — used to reconstruct the bracket tree.
+  let fixtureNumber: Int?
+  /// Whether both player slots are filled (vs. waiting on a feeder match).
+  let playersAllocated: Bool?
   let startDateTime: String?
   let homePlayerId: String?
   let awayPlayerId: String?
@@ -44,6 +48,8 @@ struct MatchDTO: Decodable, Identifiable {
     case round
     case status
     case numberOfFrames
+    case fixtureNumber
+    case playersAllocated
     case startDateTime
     case homePlayerId
     case awayPlayerId
@@ -52,6 +58,40 @@ struct MatchDTO: Decodable, Identifiable {
     case homePlayer
     case awayPlayer
     case frames
+  }
+
+  // Explicit init so existing mock `.init(...)` calls keep compiling; the two
+  // bracket fields default to nil and Decodable's init(from:) is still synthesized.
+  init(
+    id: String,
+    round: String,
+    status: String,
+    numberOfFrames: Int?,
+    startDateTime: String?,
+    homePlayerId: String?,
+    awayPlayerId: String?,
+    homePlayerScore: Int?,
+    awayPlayerScore: Int?,
+    homePlayer: PlayerDTO,
+    awayPlayer: PlayerDTO,
+    frames: [LiveMatchFrameDTO]?,
+    fixtureNumber: Int? = nil,
+    playersAllocated: Bool? = nil
+  ) {
+    self.id = id
+    self.round = round
+    self.status = status
+    self.numberOfFrames = numberOfFrames
+    self.fixtureNumber = fixtureNumber
+    self.playersAllocated = playersAllocated
+    self.startDateTime = startDateTime
+    self.homePlayerId = homePlayerId
+    self.awayPlayerId = awayPlayerId
+    self.homePlayerScore = homePlayerScore
+    self.awayPlayerScore = awayPlayerScore
+    self.homePlayer = homePlayer
+    self.awayPlayer = awayPlayer
+    self.frames = frames
   }
 }
 

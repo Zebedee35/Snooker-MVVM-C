@@ -10,6 +10,8 @@ import UIKit
 @MainActor
 protocol HomeViewModelProtocol: AnyObject {
     var delegate: HomeViewModelDelegate? { get set }
+    /// Raw matches (with fixtureNumber) for the bracket view.
+    var bracketMatches: [MatchDTO] { get }
     func loadData()
     func refreshData()
     func selectMatch(at indexPath: IndexPath)
@@ -44,6 +46,8 @@ final class HomeViewModel: HomeViewModelProtocol {
     private let tournamentId: String?
     private var tournament: TournamentWithMatchesDTO?
     private var sections: [MatchSection] = []
+
+    var bracketMatches: [MatchDTO] { tournament?.matches ?? [] }
     
     private var hideTBDMatches: Bool {
         UserDefaults.standard.bool(forKey: "hide_tbd_matches")
