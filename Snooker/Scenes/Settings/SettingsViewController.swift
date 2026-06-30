@@ -211,7 +211,9 @@ extension SettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = viewModel.sections[indexPath.section].items[indexPath.row]
         switch item.type {
-        case .app, .profile:
+        case .profile:
+            return 78
+        case .app:
             return 70
         case .appleSignIn:
             return 56

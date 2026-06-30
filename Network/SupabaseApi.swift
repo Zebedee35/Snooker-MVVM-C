@@ -161,12 +161,13 @@ struct SupabaseAPI {
     }
     
     /// Canlı maç verilerini RPC ile cekiyoruz.
+    /// RPC canlı maç yokken dizi yerine `null` dönebiliyor; bu durumda boş dizi say.
     static func fetchLiveMatches() async throws -> [MatchDTO] {
-        let response: [MatchDTO] = try await client
+        let response: [MatchDTO]? = try await client
             .rpc("get_live_matches")
             .execute()
             .value
-        return response
+        return response ?? []
     }
     
     /// Oyuncu sıralaması verilerini çek

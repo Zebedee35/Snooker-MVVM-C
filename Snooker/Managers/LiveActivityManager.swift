@@ -88,7 +88,7 @@ final class LiveActivityManager {
 
         let attributes = MatchLiveActivityAttributes(
             matchId: match.matchId,
-            tournamentName: match.round,            // pass the real tournament name if you have it here
+            tournamentName: match.tournamentName ?? "",   // real tournament name; round is shown separately on the right
             homeName: match.homePlayerShortName,
             homeFlag: match.homePlayerFlag ?? "",
             awayName: match.awayPlayerShortName,

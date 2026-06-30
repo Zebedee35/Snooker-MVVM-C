@@ -36,6 +36,7 @@ struct LiveScoreCellPresentation {
     
     let matchStatus: String
     let round: String
+    let tournamentName: String?
     let startDateTime: String?
     
     /// Maç planlanmış mı (henüz başlamamış)?
@@ -169,6 +170,7 @@ struct LiveScoreCellPresentation {
         
         self.matchStatus = match.status
         self.round = match.round
+        self.tournamentName = match.tournamentName
         self.startDateTime = match.startDateTime
     }
     
@@ -197,6 +199,7 @@ struct LiveScoreCellPresentation {
         awayPlayerTurnedPro: Int? = nil,
         matchStatus: String,
         round: String,
+        tournamentName: String? = nil,
         startDateTime: String? = nil
     ) {
         self.matchId = matchId
@@ -222,6 +225,7 @@ struct LiveScoreCellPresentation {
         self.awayPlayerTurnedPro = awayPlayerTurnedPro
         self.matchStatus = matchStatus
         self.round = round
+        self.tournamentName = tournamentName
         self.startDateTime = startDateTime
     }
     

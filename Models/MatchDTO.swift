@@ -29,6 +29,9 @@ struct MatchDTO: Decodable, Identifiable {
   let id: String
   let round: String
   let status: String
+  /// Display name of the tournament this match belongs to. Optional because not
+  /// every RPC populates it; the Live Activity shows it above the score.
+  let tournamentName: String?
   let numberOfFrames: Int?
   /// Draw position within the tournament — used to reconstruct the bracket tree.
   let fixtureNumber: Int?
@@ -47,6 +50,7 @@ struct MatchDTO: Decodable, Identifiable {
     case id
     case round
     case status
+    case tournamentName
     case numberOfFrames
     case fixtureNumber
     case playersAllocated
@@ -76,11 +80,13 @@ struct MatchDTO: Decodable, Identifiable {
     awayPlayer: PlayerDTO,
     frames: [LiveMatchFrameDTO]?,
     fixtureNumber: Int? = nil,
-    playersAllocated: Bool? = nil
+    playersAllocated: Bool? = nil,
+    tournamentName: String? = nil
   ) {
     self.id = id
     self.round = round
     self.status = status
+    self.tournamentName = tournamentName
     self.numberOfFrames = numberOfFrames
     self.fixtureNumber = fixtureNumber
     self.playersAllocated = playersAllocated

@@ -49,11 +49,13 @@ struct SnookerWidgetLiveActivity: Widget {
                     HStack {
                         StatusPill(status: context.state.status)
                         Spacer()
-                        Text(context.attributes.tournamentName)
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                        Spacer()
+                        if !context.attributes.tournamentName.isEmpty {
+                            Text(context.attributes.tournamentName)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                            Spacer()
+                        }
                         Text(context.state.round)
                             .font(.caption2.weight(.semibold))
                     }
@@ -88,11 +90,13 @@ private struct LockScreenLiveActivityView: View {
             HStack {
                 StatusPill(status: context.state.status)
                 Spacer()
-                Text(context.attributes.tournamentName)
-                    .font(.caption2)
-                    .foregroundStyle(.white.opacity(0.7))
-                    .lineLimit(1)
-                Spacer()
+                if !context.attributes.tournamentName.isEmpty {
+                    Text(context.attributes.tournamentName)
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .lineLimit(1)
+                    Spacer()
+                }
                 Text(context.state.round)
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.9))

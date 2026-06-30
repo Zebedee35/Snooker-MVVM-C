@@ -33,6 +33,9 @@ final class SettingsCoordinator: Coordinator {
     
     func handle(route: SettingsRoute) {
         switch route {
+        case .editProfile:
+            showEditProfile()
+
         case .tipJar:
             showTipJar()
 
@@ -136,6 +139,11 @@ final class SettingsCoordinator: Coordinator {
 
     private func showTipJar() {
         let viewController = TipJarViewController()
+        navigationController.pushViewController(viewController, animated: true)
+    }
+
+    private func showEditProfile() {
+        let viewController = EditProfileViewController()
         navigationController.pushViewController(viewController, animated: true)
     }
 

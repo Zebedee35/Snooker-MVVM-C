@@ -122,6 +122,7 @@ protocol SettingsViewModelDelegate: AnyObject {
 // MARK: - Route
 
 enum SettingsRoute {
+    case editProfile
     case tipJar
     case changeAppIcon
     case filmBoxApp
@@ -399,6 +400,10 @@ final class SettingsViewModel: SettingsViewModelProtocol {
     
     func handleSelection(item: SettingsItem) {
         switch item.id {
+        // Account section
+        case "profile":
+            delegate?.navigateTo(route: .editProfile)
+
         // Support section
         case "support_tip":
             delegate?.navigateTo(route: .tipJar)

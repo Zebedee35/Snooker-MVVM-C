@@ -26,12 +26,14 @@ final class AuthManager {
     private(set) var userId: String?
     private(set) var displayName: String?
     private(set) var email: String?
+    private(set) var nickname: String?
 
     var isSignedIn: Bool { userId != nil }
 
     private enum DefaultsKey {
         static let name = "auth_user_name"
         static let email = "auth_user_email"
+        static let nickname = "auth_user_nickname"
         static let notificationSetting = "notification_setting"
         static let darkMode = "dark_mode"
         static let hideTBD = "hide_tbd"
@@ -44,6 +46,10 @@ final class AuthManager {
         do {
             let session = try await SupabaseAPI.client.auth.session
             handleSession(session)
+            // Recover the display name / nickname from the cloud in case this
+            // install never received them from Apple (it only hands the name
+            // over on the very first authorization).
+            await loadCloudProfile()
             await pullCloudSettings()
         } catch {
             // No valid session — user is simply signed out.
@@ -61,6 +67,9 @@ final class AuthManager {
         )
         handleSession(session, overrideName: fullName, overrideEmail: email)
 
+        // Resolve the name from (in order) this sign-in's Apple payload, the
+        // cloud profile, then the local cache — and load the saved nickname.
+        await loadCloudProfile(appleName: fullName)
         await upsertProfile()
         await reconcileSettingsOnSignIn()
 
@@ -88,8 +97,10 @@ final class AuthManager {
         userId = nil
         displayName = nil
         email = nil
+        nickname = nil
         UserDefaults.standard.removeObject(forKey: DefaultsKey.name)
         UserDefaults.standard.removeObject(forKey: DefaultsKey.email)
+        UserDefaults.standard.removeObject(forKey: DefaultsKey.nickname)
 
         notifyAuthStateChanged()
     }
@@ -127,8 +138,10 @@ final class AuthManager {
         userId = nil
         displayName = nil
         email = nil
+        nickname = nil
         UserDefaults.standard.removeObject(forKey: DefaultsKey.name)
         UserDefaults.standard.removeObject(forKey: DefaultsKey.email)
+        UserDefaults.standard.removeObject(forKey: DefaultsKey.nickname)
 
         notifyAuthStateChanged()
     }
@@ -181,17 +194,105 @@ final class AuthManager {
             displayName = UserDefaults.standard.string(forKey: DefaultsKey.name)
         }
 
+        nickname = UserDefaults.standard.string(forKey: DefaultsKey.nickname)
+
+        persistIdentity()
+        notifyAuthStateChanged()
+    }
+
+    /// Caches the current identity to `UserDefaults` so it survives app
+    /// relaunches (but not a delete + reinstall, which is why we also keep a
+    /// copy in the cloud `user_profiles` row).
+    private func persistIdentity() {
         UserDefaults.standard.set(displayName, forKey: DefaultsKey.name)
         UserDefaults.standard.set(email, forKey: DefaultsKey.email)
+        UserDefaults.standard.set(nickname, forKey: DefaultsKey.nickname)
+    }
 
+    // MARK: - Public: Profile Editing
+
+    /// Persists user-edited profile fields. An empty value leaves the existing
+    /// stored value untouched. The nickname must be globally unique — a
+    /// collision (DB unique index, code 23505) surfaces as
+    /// `AuthError.nicknameTaken` so the UI can prompt for another.
+    func updateProfile(displayName newName: String?, nickname newNickname: String?) async throws {
+        guard let userId else { throw AuthError.notSignedIn }
+
+        let trimmedName = newName?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedNick = newNickname?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let resolvedName = (trimmedName?.isEmpty == false) ? trimmedName : nil
+        let resolvedNick = (trimmedNick?.isEmpty == false) ? trimmedNick : nil
+
+        let row = ProfileRow(id: userId, fullName: resolvedName, email: email, nickname: resolvedNick)
+        do {
+            try await SupabaseAPI.client
+                .from("user_profiles")
+                .upsert(row, onConflict: "id")
+                .execute()
+        } catch {
+            if Self.isUniqueViolation(error) { throw AuthError.nicknameTaken }
+            throw error
+        }
+
+        if let resolvedName { displayName = resolvedName }
+        if let resolvedNick { nickname = resolvedNick }
+        persistIdentity()
         notifyAuthStateChanged()
+    }
+
+    /// True when the error is a Postgres unique-constraint violation (23505),
+    /// which for `user_profiles` can only be the nickname index.
+    private static func isUniqueViolation(_ error: Error) -> Bool {
+        let text = "\(error)".lowercased()
+        return text.contains("23505") || text.contains("duplicate key")
     }
 
     // MARK: - Private: Profile
 
+    /// Pulls the stored `full_name` / `nickname` from the cloud and fills in
+    /// anything we don't already have locally. A fresh Apple name (only handed
+    /// to us on the very first authorization) always wins.
+    private func loadCloudProfile(appleName: String? = nil) async {
+        let cloud = await fetchCloudProfile()
+
+        if let appleName, !appleName.isEmpty {
+            displayName = appleName
+        } else if let cloudName = cloud?.fullName, !cloudName.isEmpty {
+            displayName = cloudName
+        }
+
+        if let cloudNickname = cloud?.nickname, !cloudNickname.isEmpty {
+            nickname = cloudNickname
+        }
+
+        persistIdentity()
+        notifyAuthStateChanged()
+    }
+
+    private func fetchCloudProfile() async -> ProfileResponse? {
+        guard let userId else { return nil }
+        do {
+            let rows: [ProfileResponse] = try await SupabaseAPI.client
+                .from("user_profiles")
+                .select("full_name, nickname")
+                .eq("id", value: userId)
+                .limit(1)
+                .execute()
+                .value
+            return rows.first
+        } catch {
+            print("[AuthManager] Fetch cloud profile failed: \(error)")
+            return nil
+        }
+    }
+
+    /// Seeds / refreshes the cloud profile during sign-in. `nil` fields are
+    /// omitted from the payload (see `ProfileRow`) so we never blank out a name
+    /// the cloud already holds when Apple gives us nothing on a reinstall.
     private func upsertProfile() async {
         guard let userId else { return }
-        let row = ProfileRow(id: userId, fullName: displayName, email: email)
+        let row = ProfileRow(id: userId, fullName: displayName, email: email, nickname: nil)
         do {
             try await SupabaseAPI.client
                 .from("user_profiles")
@@ -323,11 +424,14 @@ final class AuthManager {
 
 enum AuthError: LocalizedError {
     case notSignedIn
+    case nicknameTaken
 
     var errorDescription: String? {
         switch self {
         case .notSignedIn:
             return "You are not signed in."
+        case .nicknameTaken:
+            return "This nickname is already taken. Please choose another."
         }
     }
 }
@@ -338,16 +442,36 @@ private struct AppleCodeExchangeRequest: Encodable {
     let code: String
 }
 
+/// Encodes only the non-nil fields (`encodeIfPresent`) so a partial update —
+/// e.g. setting just the nickname — leaves the other columns untouched on the
+/// upsert's conflict path instead of nulling them out.
 private struct ProfileRow: Encodable {
     let id: String
     let fullName: String?
     let email: String?
+    let nickname: String?
 
     enum CodingKeys: String, CodingKey {
         case id
         case fullName = "full_name"
         case email
+        case nickname
     }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(fullName, forKey: .fullName)
+        try container.encodeIfPresent(email, forKey: .email)
+        try container.encodeIfPresent(nickname, forKey: .nickname)
+    }
+}
+
+/// Decoded with the shared client's `convertFromSnakeCase` strategy, so
+/// `full_name` maps onto `fullName` automatically.
+private struct ProfileResponse: Decodable {
+    let fullName: String?
+    let nickname: String?
 }
 
 private struct SettingsUpsertRow: Encodable {

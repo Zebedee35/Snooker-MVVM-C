@@ -45,6 +45,14 @@ final class SettingsProfileCell: UITableViewCell {
         return label
     }()
 
+    private let nicknameLabel: UILabel = {
+        let label = UILabel()
+        label.font = AppFont.regular(size: 13)
+        label.textColor = .systemBlue
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -55,11 +63,18 @@ final class SettingsProfileCell: UITableViewCell {
     }
 
     private func setupUI() {
-        selectionStyle = .none
+        accessoryType = .disclosureIndicator
         contentView.addSubview(avatarView)
         avatarView.addSubview(initialsLabel)
-        contentView.addSubview(nameLabel)
-        contentView.addSubview(emailLabel)
+
+        // Stack the text lines and center them vertically so the cell looks
+        // right whether or not the optional nickname line is present.
+        let textStack = UIStackView(arrangedSubviews: [nameLabel, emailLabel, nicknameLabel])
+        textStack.axis = .vertical
+        textStack.spacing = 2
+        textStack.alignment = .leading
+        textStack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(textStack)
 
         NSLayoutConstraint.activate([
             avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -70,13 +85,11 @@ final class SettingsProfileCell: UITableViewCell {
             initialsLabel.centerXAnchor.constraint(equalTo: avatarView.centerXAnchor),
             initialsLabel.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
 
-            nameLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 12),
-            nameLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
-            nameLabel.topAnchor.constraint(equalTo: avatarView.topAnchor, constant: 2),
-
-            emailLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            emailLabel.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
-            emailLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 2)
+            textStack.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 12),
+            textStack.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -16),
+            textStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            textStack.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 8),
+            textStack.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -8)
         ])
     }
 
@@ -85,6 +98,15 @@ final class SettingsProfileCell: UITableViewCell {
         emailLabel.text = item.subtitle
         emailLabel.isHidden = (item.subtitle?.isEmpty ?? true)
         initialsLabel.text = Self.initials(from: item.title, fallback: item.subtitle)
+
+        // The nickname is the user's chat identity; show it as "@handle" when set.
+        if let nickname = AuthManager.shared.nickname, !nickname.isEmpty {
+            nicknameLabel.text = "@\(nickname)"
+            nicknameLabel.isHidden = false
+        } else {
+            nicknameLabel.text = nil
+            nicknameLabel.isHidden = true
+        }
     }
 
     /// Derives up to two uppercase initials from the name, falling back to the
@@ -108,6 +130,7 @@ final class SettingsProfileCell: UITableViewCell {
         super.prepareForReuse()
         nameLabel.text = nil
         emailLabel.text = nil
+        nicknameLabel.text = nil
         initialsLabel.text = nil
     }
 }
