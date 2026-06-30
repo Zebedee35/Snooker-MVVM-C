@@ -228,8 +228,7 @@ extension HomeViewController: UICollectionViewDataSource {
                 return UICollectionReusableView()
             }
             if let presentation = tournamentPresentation {
-                // TODO: gate the bracket button per-tournament once we decide which ones get it.
-                headerView.configure(with: presentation, showsBracketButton: true)
+                headerView.configure(with: presentation, showsBracketButton: viewModel.showsBracketButton)
             }
             headerView.onBracketTapped = { [weak self] in
                 self?.showBracket()

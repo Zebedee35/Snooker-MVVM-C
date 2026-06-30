@@ -12,7 +12,7 @@ import UIKit
 final class TournamentHeaderView: UICollectionReusableView {
     
     static let identifier = "TournamentHeaderView"
-    static let preferredHeight: CGFloat = 214
+    static let preferredHeight: CGFloat = 244
     
     // MARK: - Constants
     
@@ -153,21 +153,22 @@ final class TournamentHeaderView: UICollectionReusableView {
         return stack
     }()
 
-    // Bracket Row (tappable — opens the bracket tree screen)
+    // Bracket Button (tappable — opens the bracket tree screen)
     private let bracketIconView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "arrow.triangle.branch")
-        imageView.tintColor = .systemIndigo
+        imageView.tintColor = .white
         imageView.contentMode = .scaleAspectFit
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
 
     private let bracketLabel: UILabel = {
         let label = UILabel()
-        label.text = "Tournament Bracket"
-        label.font = AppFont.medium(size: 15)
-        label.textColor = .label
+        label.text = "View Tournament Bracket"
+        label.font = AppFont.semiBold(size: 15)
+        label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -175,26 +176,53 @@ final class TournamentHeaderView: UICollectionReusableView {
     private let bracketChevron: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.right")
-        imageView.tintColor = .tertiaryLabel
+        imageView.tintColor = .white.withAlphaComponent(0.9)
         imageView.contentMode = .scaleAspectFit
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
 
-    private lazy var bracketStack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [bracketIconView, bracketLabel, bracketChevron])
+    /// Small attention badge; pulses gently while visible (discoverability).
+    private let newBadge: UILabel = {
+        let label = PaddedLabel(insets: UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6))
+        label.text = "NEW"
+        label.font = AppFont.bold(size: 10)
+        label.textColor = .systemIndigo
+        label.backgroundColor = .white
+        label.layer.cornerRadius = 6
+        label.layer.masksToBounds = true
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
+    /// The whole filled pill is the tap target; dims while pressed.
+    private let bracketButton: PressableControl = {
+        let control = PressableControl()
+        control.backgroundColor = .systemIndigo
+        control.layer.cornerRadius = 12
+        control.isHidden = true
+        control.translatesAutoresizingMaskIntoConstraints = false
+        return control
+    }()
+
+    private lazy var bracketContentStack: UIStackView = {
+        // spacer pushes the chevron to the trailing edge
+        let spacer = UIView()
+        spacer.setContentHuggingPriority(.defaultLow, for: .horizontal)
+        let stack = UIStackView(arrangedSubviews: [bracketIconView, bracketLabel, newBadge, spacer, bracketChevron])
         stack.axis = .horizontal
         stack.alignment = .center
         stack.spacing = 8
-        stack.isHidden = true
-        stack.isUserInteractionEnabled = true
+        stack.isUserInteractionEnabled = false   // let touches fall through to the control
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
 
     // Info Container Stack
     private lazy var infoStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [locationStack, venueStack, dateStack, bracketStack])
+        let stack = UIStackView(arrangedSubviews: [locationStack, venueStack, dateStack, bracketButton])
         stack.axis = .vertical
         stack.alignment = .leading
         stack.spacing = Constants.spacing
@@ -232,12 +260,38 @@ final class TournamentHeaderView: UICollectionReusableView {
         containerView.addSubview(dividerView)
         containerView.addSubview(infoStackView)
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(bracketRowTapped))
-        bracketStack.addGestureRecognizer(tap)
+        bracketButton.addSubview(bracketContentStack)
+        bracketButton.addTarget(self, action: #selector(bracketRowTapped), for: .touchUpInside)
     }
 
     @objc private func bracketRowTapped() {
         onBracketTapped?()
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        stopBadgePulse()
+    }
+
+    // MARK: - Badge Pulse
+
+    /// Gentle, repeating scale pulse on the "NEW" badge — eye-catching without
+    /// the harshness of a blink. Stopped on reuse / when the button is hidden.
+    private func startBadgePulse() {
+        newBadge.isHidden = false
+        guard newBadge.layer.animation(forKey: "pulse") == nil else { return }
+        let pulse = CABasicAnimation(keyPath: "transform.scale")
+        pulse.fromValue = 1.0
+        pulse.toValue = 1.18
+        pulse.duration = 0.85
+        pulse.autoreverses = true
+        pulse.repeatCount = .infinity
+        pulse.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        newBadge.layer.add(pulse, forKey: "pulse")
+    }
+
+    private func stopBadgePulse() {
+        newBadge.layer.removeAnimation(forKey: "pulse")
     }
     
     private func setupConstraints() {
@@ -275,6 +329,15 @@ final class TournamentHeaderView: UICollectionReusableView {
             bracketIconView.heightAnchor.constraint(equalToConstant: Constants.iconSize),
             bracketChevron.widthAnchor.constraint(equalToConstant: 12),
             bracketChevron.heightAnchor.constraint(equalToConstant: 12),
+
+            // Bracket button fills the info column and is a comfortable tap height.
+            bracketButton.leadingAnchor.constraint(equalTo: infoStackView.leadingAnchor),
+            bracketButton.trailingAnchor.constraint(equalTo: infoStackView.trailingAnchor),
+            bracketButton.heightAnchor.constraint(equalToConstant: 46),
+
+            bracketContentStack.leadingAnchor.constraint(equalTo: bracketButton.leadingAnchor, constant: 14),
+            bracketContentStack.trailingAnchor.constraint(equalTo: bracketButton.trailingAnchor, constant: -14),
+            bracketContentStack.centerYAnchor.constraint(equalTo: bracketButton.centerYAnchor),
         ])
     }
     
@@ -290,7 +353,12 @@ final class TournamentHeaderView: UICollectionReusableView {
         showsBracketButton: Bool = false
     ) {
         tournamentNameLabel.text = name
-        bracketStack.isHidden = !showsBracketButton
+        bracketButton.isHidden = !showsBracketButton
+        if showsBracketButton {
+            startBadgePulse()
+        } else {
+            stopBadgePulse()
+        }
         
         // Location (City, Country)
         var locationParts: [String] = []
@@ -365,6 +433,46 @@ final class TournamentHeaderView: UICollectionReusableView {
             
             return "\(startFormatted) - \(endFormatted)"
         }
+    }
+}
+
+// MARK: - Helpers
+
+/// A UIControl that dims while pressed, giving native-feeling tap feedback to
+/// a custom pill-shaped button.
+private final class PressableControl: UIControl {
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: 0.12) {
+                self.alpha = self.isHighlighted ? 0.6 : 1.0
+            }
+        }
+    }
+}
+
+/// UILabel with content insets — used for the small rounded "NEW" pill.
+private final class PaddedLabel: UILabel {
+    private let insets: UIEdgeInsets
+
+    init(insets: UIEdgeInsets) {
+        self.insets = insets
+        super.init(frame: .zero)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func drawText(in rect: CGRect) {
+        super.drawText(in: rect.inset(by: insets))
+    }
+
+    override var intrinsicContentSize: CGSize {
+        let size = super.intrinsicContentSize
+        return CGSize(
+            width: size.width + insets.left + insets.right,
+            height: size.height + insets.top + insets.bottom
+        )
     }
 }
 

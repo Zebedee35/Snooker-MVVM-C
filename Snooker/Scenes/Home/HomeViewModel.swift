@@ -12,6 +12,8 @@ protocol HomeViewModelProtocol: AnyObject {
     var delegate: HomeViewModelDelegate? { get set }
     /// Raw matches (with fixtureNumber) for the bracket view.
     var bracketMatches: [MatchDTO] { get }
+    /// Whether the tournament header should offer the bracket button.
+    var showsBracketButton: Bool { get }
     func loadData()
     func refreshData()
     func selectMatch(at indexPath: IndexPath)
@@ -48,7 +50,18 @@ final class HomeViewModel: HomeViewModelProtocol {
     private var sections: [MatchSection] = []
 
     var bracketMatches: [MatchDTO] { tournament?.matches ?? [] }
-    
+
+    /// Show the bracket only for knockout main events. We can't always tell a
+    /// tournament is "main" from its name, so we fall back to whether its draw
+    /// reaches a Final round — which naturally excludes qualifiers and the
+    /// round-robin Championship League stages.
+    var showsBracketButton: Bool {
+        guard let tournament else { return false }
+        if TournamentClassifier.isQualifier(tournament.name) { return false }
+        if TournamentClassifier.isMain(tournament.name) { return true }
+        return tournament.matches.contains { MatchRoundCategory.category(for: $0.round) == .final }
+    }
+
     private var hideTBDMatches: Bool {
         UserDefaults.standard.bool(forKey: "hide_tbd_matches")
     }
