@@ -36,6 +36,9 @@ final class SettingsCoordinator: Coordinator {
         case .editProfile:
             showEditProfile()
 
+        case .sendTestNotification:
+            sendTestNotification()
+
         case .tipJar:
             showTipJar()
 
@@ -145,6 +148,28 @@ final class SettingsCoordinator: Coordinator {
     private func showEditProfile() {
         let viewController = EditProfileViewController()
         navigationController.pushViewController(viewController, animated: true)
+    }
+
+    /// DEBUG-only: ask the backend to push a single test notification to THIS
+    /// device so push delivery can be verified without notifying anyone else.
+    private func sendTestNotification() {
+        Task { @MainActor in
+            do {
+                try await PushNotificationManager.shared.sendTestNotification()
+                presentInfo(
+                    title: "Test Sent",
+                    message: "A test notification was sent to this device. It can take a few seconds to arrive."
+                )
+            } catch {
+                presentError(message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func presentInfo(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        navigationController.present(alert, animated: true)
     }
 
     // MARK: - Sign in with Apple

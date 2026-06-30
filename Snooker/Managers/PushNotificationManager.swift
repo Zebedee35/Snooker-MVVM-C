@@ -121,6 +121,22 @@ final class PushNotificationManager: NSObject {
         }
     }
 
+    // MARK: - Test Notification
+
+    /// Sends a single test push to THIS device only, via the
+    /// `send-test-notification` Edge Function. The function verifies the token
+    /// belongs to the signed-in caller, so it can never reach another user's
+    /// device. Throws if there is no token or the function reports a failure.
+    func sendTestNotification() async throws {
+        guard let token = deviceToken ?? UserDefaults.standard.string(forKey: "device_token") else {
+            throw TestNotificationError.noDeviceToken
+        }
+        try await SupabaseAPI.client.functions.invoke(
+            "send-test-notification",
+            options: .init(body: ["token": token])
+        )
+    }
+
     // MARK: - Private Methods
 
     private func registerTokenToSupabase(token: String) async {
@@ -255,6 +271,19 @@ extension PushNotificationManager: UNUserNotificationCenterDelegate {
                 object: nil,
                 userInfo: ["tournament_id": tournamentId]
             )
+        }
+    }
+}
+
+// MARK: - Errors
+
+enum TestNotificationError: LocalizedError {
+    case noDeviceToken
+
+    var errorDescription: String? {
+        switch self {
+        case .noDeviceToken:
+            return "No device token yet. Make sure notifications are allowed and try again."
         }
     }
 }

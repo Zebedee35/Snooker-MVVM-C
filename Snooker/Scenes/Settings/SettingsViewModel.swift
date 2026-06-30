@@ -123,6 +123,7 @@ protocol SettingsViewModelDelegate: AnyObject {
 
 enum SettingsRoute {
     case editProfile
+    case sendTestNotification
     case tipJar
     case changeAppIcon
     case filmBoxApp
@@ -216,7 +217,32 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             buildOurAppsSection(),
             buildAboutSection()
         ]
+
+        #if DEBUG
+        // Developer-only tools; never shipped in Release builds.
+        if let debugSection = buildDebugSection() {
+            sections.append(debugSection)
+        }
+        #endif
     }
+
+    #if DEBUG
+    /// A test push only makes sense once we're signed in (the Edge Function
+    /// verifies the device token belongs to the caller) and have a token.
+    private func buildDebugSection() -> SettingsSection? {
+        guard AuthManager.shared.isSignedIn else { return nil }
+        let items = [
+            SettingsItem(
+                id: "send_test_notification",
+                icon: "paperplane.fill",
+                iconColor: .systemBlue,
+                title: "Send Test Notification",
+                type: .action
+            )
+        ]
+        return SettingsSection(title: "DEVELOPER", items: items)
+    }
+    #endif
 
     /// Rounds the user wants to *always* see on the Lock Screen (auto Live
     /// Activity). Any other match can still be followed manually via the bell.
@@ -407,6 +433,11 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         // Support section
         case "support_tip":
             delegate?.navigateTo(route: .tipJar)
+
+        #if DEBUG
+        case "send_test_notification":
+            delegate?.navigateTo(route: .sendTestNotification)
+        #endif
 
         // Notification radio buttons
         case let id where id.hasPrefix("notification_"):

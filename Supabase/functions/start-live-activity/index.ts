@@ -146,16 +146,34 @@ serve(async (req) => {
     );
 
     // Devices that opted into this round category and can be push-started.
-    const { data: devices, error } = await supabase
-      .from("device_tokens")
-      .select("pts_token")
-      .not("pts_token", "is", null)
-      .contains("la_auto_rounds", [payload.round_category]);
+    //
+    // PostgREST caps every response at `max_rows` (1000 by default), so a single
+    // select silently truncates to the first 1000 devices. Page through with
+    // .range() (ordered by the unique `token` for stable paging) so EVERY
+    // opted-in device is push-started, no matter how many there are.
+    const PAGE_SIZE = 1000;
+    const devices: { pts_token: string }[] = [];
+    let from = 0;
 
-    if (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    while (true) {
+      const { data: page, error } = await supabase
+        .from("device_tokens")
+        .select("pts_token")
+        .not("pts_token", "is", null)
+        .contains("la_auto_rounds", [payload.round_category])
+        .order("token", { ascending: true })
+        .range(from, from + PAGE_SIZE - 1);
+
+      if (error) {
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      }
+      if (!page || page.length === 0) break;
+      devices.push(...page);
+      if (page.length < PAGE_SIZE) break; // last page
+      from += PAGE_SIZE;
     }
-    if (!devices || devices.length === 0) {
+
+    if (devices.length === 0) {
       return new Response(JSON.stringify({ message: "no opted-in devices" }), { status: 200 });
     }
 

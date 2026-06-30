@@ -215,24 +215,41 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get target device tokens based on notification settings
-    const { data: tokens, error: tokensError } = await supabase.rpc(
-      "get_notification_targets",
-      {
-        p_tournament_name: matchData.tournament_name,
-        p_round_name: matchData.round,
-      },
-    );
+    // Get target device tokens based on notification settings.
+    //
+    // IMPORTANT: PostgREST caps every response at the project's `max_rows`
+    // setting (1000 by default). A single .rpc() call therefore silently
+    // truncates the audience to the first 1000 devices. We page through the
+    // result with .range() so EVERY eligible device is notified, no matter how
+    // many there are. (get_notification_targets ORDERs BY token so paging is
+    // stable across requests.)
+    const PAGE_SIZE = 1000;
+    const tokens: { token: string }[] = [];
+    let from = 0;
 
-    if (tokensError) {
-      console.error("Error fetching tokens:", tokensError);
-      return new Response(JSON.stringify({ error: tokensError.message }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+    while (true) {
+      const { data: page, error: tokensError } = await supabase
+        .rpc("get_notification_targets", {
+          p_tournament_name: matchData.tournament_name,
+          p_round_name: matchData.round,
+        })
+        .range(from, from + PAGE_SIZE - 1);
+
+      if (tokensError) {
+        console.error("Error fetching tokens:", tokensError);
+        return new Response(JSON.stringify({ error: tokensError.message }), {
+          status: 500,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (!page || page.length === 0) break;
+      tokens.push(...page);
+      if (page.length < PAGE_SIZE) break; // last page
+      from += PAGE_SIZE;
     }
 
-    if (!tokens || tokens.length === 0) {
+    if (tokens.length === 0) {
       console.log("No target tokens found");
       return new Response(JSON.stringify({ message: "No tokens to notify" }), {
         status: 200,

@@ -131,16 +131,34 @@ serve(async (req) => {
     );
 
     // All active activities for this match.
-    const { data: activities, error } = await supabase
-      .from("live_activities")
-      .select("activity_id, push_token")
-      .eq("match_id", payload.match_id)
-      .eq("status", "active");
+    //
+    // PostgREST caps every response at `max_rows` (1000 by default), so a single
+    // select would silently update only the first 1000 followers of a popular
+    // match. Page through with .range() (ordered by the unique activity_id for
+    // stable paging) so every active activity is updated.
+    const PAGE_SIZE = 1000;
+    const activities: { activity_id: string; push_token: string }[] = [];
+    let from = 0;
 
-    if (error) {
-      return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    while (true) {
+      const { data: page, error } = await supabase
+        .from("live_activities")
+        .select("activity_id, push_token")
+        .eq("match_id", payload.match_id)
+        .eq("status", "active")
+        .order("activity_id", { ascending: true })
+        .range(from, from + PAGE_SIZE - 1);
+
+      if (error) {
+        return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+      }
+      if (!page || page.length === 0) break;
+      activities.push(...page);
+      if (page.length < PAGE_SIZE) break; // last page
+      from += PAGE_SIZE;
     }
-    if (!activities || activities.length === 0) {
+
+    if (activities.length === 0) {
       return new Response(JSON.stringify({ message: "no active activities" }), { status: 200 });
     }
 
