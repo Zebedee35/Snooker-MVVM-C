@@ -238,6 +238,21 @@ struct SupabaseAPI {
         )
     }
     
+    /// Belirli bir maçın frame dökümünü çek.
+    /// Tournament akışı (`get_tournament_with_matches`) frame döndürmediği için
+    /// Match Detail ekranı açılınca tek maç için tembel (lazy) yükleme yapıyoruz —
+    /// böylece turnuva listesi hafif kalır, frame'leri sadece gerektiğinde çekeriz.
+    static func fetchMatchFrames(matchId: String) async throws -> [LiveMatchFrameDTO] {
+        let response: [LiveMatchFrameDTO] = try await client
+            .from("match_frame")
+            .select("id, frame_number, home_player_points, away_player_points, home_player_fifty_plus_breaks, away_player_fifty_plus_breaks")
+            .eq("match_id", value: matchId)
+            .order("frame_number", ascending: true)
+            .execute()
+            .value
+        return response
+    }
+
     /// Oyuncunun son maçlarını çek
     /// - Parameter playerId: Oyuncu ID
     /// - Returns: Oyuncunun son maçları (en yeni önce)
