@@ -188,6 +188,19 @@ final class LiveScoreCell: UICollectionViewCell {
         return label
     }()
     
+    /// Live points of the in-progress frame, shown on two lines:
+    /// "Frame 3" over "28 - 8".
+    private let currentFrameLabel: UILabel = {
+        let label = UILabel()
+        label.font = AppFont.semiBold(size: 12)
+        label.textColor = .systemGreen
+        label.textAlignment = .center
+        label.numberOfLines = 2
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     private let liveIndicatorView: UIView = {
         let view = UIView()
         view.backgroundColor = .systemRed
@@ -228,7 +241,7 @@ final class LiveScoreCell: UICollectionViewCell {
     }()
     
     private lazy var centerStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [liveContainerView, scoreStackView, matchStatusLabel])
+        let stack = UIStackView(arrangedSubviews: [liveContainerView, scoreStackView, matchStatusLabel, currentFrameLabel])
         stack.axis = .vertical
         stack.alignment = .center
         stack.spacing = 4
@@ -504,6 +517,7 @@ final class LiveScoreCell: UICollectionViewCell {
             awayScoreLabel.textAlignment = .center
             
             matchStatusLabel.text = ""
+            currentFrameLabel.isHidden = true
             stopLiveAnimation()
         } else {
             // Stack'i yatay yap (normal skor görünümü)
@@ -530,6 +544,14 @@ final class LiveScoreCell: UICollectionViewCell {
             matchStatusLabel.text = presentation.matchStatus
             matchStatusLabel.textColor = .secondaryLabel
             matchStatusLabel.font = AppFont.regular(size: Constants.statusFontSize)
+
+            // In-progress frame's live points (Option B)
+            if let cf = presentation.currentFrame {
+                currentFrameLabel.text = "Frame \(cf.number)\n\(cf.home) - \(cf.away)"
+                currentFrameLabel.isHidden = false
+            } else {
+                currentFrameLabel.isHidden = true
+            }
         }
     }
     
@@ -646,6 +668,8 @@ final class LiveScoreCell: UICollectionViewCell {
         scoreSeparatorLabel.isHidden = false
         matchStatusLabel.text = nil
         matchStatusLabel.font = AppFont.regular(size: Constants.statusFontSize)
+        currentFrameLabel.text = nil
+        currentFrameLabel.isHidden = true
         followButton.isHidden = true
         setFollowing(false)
         onHomePlayerTapped = nil

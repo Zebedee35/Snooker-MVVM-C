@@ -75,8 +75,9 @@ final class LiveScoreViewController: UIViewController {
     private var isEmptyState: Bool = false
     private var isViewVisible: Bool = false
     private var autoRefreshTimer: Timer?
-    /// Canlı maç varken kullanılan yenileme aralığı.
-    private let activeRefreshInterval: TimeInterval = 120 // 2 minutes
+    /// Canlı maç varken kullanılan yenileme aralığı. Skorları/frame'leri olabildiğince
+    /// canlı tutmak için sık; throttle (VM) ile uyumlu.
+    private let activeRefreshInterval: TimeInterval = 20
     /// Canlı maç yokken kullanılan boşta aralık — sadece yeni maç başladı mı diye
     /// seyrek yoklar, hızlı polling'i (ve egress'i) durdurur.
     private let idleRefreshInterval: TimeInterval = 300 // 5 minutes
@@ -240,7 +241,7 @@ extension LiveScoreViewController: UICollectionViewDelegate {
 
 extension LiveScoreViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 160)
+        return CGSize(width: collectionView.bounds.width, height: 176)
     }
 }
 

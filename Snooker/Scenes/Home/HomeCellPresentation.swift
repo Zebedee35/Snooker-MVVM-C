@@ -90,7 +90,9 @@ struct HomeCellPresentation {
     let round: String
     let roundType: RoundType
     let startDateTime: String?
-    
+    let tournamentName: String?
+    let frames: [LiveMatchFrameDTO]
+
     /// Bu maç için büyük cell kullanılmalı mı?
     var usesBigCell: Bool {
         roundType.usesBigCell
@@ -118,7 +120,33 @@ struct HomeCellPresentation {
             awayPlayerRank: awayPlayerRank,
             matchStatus: status,
             round: round,
-            startDateTime: startDateTime
+            tournamentName: tournamentName,
+            startDateTime: startDateTime,
+            frames: frames
+        )
+    }
+
+    /// Detail screen presentation (frame-by-frame breakdown).
+    func matchDetailPresentation() -> MatchDetailPresentation {
+        MatchDetailPresentation(
+            matchId: matchId,
+            homePlayerId: homePlayerId ?? "",
+            homePlayerName: homePlayerName,
+            homePlayerSurname: homePlayerSurname,
+            homePlayerPhotoUrl: homePlayerPhotoUrl,
+            homePlayerFlag: homePlayerFlag,
+            homePlayerScore: homePlayerScore,
+            awayPlayerId: awayPlayerId ?? "",
+            awayPlayerName: awayPlayerName,
+            awayPlayerSurname: awayPlayerSurname,
+            awayPlayerPhotoUrl: awayPlayerPhotoUrl,
+            awayPlayerFlag: awayPlayerFlag,
+            awayPlayerScore: awayPlayerScore,
+            status: status,
+            round: round,
+            tournamentName: tournamentName,
+            startDateTime: startDateTime,
+            frames: frames.map(MatchDetailFrame.init(dto:))
         )
     }
     
@@ -153,6 +181,8 @@ struct HomeCellPresentation {
         self.round = match.round
         self.roundType = RoundType.from(match.round)
         self.startDateTime = match.startDateTime
+        self.tournamentName = match.tournamentName
+        self.frames = match.frames ?? []
     }
     
     // MARK: - Player Detail Presentation Helpers

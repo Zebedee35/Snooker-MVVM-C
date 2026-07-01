@@ -66,7 +66,7 @@ final class LiveScoreViewModel: LiveScoreViewModelProtocol {
     /// tab geçişi gibi) atlamak için. Pull-to-refresh ve ayar değişikliği `force`
     /// ile bunu bypass eder.
     private var lastFetchDate: Date?
-    private let minFetchInterval: TimeInterval = 30
+    private let minFetchInterval: TimeInterval = 15
 
     private var hideTBDMatches: Bool {
         UserDefaults.standard.bool(forKey: "hide_tbd_matches")

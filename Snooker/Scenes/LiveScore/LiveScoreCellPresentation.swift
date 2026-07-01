@@ -38,10 +38,22 @@ struct LiveScoreCellPresentation {
     let round: String
     let tournamentName: String?
     let startDateTime: String?
-    
+    let frames: [LiveMatchFrameDTO]
+
     /// Maç planlanmış mı (henüz başlamamış)?
     var isScheduled: Bool {
         matchStatus.lowercased() == "scheduled"
+    }
+
+    /// The in-progress frame's live points, if a frame is currently being
+    /// played (shown as "Frame N · x-y" under the score). nil when scheduled,
+    /// between frames, or completed.
+    var currentFrame: (number: Int, home: Int, away: Int)? {
+        let status = matchStatus.lowercased()
+        guard status == "live" || status == "break" || status == "suspended" else { return nil }
+        // The frame in play is the last one once it exceeds the frames already won.
+        guard frames.count > (homePlayerScore + awayPlayerScore), let last = frames.last else { return nil }
+        return (last.frameNumber, last.homePlayerPoints ?? 0, last.awayPlayerPoints ?? 0)
     }
     
     /// Home oyuncunun kısaltılmış adı
@@ -172,6 +184,7 @@ struct LiveScoreCellPresentation {
         self.round = match.round
         self.tournamentName = match.tournamentName
         self.startDateTime = match.startDateTime
+        self.frames = match.frames ?? []
     }
     
     /// Manuel oluşturma için (test/preview amaçlı)
@@ -200,7 +213,8 @@ struct LiveScoreCellPresentation {
         matchStatus: String,
         round: String,
         tournamentName: String? = nil,
-        startDateTime: String? = nil
+        startDateTime: String? = nil,
+        frames: [LiveMatchFrameDTO] = []
     ) {
         self.matchId = matchId
         self.homePlayerId = homePlayerId
@@ -227,10 +241,36 @@ struct LiveScoreCellPresentation {
         self.round = round
         self.tournamentName = tournamentName
         self.startDateTime = startDateTime
+        self.frames = frames
     }
     
+    // MARK: - Match Detail
+
+    func matchDetailPresentation() -> MatchDetailPresentation {
+        MatchDetailPresentation(
+            matchId: matchId,
+            homePlayerId: homePlayerId,
+            homePlayerName: homePlayerName,
+            homePlayerSurname: homePlayerSurname,
+            homePlayerPhotoUrl: homePlayerPhotoUrl,
+            homePlayerFlag: homePlayerFlag,
+            homePlayerScore: homePlayerScore,
+            awayPlayerId: awayPlayerId,
+            awayPlayerName: awayPlayerName,
+            awayPlayerSurname: awayPlayerSurname,
+            awayPlayerPhotoUrl: awayPlayerPhotoUrl,
+            awayPlayerFlag: awayPlayerFlag,
+            awayPlayerScore: awayPlayerScore,
+            status: matchStatus,
+            round: round,
+            tournamentName: tournamentName,
+            startDateTime: startDateTime,
+            frames: frames.map(MatchDetailFrame.init(dto:))
+        )
+    }
+
     // MARK: - Player Detail Helpers
-    
+
     func homePlayerDetailPresentation() -> PlayerDetailPresentation {
         PlayerDetailPresentation(
             playerId: homePlayerId,
