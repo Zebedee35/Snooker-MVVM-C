@@ -68,18 +68,20 @@ final class BracketMatchCardView: UIView {
     func configure(with match: BracketMatch) {
         homeNameLabel.text = match.homeName
         awayNameLabel.text = match.awayName
-        homeScoreLabel.text = match.homeScore.map(String.init) ?? "–"
-        awayScoreLabel.text = match.awayScore.map(String.init) ?? "–"
-        style(name: homeNameLabel, score: homeScoreLabel, isWinner: match.homeIsWinner)
-        style(name: awayNameLabel, score: awayScoreLabel, isWinner: match.awayIsWinner)
+        // Future (placeholder) rounds carry no scores.
+        homeScoreLabel.text = match.isPlaceholder ? "" : (match.homeScore.map(String.init) ?? "–")
+        awayScoreLabel.text = match.isPlaceholder ? "" : (match.awayScore.map(String.init) ?? "–")
+        style(name: homeNameLabel, score: homeScoreLabel, isWinner: match.homeIsWinner, isTBD: match.homeName == "TBD")
+        style(name: awayNameLabel, score: awayScoreLabel, isWinner: match.awayIsWinner, isTBD: match.awayName == "TBD")
     }
 
-    private func style(name: UILabel, score: UILabel, isWinner: Bool) {
+    private func style(name: UILabel, score: UILabel, isWinner: Bool, isTBD: Bool) {
         let font = isWinner ? AppFont.bold(size: 13) : AppFont.medium(size: 13)
-        let color: UIColor = isWinner ? .label : .secondaryLabel
+        // Unknown slots stay faint; advanced players read as normal participants.
+        let color: UIColor = isTBD ? .tertiaryLabel : (isWinner ? .label : .secondaryLabel)
         name.font = font
         name.textColor = color
         score.font = font
-        score.textColor = color
+        score.textColor = isWinner ? .label : .secondaryLabel
     }
 }

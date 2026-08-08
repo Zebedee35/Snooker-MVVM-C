@@ -148,12 +148,13 @@ final class BracketViewController: UIViewController {
                 // Play-in / byes: one child aligns with one parent.
                 ys = prev
             } else {
-                // Irregular: distribute evenly across the previous column's span.
-                let first = prev.first ?? topInset
-                let last = prev.last ?? first
-                for i in 0..<curCount {
-                    let frac = curCount == 1 ? 0.5 : CGFloat(i) / CGFloat(curCount - 1)
-                    ys.append(first + frac * (last - first))
+                // Irregular relationship — e.g. a partial play-in/Wildcard round
+                // (2 matches before a 16-match Round 1), or missing intermediate
+                // rounds. Lay this column out on its OWN natural grid instead of
+                // cramming it into the previous (smaller) column's span, which
+                // would overlap the cards.
+                ys = (0..<curCount).map {
+                    topInset + CGFloat($0) * rowPitch + cardSize.height / 2
                 }
             }
             result.append(ys)
