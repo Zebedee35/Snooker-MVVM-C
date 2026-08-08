@@ -95,7 +95,7 @@ final class BracketViewController: UIViewController {
             let x = sideInset + CGFloat(col) * columnPitch
 
             // Round label above the column.
-            let label = makeRoundLabel(text: matches.first?.round ?? "")
+            let label = makeRoundLabel(text: RoundName.localized(matches.first?.round ?? ""))
             label.frame = CGRect(x: x, y: 18, width: cardSize.width, height: 22)
             contentView.addSubview(label)
 
@@ -212,7 +212,7 @@ final class BracketViewController: UIViewController {
 
     private func showEmptyState() {
         let label = UILabel()
-        label.text = "Bracket data isn't available for this tournament."
+        label.text = L10n.Tournament.bracketEmpty
         label.font = AppFont.medium(size: 16)
         label.textColor = .secondaryLabel
         label.textAlignment = .center

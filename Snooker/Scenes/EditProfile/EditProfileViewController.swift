@@ -39,10 +39,10 @@ final class EditProfileViewController: UIViewController {
         return stack
     }()
 
-    private let nameField = EditProfileViewController.makeTextField(placeholder: "Your name")
+    private let nameField = EditProfileViewController.makeTextField(placeholder: L10n.EditProfile.namePlaceholder)
 
     private lazy var nicknameField: UITextField = {
-        let field = Self.makeTextField(placeholder: "nickname")
+        let field = Self.makeTextField(placeholder: L10n.EditProfile.nicknamePlaceholder)
         field.autocapitalizationType = .none
         field.autocorrectionType = .no
         field.spellCheckingType = .no
@@ -52,7 +52,7 @@ final class EditProfileViewController: UIViewController {
 
     private let nicknameHintLabel: UILabel = {
         let label = UILabel()
-        label.text = "3–20 characters. Letters, numbers and underscore only. Used to find you in chat."
+        label.text = L10n.EditProfile.nicknameHint(min: Constants.nicknameMinLength, max: Constants.nicknameMaxLength)
         label.font = AppFont.regular(size: 12)
         label.textColor = .secondaryLabel
         label.numberOfLines = 0
@@ -61,7 +61,7 @@ final class EditProfileViewController: UIViewController {
     }()
 
     private lazy var saveButton: UIBarButtonItem = {
-        UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(handleSave))
+        UIBarButtonItem(title: L10n.EditProfile.save, style: .done, target: self, action: #selector(handleSave))
     }()
 
     private let activityIndicator: UIActivityIndicatorView = {
@@ -86,18 +86,18 @@ final class EditProfileViewController: UIViewController {
     // MARK: - Setup
 
     private func setupUI() {
-        title = "Edit Profile"
+        title = L10n.EditProfile.title
         view.backgroundColor = .systemGroupedBackground
         navigationItem.rightBarButtonItem = saveButton
 
         view.addSubview(scrollView)
         scrollView.addSubview(contentStack)
 
-        contentStack.addArrangedSubview(makeSectionLabel("NAME"))
+        contentStack.addArrangedSubview(makeSectionLabel(L10n.EditProfile.nameSection))
         contentStack.addArrangedSubview(makeFieldContainer(nameField))
         contentStack.setCustomSpacing(24, after: contentStack.arrangedSubviews.last!)
 
-        contentStack.addArrangedSubview(makeSectionLabel("NICKNAME"))
+        contentStack.addArrangedSubview(makeSectionLabel(L10n.EditProfile.nicknameSection))
         contentStack.addArrangedSubview(makeFieldContainer(nicknameField))
         contentStack.addArrangedSubview(nicknameHintLabel)
 
@@ -133,7 +133,7 @@ final class EditProfileViewController: UIViewController {
         // Validate the nickname only when the user actually entered one — it is
         // optional, but if present it must obey the format rules.
         if !nick.isEmpty, let validationError = validateNickname(nick) {
-            presentAlert(title: "Invalid Nickname", message: validationError)
+            presentAlert(title: L10n.EditProfile.invalidNickname, message: validationError)
             return
         }
 
@@ -146,8 +146,8 @@ final class EditProfileViewController: UIViewController {
             } catch {
                 setLoading(false)
                 let message = (error as? AuthError)?.errorDescription
-                    ?? "Could not save your profile. Please try again."
-                presentAlert(title: "Error", message: message)
+                    ?? L10n.EditProfile.saveFailed
+                presentAlert(title: L10n.Common.error, message: message)
             }
         }
     }
@@ -156,11 +156,11 @@ final class EditProfileViewController: UIViewController {
     private func validateNickname(_ nickname: String) -> String? {
         guard nickname.count >= Constants.nicknameMinLength,
               nickname.count <= Constants.nicknameMaxLength else {
-            return "Nickname must be \(Constants.nicknameMinLength)–\(Constants.nicknameMaxLength) characters long."
+            return L10n.EditProfile.nicknameLength(min: Constants.nicknameMinLength, max: Constants.nicknameMaxLength)
         }
         let allowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_")
         guard nickname.unicodeScalars.allSatisfy({ allowed.contains($0) }) else {
-            return "Nickname can only contain letters, numbers and underscore."
+            return L10n.EditProfile.nicknameCharacters
         }
         return nil
     }
@@ -178,7 +178,7 @@ final class EditProfileViewController: UIViewController {
 
     private func presentAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
         present(alert, animated: true)
     }
 
@@ -212,7 +212,9 @@ final class EditProfileViewController: UIViewController {
 
     private func makeSectionLabel(_ text: String) -> UILabel {
         let label = UILabel()
-        label.text = text
+        // Uppercased here rather than in the catalog so translators write
+        // natural case, and so locale rules (Turkish dotless i) are respected.
+        label.text = text.uppercased(with: LanguageManager.shared.locale)
         label.font = AppFont.regular(size: 13)
         label.textColor = .secondaryLabel
         return label

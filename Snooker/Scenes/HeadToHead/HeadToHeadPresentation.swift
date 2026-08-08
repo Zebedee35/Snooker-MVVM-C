@@ -75,8 +75,7 @@ struct HeadToHeadMatchPresentation {
             }
             
             if let parsedDate = date {
-                let yearFormatter = DateFormatter()
-                yearFormatter.dateFormat = "yyyy"
+                let yearFormatter = AppDateFormatter.display(AppDateFormatter.Template.year)
                 self.year = yearFormatter.string(from: parsedDate)
             } else {
                 self.year = "\(dto.tournamentSeason)"

@@ -77,7 +77,7 @@ struct PlayerMatchCellPresentation {
             self.currentPlayerScore = match.homePlayerScore ?? 0
             self.opponentScore = match.awayPlayerScore ?? 0
             self.opponentId = match.awayPlayerId
-            self.opponentName = match.awayPlayer?.firstName ?? "TBD"
+            self.opponentName = match.awayPlayer?.firstName ?? L10n.Common.tbd
             self.opponentSurname = match.awayPlayer?.surname ?? ""
             self.opponentPhotoUrl = match.awayPlayer?.photoUrl
             self.opponentFlag = match.awayPlayer?.flagEmoji
@@ -86,7 +86,7 @@ struct PlayerMatchCellPresentation {
             self.currentPlayerScore = match.awayPlayerScore ?? 0
             self.opponentScore = match.homePlayerScore ?? 0
             self.opponentId = match.homePlayerId
-            self.opponentName = match.homePlayer.firstName ?? "TBD"
+            self.opponentName = match.homePlayer.firstName ?? L10n.Common.tbd
             self.opponentSurname = match.homePlayer.surname ?? ""
             self.opponentPhotoUrl = match.homePlayer.photoUrl
             self.opponentFlag = match.homePlayer.flagEmoji

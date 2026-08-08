@@ -63,7 +63,7 @@ final class MatchDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        title = presentation.round
+        title = RoundName.localized(presentation.round)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "person.2.fill"),
@@ -293,7 +293,7 @@ final class MatchDetailViewController: UIViewController {
         caption.font = AppFont.regular(size: 12)
         caption.textColor = .secondaryLabel
         caption.textAlignment = .center
-        caption.text = "Frames"
+        caption.text = L10n.MatchDetail.frames
 
         let homeScore = UILabel()
         homeScore.font = AppFont.bold(size: 30)
@@ -327,7 +327,7 @@ final class MatchDetailViewController: UIViewController {
 
     private func makeHeadToHeadButton() -> UIView {
         var config = UIButton.Configuration.tinted()
-        config.title = "Head-to-Head"
+        config.title = L10n.MatchDetail.headToHead
         config.image = UIImage(systemName: "person.2.fill")
         config.imagePadding = 8
         config.baseForegroundColor = .systemIndigo
@@ -345,7 +345,7 @@ final class MatchDetailViewController: UIViewController {
         label.textColor = .secondaryLabel
         label.textAlignment = .center
         label.numberOfLines = 0
-        label.text = "Frame details will appear here once play begins."
+        label.text = L10n.MatchDetail.framesEmpty
         label.translatesAutoresizingMaskIntoConstraints = false
 
         let container = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 80))
@@ -385,10 +385,9 @@ final class MatchDetailViewController: UIViewController {
             date = parser.date(from: iso)
         }
         guard let date else { return nil }
-        let out = DateFormatter()
-        out.locale = Locale.current
-        out.dateFormat = "d MMM yyyy · HH:mm"
-        return out.string(from: date)
+        let day = AppDateFormatter.display(AppDateFormatter.Template.dayShortMonthYear)
+        let time = AppDateFormatter.display(AppDateFormatter.Template.time)
+        return "\(day.string(from: date)) · \(time.string(from: date))"
     }
 }
 

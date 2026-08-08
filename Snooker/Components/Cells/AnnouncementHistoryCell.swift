@@ -67,12 +67,15 @@ final class AnnouncementHistoryCell: UITableViewCell {
         return stack
     }()
 
-    private static let dateFormatter: DateFormatter = {
+    /// Not cached in a `static let`: it has to pick up a language change,
+    /// and AppDateFormatter already caches per locale.
+    private static var dateFormatter: DateFormatter {
         let f = DateFormatter()
+        f.locale = LanguageManager.shared.locale
         f.dateStyle = .medium
         f.timeStyle = .short
         return f
-    }()
+    }
 
     // MARK: - Init
 
@@ -134,13 +137,13 @@ final class AnnouncementHistoryCell: UITableViewCell {
     private static func visualStyle(for type: AnnouncementType) -> VisualStyle {
         switch type {
         case .error:
-            return VisualStyle(title: "Error", iconName: "exclamationmark.octagon.fill", tintColor: .systemRed)
+            return VisualStyle(title: L10n.Announcements.Kind.error, iconName: "exclamationmark.octagon.fill", tintColor: .systemRed)
         case .warning:
-            return VisualStyle(title: "Warning", iconName: "exclamationmark.triangle.fill", tintColor: .systemOrange)
+            return VisualStyle(title: L10n.Announcements.Kind.warning, iconName: "exclamationmark.triangle.fill", tintColor: .systemOrange)
         case .info:
-            return VisualStyle(title: "Info", iconName: "info.circle.fill", tintColor: .systemBlue)
+            return VisualStyle(title: L10n.Announcements.Kind.info, iconName: "info.circle.fill", tintColor: .systemBlue)
         case .success:
-            return VisualStyle(title: "Success", iconName: "checkmark.circle.fill", tintColor: .systemGreen)
+            return VisualStyle(title: L10n.Announcements.Kind.success, iconName: "checkmark.circle.fill", tintColor: .systemGreen)
         }
     }
 }

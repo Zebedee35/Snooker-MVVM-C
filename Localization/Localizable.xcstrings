@@ -1,0 +1,2807 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ - %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ - %2$@"
+          }
+        }
+      }
+    },
+    "%@-%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@-%2$@"
+          }
+        }
+      }
+    },
+    "alert.change_app_icon.message" : {
+      "comment" : "Alert message for a feature that is not built yet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App icon selection coming soon!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simge seçimi çok yakında!"
+          }
+        }
+      }
+    },
+    "alert.change_app_icon.title" : {
+      "comment" : "Alert title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change App Icon"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Simgesini Değiştir"
+          }
+        }
+      }
+    },
+    "alert.delete_account.failed" : {
+      "comment" : "Shown when account deletion fails.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not delete your account. Please try again."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabınız silinemedi. Lütfen tekrar deneyin."
+          }
+        }
+      }
+    },
+    "alert.delete_account.message" : {
+      "comment" : "Message warning the user before deleting their account. Keep the finality of the wording.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This permanently deletes your account and all associated data. This action cannot be undone."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu işlem hesabınızı ve ona bağlı tüm verileri kalıcı olarak siler. Bu işlem geri alınamaz."
+          }
+        }
+      }
+    },
+    "alert.delete_account.progress" : {
+      "comment" : "Shown while the account deletion is in progress.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleting your account…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabınız siliniyor…"
+          }
+        }
+      }
+    },
+    "alert.delete_account.title" : {
+      "comment" : "Title of the alert confirming account deletion.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabı Sil"
+          }
+        }
+      }
+    },
+    "alert.sign_in_failed" : {
+      "comment" : "Shown when signing in fails.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in failed. Please try again."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yapılamadı. Lütfen tekrar deneyin."
+          }
+        }
+      }
+    },
+    "alert.sign_out.message" : {
+      "comment" : "Message of the alert confirming sign-out.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to sign out?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çıkış yapmak istediğinize emin misiniz?"
+          }
+        }
+      }
+    },
+    "alert.sign_out.title" : {
+      "comment" : "Title of the alert confirming sign-out.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çıkış Yap"
+          }
+        }
+      }
+    },
+    "alert.test_notification.message" : {
+      "comment" : "Alert message after sending a debug notification.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A test notification was sent to this device. It can take a few seconds to arrive."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu cihaza bir test bildirimi gönderildi. Ulaşması birkaç saniye sürebilir."
+          }
+        }
+      }
+    },
+    "alert.test_notification.title" : {
+      "comment" : "Alert title after sending a debug notification.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test Sent"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test Gönderildi"
+          }
+        }
+      }
+    },
+    "announcements.empty" : {
+      "comment" : "Shown when the user has not dismissed any announcements.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No dismissed announcements yet."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Henüz kapatılmış duyuru yok."
+          }
+        }
+      }
+    },
+    "announcements.kind.error" : {
+      "comment" : "Severity label on an announcement banner reporting a problem.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata"
+          }
+        }
+      }
+    },
+    "announcements.kind.info" : {
+      "comment" : "Severity label on an informational announcement banner. Keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Info"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilgi"
+          }
+        }
+      }
+    },
+    "announcements.kind.success" : {
+      "comment" : "Severity label on a positive announcement banner.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Success"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başarılı"
+          }
+        }
+      }
+    },
+    "announcements.kind.warning" : {
+      "comment" : "Severity label on a cautionary announcement banner.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warning"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uyarı"
+          }
+        }
+      }
+    },
+    "announcements.title" : {
+      "comment" : "Navigation bar title of the announcement history screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Announcements"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duyurular"
+          }
+        }
+      }
+    },
+    "auth.nickname_taken" : {
+      "comment" : "Error shown when the chosen nickname belongs to someone else.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This nickname is already taken. Please choose another."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu kullanıcı adı alınmış. Lütfen başka bir tane seçin."
+          }
+        }
+      }
+    },
+    "auth.not_signed_in" : {
+      "comment" : "Error shown when an action needs an account and there isn't one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You are not signed in."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yapmadınız."
+          }
+        }
+      }
+    },
+    "common.cancel" : {
+      "comment" : "Button that dismisses an alert without acting.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vazgeç"
+          }
+        }
+      }
+    },
+    "common.error" : {
+      "comment" : "Title of an alert reporting a failure.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata"
+          }
+        }
+      }
+    },
+    "common.error_with_reason" : {
+      "comment" : "Shown in place of a list when loading failed. %@ is the underlying reason, which comes from the system and may itself be in English.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata: %@"
+          }
+        }
+      }
+    },
+    "common.generic_error" : {
+      "comment" : "Fallback message when a failure carries no specific reason.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong. Please try again."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+          }
+        }
+      }
+    },
+    "common.ok" : {
+      "comment" : "Button that dismisses an alert.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamam"
+          }
+        }
+      }
+    },
+    "common.tbd" : {
+      "comment" : "Abbreviation of 'To Be Determined'. Stands in for a player who is not decided yet. Appears inside narrow score cells, so keep it to about 4 characters.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TBD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TBD"
+          }
+        }
+      }
+    },
+    "common.versus" : {
+      "comment" : "Separator shown between two players' names on the head-to-head screen. Keep to 2-3 characters.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VS"
+          }
+        }
+      }
+    },
+    "edit_profile.invalid_nickname" : {
+      "comment" : "Alert title when the entered nickname is not allowed.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid Nickname"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçersiz Kullanıcı Adı"
+          }
+        }
+      }
+    },
+    "edit_profile.name_placeholder" : {
+      "comment" : "Placeholder inside the display-name field.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your name"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adınız"
+          }
+        }
+      }
+    },
+    "edit_profile.name_section" : {
+      "comment" : "Heading above the display-name field. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ad"
+          }
+        }
+      }
+    },
+    "edit_profile.nickname_characters" : {
+      "comment" : "Validation error when the nickname contains a disallowed character.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nickname can only contain letters, numbers and underscore."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı adı yalnızca harf, rakam ve alt çizgi içerebilir."
+          }
+        }
+      }
+    },
+    "edit_profile.nickname_hint" : {
+      "comment" : "Hint under the nickname field. %1$d and %2$d are the minimum and maximum length.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d–%2$d characters. Letters, numbers and underscore only. Used to find you in chat."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d–%2$d karakter. Yalnızca harf, rakam ve alt çizgi. Sohbette sizi bulmak için kullanılır."
+          }
+        }
+      }
+    },
+    "edit_profile.nickname_length" : {
+      "comment" : "Validation error. %1$d = minimum length, %2$d = maximum length.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nickname must be %1$d–%2$d characters long."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı adı %1$d–%2$d karakter olmalıdır."
+          }
+        }
+      }
+    },
+    "edit_profile.nickname_placeholder" : {
+      "comment" : "Placeholder inside the nickname field. Lowercase on purpose, because nicknames themselves are lowercase.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "nickname"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "kullanıcı adı"
+          }
+        }
+      }
+    },
+    "edit_profile.nickname_section" : {
+      "comment" : "Heading above the nickname field. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nickname"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı Adı"
+          }
+        }
+      }
+    },
+    "edit_profile.save" : {
+      "comment" : "Button that saves profile changes.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydet"
+          }
+        }
+      }
+    },
+    "edit_profile.save_failed" : {
+      "comment" : "Shown when saving the profile fails.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not save your profile. Please try again."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profiliniz kaydedilemedi. Lütfen tekrar deneyin."
+          }
+        }
+      }
+    },
+    "edit_profile.title" : {
+      "comment" : "Navigation bar title of the profile editing screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Profile"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profili Düzenle"
+          }
+        }
+      }
+    },
+    "head_to_head.all_matches" : {
+      "comment" : "Heading above the full list of meetings between two players.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Matches"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm Maçlar"
+          }
+        }
+      }
+    },
+    "head_to_head.empty" : {
+      "comment" : "Shown when two players have never met.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No matches found between these players"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu oyuncular arasında maç bulunamadı"
+          }
+        }
+      }
+    },
+    "home.empty" : {
+      "comment" : "Shown on Home when no tournament is currently running.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No active tournament"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktif turnuva yok"
+          }
+        }
+      }
+    },
+    "home.title" : {
+      "comment" : "Navigation bar title of the Home screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana Sayfa"
+          }
+        }
+      }
+    },
+    "language.help_translate" : {
+      "comment" : "Footer inviting users to report translation problems.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotted a translation that reads badly? Tell us through Settings → Give Feedback — these translations are reviewed by players like you."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulağa kötü gelen bir çeviri mi gördünüz? Ayarlar → Geri Bildirim Gönder üzerinden bize yazın — bu çeviriler sizin gibi oyuncular tarafından gözden geçiriliyor."
+          }
+        }
+      }
+    },
+    "language.relaunch_note" : {
+      "comment" : "Explanatory footer under the language list.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app switches language right away. A few system elements, like the keyboard and share sheet, update the next time you open the app."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama dili hemen değişir. Klavye ve paylaşım menüsü gibi birkaç sistem öğesi, uygulamayı bir sonraki açışınızda güncellenir."
+          }
+        }
+      }
+    },
+    "language.system" : {
+      "comment" : "Language option meaning 'use whatever language the device is set to'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistem"
+          }
+        }
+      }
+    },
+    "language.system_resolves_to" : {
+      "comment" : "Subtitle under the 'System' language option, naming the language it currently resolves to. %@ is a language name such as 'English'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Currently: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu an: %@"
+          }
+        }
+      }
+    },
+    "language.title" : {
+      "comment" : "Navigation bar title of the language picker screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil"
+          }
+        }
+      }
+    },
+    "live.badge" : {
+      "comment" : "Small badge on a match in progress. Very tight space -- keep to about 4 characters. Shown in capitals.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LIVE"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CANLI"
+          }
+        }
+      }
+    },
+    "live.current_break" : {
+      "comment" : "Points scored so far in the player's current visit to the table, shown on the Lock Screen live score, e.g. 'Break: 47'. IMPORTANT: in snooker a 'break' is a scoring run — it does NOT mean the players are resting. That other sense is the separate 'match_status.on_break' string. %d = the points scored.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break: %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break: %d"
+          }
+        }
+      }
+    },
+    "live.current_frame" : {
+      "comment" : "Two-line label on a live match. First line is the frame number (a frame is one game within a match), second line is the points scored in that frame. %1$d = frame number, %2$d = home points, %3$d = away points. Keep the line break.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame %1$d\n%2$d - %3$d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d. Frame\n%2$d - %3$d"
+          }
+        }
+      }
+    },
+    "live.empty" : {
+      "comment" : "Shown when no match is being played right now.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No live matches at the moment"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu anda canlı maç yok"
+          }
+        }
+      }
+    },
+    "live.title" : {
+      "comment" : "Navigation bar title of the live matches screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live Scores"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canlı Skorlar"
+          }
+        }
+      }
+    },
+    "match_detail.best_of" : {
+      "comment" : "Match length. 'Best of 19' means the first player to win 10 frames wins the match. %d = total number of frames.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best of %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d frame üzerinden"
+          }
+        }
+      }
+    },
+    "match_detail.frames" : {
+      "comment" : "Caption above the frame score. In snooker a 'frame' is one individual game within a match; a match is won by taking the most frames.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frames"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame"
+          }
+        }
+      }
+    },
+    "match_detail.frames_empty" : {
+      "comment" : "Placeholder on a match that has not started.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frame details will appear here once play begins."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maç başladığında frame detayları burada görünecek."
+          }
+        }
+      }
+    },
+    "match_detail.head_to_head" : {
+      "comment" : "Button opening the record of past meetings between the two players.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Head-to-Head"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karşılaşmalar"
+          }
+        }
+      }
+    },
+    "match_status.complete" : {
+      "comment" : "Status of a finished match. Shown in capitals.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MATCH COMPLETE"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAÇ BİTTİ"
+          }
+        }
+      }
+    },
+    "match_status.completed" : {
+      "comment" : "Status label on a finished match in a list.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamamlandı"
+          }
+        }
+      }
+    },
+    "match_status.live" : {
+      "comment" : "Status of a match being played right now. Shown in capitals in a small badge.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LIVE"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CANLI"
+          }
+        }
+      }
+    },
+    "match_status.on_break" : {
+      "comment" : "Status of a match paused for the mid-session interval -- play will resume shortly. Shown in capitals.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ON BREAK"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ARADA"
+          }
+        }
+      }
+    },
+    "match_status.scheduled" : {
+      "comment" : "Status of a match that has not started yet. Shown in capitals.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SCHEDULED"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PLANLANDI"
+          }
+        }
+      }
+    },
+    "match_status.suspended" : {
+      "comment" : "Status of a match halted and due to resume on another day.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suspended"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ertelendi"
+          }
+        }
+      }
+    },
+    "No image URL" : {
+
+    },
+    "notification_preference.all_results" : {
+      "comment" : "Notification option: notify about every finished match.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Results"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tüm Sonuçlar"
+          }
+        }
+      }
+    },
+    "notification_preference.finals_only" : {
+      "comment" : "Notification option: only the final match of each major tournament.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only Finals Results for Main Events"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sadece Büyük Turnuva Finalleri"
+          }
+        }
+      }
+    },
+    "notification_preference.main_events" : {
+      "comment" : "Notification option. 'Main events' are the major ranking tournaments -- World Championship, UK Championship, the Masters and similar -- as opposed to smaller or qualifying events.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Results For Main Events"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Büyük Turnuvaların Tüm Sonuçları"
+          }
+        }
+      }
+    },
+    "notification_preference.none" : {
+      "comment" : "Notification option: turn notifications off entirely.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None (Never send Notifications)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbiri (Hiç bildirim gönderme)"
+          }
+        }
+      }
+    },
+    "player.biography" : {
+      "comment" : "Section heading above a player's personal details.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biography"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biyografi"
+          }
+        }
+      }
+    },
+    "player.born" : {
+      "comment" : "Row label before a player's date of birth.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Born"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğum"
+          }
+        }
+      }
+    },
+    "player.no_biography" : {
+      "comment" : "Shown when no personal details are known for a player.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No biography available"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biyografi bilgisi yok"
+          }
+        }
+      }
+    },
+    "player.no_recent_matches" : {
+      "comment" : "Shown when a player has no recent results.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No recent matches"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son maç yok"
+          }
+        }
+      }
+    },
+    "player.recent_matches" : {
+      "comment" : "Section heading above a player's latest results.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recent Matches"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son Maçlar"
+          }
+        }
+      }
+    },
+    "player.turned_pro" : {
+      "comment" : "Row label before the year the player became a professional.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turned Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profesyonel Oldu"
+          }
+        }
+      }
+    },
+    "ranking.empty" : {
+      "comment" : "Shown when the ranking list could not be loaded or is empty.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No rankings available"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıralama bilgisi yok"
+          }
+        }
+      }
+    },
+    "ranking.search_placeholder" : {
+      "comment" : "Placeholder inside the search field on the rankings screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search players…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyuncu ara…"
+          }
+        }
+      }
+    },
+    "ranking.title" : {
+      "comment" : "Navigation bar title of the world ranking screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rankings"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıralama"
+          }
+        }
+      }
+    },
+    "round.final" : {
+      "comment" : "The last match of a tournament, deciding the winner.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Final"
+          }
+        }
+      }
+    },
+    "round.group_final" : {
+      "comment" : "The deciding match within a group, in tournaments played as groups.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group Final"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup Finali"
+          }
+        }
+      }
+    },
+    "round.group_semi_final" : {
+      "comment" : "The semi-final stage within a group.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group Semi Final"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup Yarı Finali"
+          }
+        }
+      }
+    },
+    "round.group_stage" : {
+      "comment" : "The part of a tournament played in groups, before the knockout rounds.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group Stage"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grup Aşaması"
+          }
+        }
+      }
+    },
+    "round.held_over" : {
+      "comment" : "A match postponed from its original round and played later. %@ is the round name, e.g. 'Round 1'.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (Held Over)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (Ertelenmiş)"
+          }
+        }
+      }
+    },
+    "round.last_n" : {
+      "comment" : "A knockout stage named by how many players remain, e.g. 'Last 16'. %d = number of players left.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Son %d"
+          }
+        }
+      }
+    },
+    "round.league_phase" : {
+      "comment" : "The league-format part of a tournament, before the knockout rounds.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "League Phase"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lig Aşaması"
+          }
+        }
+      }
+    },
+    "round.pre_qualifier" : {
+      "comment" : "An early qualifying match, before the main qualifying rounds.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pre-Qualifier"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ön Eleme"
+          }
+        }
+      }
+    },
+    "round.qualifier_n" : {
+      "comment" : "A numbered qualifying round, e.g. 'Qualifier 2'. %d = round number.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qualifier %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d. Eleme"
+          }
+        }
+      }
+    },
+    "round.quarter_final" : {
+      "comment" : "The round before the semi-finals -- 8 players remain.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quarter Final"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çeyrek Final"
+          }
+        }
+      }
+    },
+    "round.round_n" : {
+      "comment" : "A numbered early round, e.g. 'Round 1'. %d = round number.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d. Tur"
+          }
+        }
+      }
+    },
+    "round.round_robin" : {
+      "comment" : "A format where every player in a group plays every other player.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Round Robin"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lig Usulü"
+          }
+        }
+      }
+    },
+    "round.semi_final" : {
+      "comment" : "The round before the final -- 4 players remain.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semi Final"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yarı Final"
+          }
+        }
+      }
+    },
+    "round.stage_n" : {
+      "comment" : "A numbered stage of a tournament, e.g. 'Stage 2'. %d = stage number.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stage %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d. Aşama"
+          }
+        }
+      }
+    },
+    "round.week_n" : {
+      "comment" : "A numbered week within a league phase, e.g. 'Week 3'. %d = week number.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Week %d"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d. Hafta"
+          }
+        }
+      }
+    },
+    "seasons.date_unknown" : {
+      "comment" : "Shown on a tournament's date badge when the dates are not announced yet. Abbreviation of 'To Be Determined'. Maximum about 4 characters.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TBD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TBD"
+          }
+        }
+      }
+    },
+    "seasons.title" : {
+      "comment" : "Navigation bar title of the season list screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seasons"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sezonlar"
+          }
+        }
+      }
+    },
+    "settings.announcements" : {
+      "comment" : "Settings row opening previously shown in-app announcements.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Announcements"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duyurular"
+          }
+        }
+      }
+    },
+    "settings.by_author" : {
+      "comment" : "Credit line in the settings footer, e.g. 'by Tayfun Susamcioglu'. %@ is a person's name and must not be translated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "by %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ tarafından"
+          }
+        }
+      }
+    },
+    "settings.change_app_icon" : {
+      "comment" : "Settings row for choosing an alternative app icon.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change App Icon"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulama Simgesini Değiştir"
+          }
+        }
+      }
+    },
+    "settings.dark_mode" : {
+      "comment" : "Settings toggle for the dark colour theme. Use Apple's term for your language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark Mode"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koyu Mod"
+          }
+        }
+      }
+    },
+    "settings.delete_account" : {
+      "comment" : "Settings row that permanently deletes the user's account.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Account"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesabı Sil"
+          }
+        }
+      }
+    },
+    "settings.give_feedback" : {
+      "comment" : "Settings row for sending the developer feedback.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Give Feedback"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geri Bildirim Gönder"
+          }
+        }
+      }
+    },
+    "settings.hide_tbd_matches" : {
+      "comment" : "Settings toggle that hides fixtures whose players are not decided yet. 'TBD' = To Be Determined.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide TBD Matches"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belirsiz Maçları Gizle"
+          }
+        }
+      }
+    },
+    "settings.language" : {
+      "comment" : "Settings row opening the language picker.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil"
+          }
+        }
+      }
+    },
+    "settings.our_apps.contactname_subtitle" : {
+      "comment" : "One-line description of ContactName, another app by the same developer. 'ContactName' is a brand name and stays untranslated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Your Contacts"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kişilerinizi Güncelleyin"
+          }
+        }
+      }
+    },
+    "settings.our_apps.filmbox_subtitle" : {
+      "comment" : "One-line description of FilmBox, another app by the same developer. 'FilmBox' is a brand name and stays untranslated.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smart Movie Manager"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akıllı Film Yöneticisi"
+          }
+        }
+      }
+    },
+    "settings.rate_us" : {
+      "comment" : "Settings row that opens the App Store review prompt.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate Us"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bizi Değerlendir"
+          }
+        }
+      }
+    },
+    "settings.section.about" : {
+      "comment" : "Settings section heading. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Us"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hakkımızda"
+          }
+        }
+      }
+    },
+    "settings.section.account" : {
+      "comment" : "Settings section heading. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hesap"
+          }
+        }
+      }
+    },
+    "settings.section.developer" : {
+      "comment" : "Settings section heading for debug tools. Only visible in test builds. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developer"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geliştirici"
+          }
+        }
+      }
+    },
+    "settings.section.language" : {
+      "comment" : "Settings section heading above the language picker. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil"
+          }
+        }
+      }
+    },
+    "settings.section.live_activity" : {
+      "comment" : "Settings section heading. 'Live Activity' is Apple's feature name for the live score panel on the iPhone Lock Screen -- use Apple's own term for it in your language. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Lock Screen (Live Activity)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otomatik Kilit Ekranı (Canlı Etkinlik)"
+          }
+        }
+      }
+    },
+    "settings.section.notification" : {
+      "comment" : "Settings section heading. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirim"
+          }
+        }
+      }
+    },
+    "settings.section.other" : {
+      "comment" : "Settings section heading for miscellaneous options. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diğer"
+          }
+        }
+      }
+    },
+    "settings.section.our_apps" : {
+      "comment" : "Settings section heading above the developer's other apps. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Our Apps"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diğer Uygulamalarımız"
+          }
+        }
+      }
+    },
+    "settings.section.support" : {
+      "comment" : "Settings section heading above the optional tipping option. 'Support' here means financially supporting the developer, not customer support. Displayed in capitals by the app -- write it in normal case here.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destek Ol"
+          }
+        }
+      }
+    },
+    "settings.send_test_notification" : {
+      "comment" : "Debug-only settings row. Only visible in test builds.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Test Notification"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test Bildirimi Gönder"
+          }
+        }
+      }
+    },
+    "settings.share_app" : {
+      "comment" : "Settings row that opens the share sheet.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share App"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamayı Paylaş"
+          }
+        }
+      }
+    },
+    "settings.sign_in_with_apple" : {
+      "comment" : "Apple requires this exact wording. Please use Apple's own official translation for your language rather than translating it yourself.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile Giriş Yap"
+          }
+        }
+      }
+    },
+    "settings.sign_out" : {
+      "comment" : "Settings row that signs the user out of their account.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign Out"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çıkış Yap"
+          }
+        }
+      }
+    },
+    "settings.signed_in" : {
+      "comment" : "Shown in place of a name when a signed-in user has not set one.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Signed in"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giriş yapıldı"
+          }
+        }
+      }
+    },
+    "settings.support_the_app" : {
+      "comment" : "Settings row opening the optional tipping screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the App"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamaya Destek Ol"
+          }
+        }
+      }
+    },
+    "settings.title" : {
+      "comment" : "Navigation bar title of the Settings screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
+          }
+        }
+      }
+    },
+    "settings.version" : {
+      "comment" : "App version line in the settings footer. %@ is a version number such as 1.4.2.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sürüm %@"
+          }
+        }
+      }
+    },
+    "tab.home" : {
+      "comment" : "Tab bar item: the current tournament's matches. Aim for 10 characters or fewer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana Sayfa"
+          }
+        }
+      }
+    },
+    "tab.live" : {
+      "comment" : "Tab bar item: matches happening right now. Aim for 10 characters or fewer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Live"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canlı"
+          }
+        }
+      }
+    },
+    "tab.ranking" : {
+      "comment" : "Tab bar item: the world ranking list. Aim for 10 characters or fewer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ranking"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıralama"
+          }
+        }
+      }
+    },
+    "tab.season" : {
+      "comment" : "Tab bar item: the season's tournament calendar. Tab labels are very tight -- aim for 10 characters or fewer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Season"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sezon"
+          }
+        }
+      }
+    },
+    "tab.settings" : {
+      "comment" : "Tab bar item. Aim for 10 characters or fewer.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
+          }
+        }
+      }
+    },
+    "tip_jar.active" : {
+      "comment" : "Shown in place of a price on a subscription the user already has.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etkin"
+          }
+        }
+      }
+    },
+    "tip_jar.body" : {
+      "comment" : "Main text on the tipping screen, written by the developer in the first person. Keep it warm and personal rather than formal. Keep the emoji.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hundreds of hours of work, heart and passion went into this app — built to make following snooker simpler and more enjoyable. There are no paid features: everything stays free. If it brought you a little joy, a small optional tip helps me keep improving it. Thank you! 🙏"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu uygulamaya yüzlerce saatlik emek, sevgi ve tutku girdi — snooker takip etmeyi daha basit ve keyifli hale getirmek için. Ücretli özellik yok: her şey ücretsiz kalıyor. Size küçük bir mutluluk kattıysa, isteğe bağlı ufak bir destek onu geliştirmeye devam etmemi sağlar. Teşekkürler! 🙏"
+          }
+        }
+      }
+    },
+    "tip_jar.empty" : {
+      "comment" : "Shown when no tipping options could be loaded.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No options available right now."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şu anda seçenek yok."
+          }
+        }
+      }
+    },
+    "tip_jar.error_title" : {
+      "comment" : "Alert title when a purchase fails.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Something went wrong"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir şeyler ters gitti"
+          }
+        }
+      }
+    },
+    "tip_jar.footer_monthly" : {
+      "comment" : "Legally required subscription disclosure. Apple reviews this text, so keep every fact: auto-renewal, the 1 month term, charging to the Apple Account, and how to cancel.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly Support is an auto-renewable subscription. Each plan lasts 1 month and renews automatically at the price shown until cancelled. Payment is charged to your Apple Account; you can cancel anytime in your App Store subscription settings. No features are unlocked — this is purely optional support."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aylık Destek, otomatik yenilenen bir aboneliktir. Her plan 1 ay sürer ve iptal edilene kadar gösterilen fiyattan otomatik olarak yenilenir. Ödeme Apple Hesabınızdan tahsil edilir; App Store abonelik ayarlarınızdan istediğiniz zaman iptal edebilirsiniz. Hiçbir özellik açılmaz — bu tamamen isteğe bağlı bir destektir."
+          }
+        }
+      }
+    },
+    "tip_jar.footer_one_time" : {
+      "comment" : "Disclosure under the one-time tip options.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A one-time tip. No subscription, no features unlocked — just a thank-you."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek seferlik bir destek. Abonelik yok, açılan özellik yok — sadece bir teşekkür."
+          }
+        }
+      }
+    },
+    "tip_jar.heading" : {
+      "comment" : "Heading on the tipping screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enjoying the app?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamayı beğendiniz mi?"
+          }
+        }
+      }
+    },
+    "tip_jar.load_failed" : {
+      "comment" : "Shown when the tipping options fail to load.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not load options. Please check your connection and try again."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçenekler yüklenemedi. Lütfen bağlantınızı kontrol edip tekrar deneyin."
+          }
+        }
+      }
+    },
+    "tip_jar.per_day" : {
+      "comment" : "Billing period beside a subscription price, e.g. '£4.99 per day'. %d = number of days.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per day"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per %d days"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "günlük"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d günde bir"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tip_jar.per_month" : {
+      "comment" : "Billing period beside a subscription price. %d = number of months.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per month"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per %d months"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "aylık"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d ayda bir"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tip_jar.per_week" : {
+      "comment" : "Billing period beside a subscription price. %d = number of weeks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per week"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per %d weeks"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "haftalık"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d haftada bir"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tip_jar.per_year" : {
+      "comment" : "Billing period beside a subscription price. %d = number of years.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per year"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "per %d years"
+                }
+              }
+            }
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "yıllık"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%d yılda bir"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "tip_jar.privacy_link" : {
+      "comment" : "Link to the app's privacy policy.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik Politikası"
+          }
+        }
+      }
+    },
+    "tip_jar.purchase_pending" : {
+      "comment" : "Shown when a purchase needs someone else's approval, e.g. a parent's.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your purchase is pending approval."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın alımınız onay bekliyor."
+          }
+        }
+      }
+    },
+    "tip_jar.restore" : {
+      "comment" : "Standard App Store action that re-applies previous purchases. Please use Apple's own official wording for your language.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore Purchases"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satın Alımları Geri Yükle"
+          }
+        }
+      }
+    },
+    "tip_jar.segment_monthly" : {
+      "comment" : "Tab selecting a recurring monthly subscription. Very tight space -- keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monthly"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aylık"
+          }
+        }
+      }
+    },
+    "tip_jar.segment_one_time" : {
+      "comment" : "Tab selecting single tips rather than a recurring subscription. Very tight space -- keep it short.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One-time"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tek Seferlik"
+          }
+        }
+      }
+    },
+    "tip_jar.terms_link" : {
+      "comment" : "Link to Apple's standard licence agreement. 'EULA' = End User Licence Agreement.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terms of Use (EULA)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanım Koşulları (EULA)"
+          }
+        }
+      }
+    },
+    "tip_jar.thanks.dismiss" : {
+      "comment" : "Button dismissing the thank-you alert. Deliberately playful -- it is the user replying to the developer's thanks.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're welcome"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rica ederim"
+          }
+        }
+      }
+    },
+    "tip_jar.thanks.message" : {
+      "comment" : "Alert message after a successful tip.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your support genuinely means a lot and helps keep the app growing."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desteğiniz gerçekten çok değerli ve uygulamanın büyümesine yardımcı oluyor."
+          }
+        }
+      }
+    },
+    "tip_jar.thanks.title" : {
+      "comment" : "Alert title after a successful tip. Keep the emoji.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you! ❤️"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teşekkürler! ❤️"
+          }
+        }
+      }
+    },
+    "tip_jar.title" : {
+      "comment" : "Navigation bar title of the optional tipping screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support the App"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulamaya Destek Ol"
+          }
+        }
+      }
+    },
+    "tournament.bracket_empty" : {
+      "comment" : "Shown when a tournament has no knockout draw to display.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bracket data isn't available for this tournament."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu turnuva için fikstür bilgisi yok."
+          }
+        }
+      }
+    },
+    "tournament.new_badge" : {
+      "comment" : "Badge marking a recently added tournament. Very short -- about 3 characters. Shown in capitals.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ"
+          }
+        }
+      }
+    },
+    "tournament.view_bracket" : {
+      "comment" : "Button opening the knockout draw. A 'bracket' is the tree showing who plays whom through to the final.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "View Tournament Bracket"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turnuva Fikstürünü Gör"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

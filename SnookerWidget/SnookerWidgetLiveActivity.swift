@@ -56,7 +56,7 @@ struct SnookerWidgetLiveActivity: Widget {
                                 .lineLimit(1)
                             Spacer()
                         }
-                        Text(context.state.round)
+                        Text(RoundName.localized(context.state.round))
                             .font(.caption2.weight(.semibold))
                     }
                 }
@@ -97,7 +97,7 @@ private struct LockScreenLiveActivityView: View {
                         .lineLimit(1)
                     Spacer()
                 }
-                Text(context.state.round)
+                Text(RoundName.localized(context.state.round))
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(.white.opacity(0.9))
             }
@@ -124,7 +124,7 @@ private struct LockScreenLiveActivityView: View {
 
             if let brk = context.state.currentBreak, brk > 0,
                context.state.status.lowercased() == "live" {
-                Text("Break: \(brk)")
+                Text(L10n.Live.currentBreak(brk))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.green)
             }
@@ -169,7 +169,7 @@ private struct StatusPill: View {
     }
 
     var body: some View {
-        Text(status.uppercased())
+        Text(MatchStatusName.badgeOrRaw(status))
             .font(.caption2.weight(.bold))
             .foregroundStyle(.white)
             .padding(.horizontal, 8)

@@ -113,7 +113,7 @@ final class PlayerDetailViewController: UIViewController {
     
     private let bioTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Biography"
+        label.text = L10n.Player.biography
         label.font = AppFont.semiBold(size: 18)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -139,7 +139,7 @@ final class PlayerDetailViewController: UIViewController {
     
     private let matchesTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Recent Matches"
+        label.text = L10n.Player.recentMatches
         label.font = AppFont.semiBold(size: 18)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -177,7 +177,7 @@ final class PlayerDetailViewController: UIViewController {
     
     private let matchesEmptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "No recent matches"
+        label.text = L10n.Player.noRecentMatches
         label.font = AppFont.regular(size: 14)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -436,7 +436,7 @@ final class PlayerDetailViewController: UIViewController {
             if let age = presentation.age {
                 value += " (\(age) years old)"
             }
-            bioStackView.addArrangedSubview(createStatRow(icon: "birthday.cake", title: "Born", value: value))
+            bioStackView.addArrangedSubview(createStatRow(icon: "birthday.cake", title: L10n.Player.born, value: value))
         }
         
         // Turned Pro
@@ -445,13 +445,13 @@ final class PlayerDetailViewController: UIViewController {
             if let years = presentation.yearsAsPro {
                 value += " (\(years) years)"
             }
-            bioStackView.addArrangedSubview(createStatRow(icon: "star.fill", title: "Turned Pro", value: value))
+            bioStackView.addArrangedSubview(createStatRow(icon: "star.fill", title: L10n.Player.turnedPro, value: value))
         }
         
         // Empty state if no bio info
         if bioStackView.arrangedSubviews.isEmpty {
             let emptyLabel = UILabel()
-            emptyLabel.text = "No biography available"
+            emptyLabel.text = L10n.Player.noBiography
             emptyLabel.font = AppFont.regular(size: 14)
             emptyLabel.textColor = .secondaryLabel
             bioStackView.addArrangedSubview(emptyLabel)
@@ -546,13 +546,13 @@ extension PlayerDetailViewController: PlayerDetailViewModelDelegate {
             updateMatchesCollectionViewHeight()
             
         case .showMatchesError(let message):
-            matchesEmptyLabel.text = "Error: \(message)"
+            matchesEmptyLabel.text = L10n.Common.errorWithReason(message)
             matchesEmptyLabel.isHidden = false
             matchesCollectionView.isHidden = true
             matchesCollectionViewHeightConstraint?.constant = 40
             
         case .showMatchesEmpty:
-            matchesEmptyLabel.text = "No recent matches"
+            matchesEmptyLabel.text = L10n.Player.noRecentMatches
             matchesEmptyLabel.isHidden = false
             matchesCollectionView.isHidden = true
             matchesCollectionViewHeightConstraint?.constant = 40

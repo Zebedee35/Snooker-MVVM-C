@@ -75,10 +75,10 @@ enum NotificationSetting: String, CaseIterable {
     
     var title: String {
         switch self {
-        case .allResults: return "All Results"
-        case .mainEvents: return "All Results For Main Events"
-        case .finalsOnly: return "Only Finals Results for Main Events"
-        case .none: return "None (Never send Notifications)"
+        case .allResults: return L10n.NotificationPreference.allResults
+        case .mainEvents: return L10n.NotificationPreference.mainEvents
+        case .finalsOnly: return L10n.NotificationPreference.finalsOnly
+        case .none: return L10n.NotificationPreference.none
         }
     }
 
@@ -123,6 +123,7 @@ protocol SettingsViewModelDelegate: AnyObject {
 
 enum SettingsRoute {
     case editProfile
+    case language
     case sendTestNotification
     case tipJar
     case changeAppIcon
@@ -218,6 +219,13 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             buildAboutSection()
         ]
 
+        // Only worth showing once there is more than one language to pick.
+        // Until translations ship, the bundle carries English alone and the
+        // row would be a dead end.
+        if let languageSection = buildLanguageSection() {
+            sections.insert(languageSection, at: 4)
+        }
+
         #if DEBUG
         // Developer-only tools; never shipped in Release builds.
         if let debugSection = buildDebugSection() {
@@ -236,11 +244,11 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 id: "send_test_notification",
                 icon: "paperplane.fill",
                 iconColor: .systemBlue,
-                title: "Send Test Notification",
+                title: L10n.Settings.sendTestNotification,
                 type: .action
             )
         ]
-        return SettingsSection(title: "DEVELOPER", items: items)
+        return SettingsSection(title: L10n.Settings.Section.developer, items: items)
     }
     #endif
 
@@ -262,7 +270,33 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 isOn: LiveActivityAutoRounds.isOn(category)
             )
         }
-        return SettingsSection(title: "AUTO LOCK SCREEN (LIVE ACTIVITY)", items: items)
+        return SettingsSection(title: L10n.Settings.Section.liveActivity, items: items)
+    }
+
+    /// The in-app language override. Absent while the app ships a single
+    /// language; appears automatically once the bundle carries more.
+    private func buildLanguageSection() -> SettingsSection? {
+        guard LanguageManager.shared.hasMultipleLanguages else { return nil }
+
+        let subtitle: String
+        switch LanguageManager.shared.selection {
+        case .system:
+            subtitle = L10n.Language.system
+        case .explicit(let code):
+            subtitle = AppLanguage(code: code).endonym
+        }
+
+        let items = [
+            SettingsItem(
+                id: "language",
+                icon: "globe",
+                iconColor: .systemBlue,
+                title: L10n.Settings.language,
+                subtitle: subtitle,
+                type: .navigation
+            )
+        ]
+        return SettingsSection(title: L10n.Settings.Section.language, items: items)
     }
 
     /// Optional tip jar — sits right under ACCOUNT so a happy user sees it early.
@@ -272,11 +306,11 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 id: "support_tip",
                 icon: "heart.fill",
                 iconColor: .systemRed,
-                title: "Support the App",
+                title: L10n.Settings.supportTheApp,
                 type: .navigation
             )
         ]
-        return SettingsSection(title: "SUPPORT", items: items)
+        return SettingsSection(title: L10n.Settings.Section.support, items: items)
     }
 
     private func buildAccountSection() -> SettingsSection {
@@ -286,7 +320,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             let items = [
                 SettingsItem(
                     id: "profile",
-                    title: (name?.isEmpty == false ? name : nil) ?? "Signed in",
+                    title: (name?.isEmpty == false ? name : nil) ?? L10n.Settings.signedIn,
                     subtitle: email,
                     type: .profile
                 ),
@@ -294,7 +328,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                     id: "sign_out",
                     icon: "rectangle.portrait.and.arrow.right",
                     iconColor: .systemRed,
-                    title: "Sign Out",
+                    title: L10n.Settings.signOut,
                     type: .action,
                     isDestructive: true
                 ),
@@ -302,21 +336,21 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                     id: "delete_account",
                     icon: "trash",
                     iconColor: .systemRed,
-                    title: "Delete Account",
+                    title: L10n.Settings.deleteAccount,
                     type: .action,
                     isDestructive: true
                 )
             ]
-            return SettingsSection(title: "ACCOUNT", items: items)
+            return SettingsSection(title: L10n.Settings.Section.account, items: items)
         } else {
             let items = [
                 SettingsItem(
                     id: "apple_signin",
-                    title: "Sign in with Apple",
+                    title: L10n.Settings.signInWithApple,
                     type: .appleSignIn
                 )
             ]
-            return SettingsSection(title: "ACCOUNT", items: items)
+            return SettingsSection(title: L10n.Settings.Section.account, items: items)
         }
     }
     
@@ -331,7 +365,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 isSelected: notificationSetting == setting
             )
         }
-        return SettingsSection(title: "NOTIFICATION", items: items)
+        return SettingsSection(title: L10n.Settings.Section.notification, items: items)
     }
     
     private func buildOtherSection() -> SettingsSection {
@@ -339,7 +373,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             /* SettingsItem(
                 id: "change_app_icon",
                 icon: "🌠",
-                title: "Change App Icon",
+                title: L10n.Settings.changeAppIcon,
                 type: .navigation
             ),
              */
@@ -347,7 +381,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 id: "dark_mode",
                 icon: "moon.fill",
                 iconColor: .systemIndigo,
-                title: "Dark Mode",
+                title: L10n.Settings.darkMode,
                 type: .toggle,
                 isOn: isDarkMode
             ),
@@ -355,12 +389,12 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 id: "hide_tbd",
                 icon: "eye.slash.fill",
                 iconColor: .systemOrange,
-                title: "Hide TBD Matches",
+                title: L10n.Settings.hideTBDMatches,
                 type: .toggle,
                 isOn: hideTBDMatches
             )
         ]
-        return SettingsSection(title: "OTHER", items: items)
+        return SettingsSection(title: L10n.Settings.Section.other, items: items)
     }
     
     private func buildOurAppsSection() -> SettingsSection {
@@ -368,19 +402,19 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             SettingsItem(
                 id: "filmbox_app",
                 title: "FilmBox",
-                subtitle: "Smart Movie Manager",
+                subtitle: L10n.Settings.OurApps.filmBoxSubtitle,
                 type: .app,
                 appIconName: "Filmbox"
             ),
             SettingsItem(
                 id: "contactname_app",
                 title: "ContactName",
-                subtitle: "Update Your Contacts",
+                subtitle: L10n.Settings.OurApps.contactNameSubtitle,
                 type: .app,
                 appIconName: "ContactName"
             )
         ]
-        return SettingsSection(title: "OUR APPS", items: items)
+        return SettingsSection(title: L10n.Settings.Section.ourApps, items: items)
     }
     
     private func buildAboutSection() -> SettingsSection {
@@ -389,28 +423,28 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 id: "announcements_history",
                 icon: "bell.badge",
                 iconColor: .systemPurple,
-                title: "Announcements",
+                title: L10n.Settings.announcements,
                 type: .navigation
             ),
             SettingsItem(
                 id: "rate_us",
                 icon: "star.fill",
                 iconColor: .systemYellow,
-                title: "Rate Us",
+                title: L10n.Settings.rateUs,
                 type: .action
             ),
             SettingsItem(
                 id: "share_app",
                 icon: "square.and.arrow.up",
                 iconColor: .systemBlue,
-                title: "Share App",
+                title: L10n.Settings.shareApp,
                 type: .action
             ),
             SettingsItem(
                 id: "give_feedback",
                 icon: "bubble.left.and.bubble.right.fill",
                 iconColor: .systemGreen,
-                title: "Give Feedback",
+                title: L10n.Settings.giveFeedback,
                 type: .action
             ),
             SettingsItem(
@@ -421,7 +455,7 @@ final class SettingsViewModel: SettingsViewModelProtocol {
                 type: .action
             )
         ]
-        return SettingsSection(title: "ABOUT US", items: items)
+        return SettingsSection(title: L10n.Settings.Section.about, items: items)
     }
     
     func handleSelection(item: SettingsItem) {
@@ -433,6 +467,10 @@ final class SettingsViewModel: SettingsViewModelProtocol {
         // Support section
         case "support_tip":
             delegate?.navigateTo(route: .tipJar)
+
+        // Language section
+        case "language":
+            delegate?.navigateTo(route: .language)
 
         #if DEBUG
         case "send_test_notification":
@@ -534,7 +572,8 @@ final class SettingsViewModel: SettingsViewModelProtocol {
             notification: notificationSetting.rawValue,
             darkMode: isDarkMode,
             hideTBD: hideTBDMatches,
-            autoRounds: LiveActivityAutoRounds.selectedRawValues
+            autoRounds: LiveActivityAutoRounds.selectedRawValues,
+            language: LanguageManager.shared.selection.storedValue
         )
     }
     

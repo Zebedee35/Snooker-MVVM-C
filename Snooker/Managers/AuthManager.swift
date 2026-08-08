@@ -164,11 +164,27 @@ final class AuthManager {
 
     // MARK: - Settings Sync
 
+    /// Pushes whatever is currently stored locally, for callers that changed a
+    /// single preference and shouldn't have to restate the rest.
+    func syncCurrentSettingsToCloud() {
+        guard isSignedIn else { return }
+        let local = currentLocalSettings()
+        Task {
+            await pushSettings(
+                notification: local.notification,
+                darkMode: local.darkMode,
+                hideTBD: local.hideTBD,
+                autoRounds: local.autoRounds,
+                language: local.language
+            )
+        }
+    }
+
     /// Pushes the latest local preferences to the cloud (no-op when signed out).
-    func syncSettingsToCloud(notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String]) {
+    func syncSettingsToCloud(notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String], language: String) {
         guard isSignedIn else { return }
         Task {
-            await pushSettings(notification: notification, darkMode: darkMode, hideTBD: hideTBD, autoRounds: autoRounds)
+            await pushSettings(notification: notification, darkMode: darkMode, hideTBD: hideTBD, autoRounds: autoRounds, language: language)
         }
     }
 
@@ -312,7 +328,13 @@ final class AuthManager {
             applyCloudSettings(cloud)
         } else {
             let local = currentLocalSettings()
-            await pushSettings(notification: local.notification, darkMode: local.darkMode, hideTBD: local.hideTBD, autoRounds: local.autoRounds)
+            await pushSettings(
+                notification: local.notification,
+                darkMode: local.darkMode,
+                hideTBD: local.hideTBD,
+                autoRounds: local.autoRounds,
+                language: local.language
+            )
         }
     }
 
@@ -338,14 +360,15 @@ final class AuthManager {
         }
     }
 
-    private func pushSettings(notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String]) async {
+    private func pushSettings(notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String], language: String) async {
         guard let userId else { return }
         let row = SettingsUpsertRow(
             userId: userId,
             notificationSetting: notification,
             darkMode: darkMode,
             hideTbd: hideTBD,
-            laAutoRounds: autoRounds
+            laAutoRounds: autoRounds,
+            language: language
         )
         do {
             try await SupabaseAPI.client
@@ -377,6 +400,13 @@ final class AuthManager {
             PushNotificationManager.shared.updateLiveActivityAutoRounds(LiveActivityAutoRounds.selectedRawValues)
         }
 
+        // Language last: applying it posts .appLanguageChanged, which rebuilds
+        // the UI. Restoring the other preferences first means that rebuild
+        // already reflects them.
+        DispatchQueue.main.async {
+            LanguageManager.shared.applyRemoteSelection(settings.language)
+        }
+
         DispatchQueue.main.async {
             if let dark = settings.darkMode {
                 self.applyDarkMode(dark)
@@ -396,13 +426,14 @@ final class AuthManager {
         }
     }
 
-    private func currentLocalSettings() -> (notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String]) {
+    private func currentLocalSettings() -> (notification: String, darkMode: Bool, hideTBD: Bool, autoRounds: [String], language: String) {
         let notification = UserDefaults.standard.string(forKey: DefaultsKey.notificationSetting)
             ?? NotificationSetting.allResults.rawValue
         let darkMode = UserDefaults.standard.bool(forKey: DefaultsKey.darkMode)
         let hideTBD = UserDefaults.standard.bool(forKey: DefaultsKey.hideTBD)
         let autoRounds = LiveActivityAutoRounds.selectedRawValues
-        return (notification, darkMode, hideTBD, autoRounds)
+        let language = LanguageManager.shared.selection.storedValue
+        return (notification, darkMode, hideTBD, autoRounds, language)
     }
 
     private func applyDarkMode(_ isDark: Bool) {
@@ -429,9 +460,9 @@ enum AuthError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .notSignedIn:
-            return "You are not signed in."
+            return L10n.Auth.notSignedIn
         case .nicknameTaken:
-            return "This nickname is already taken. Please choose another."
+            return L10n.Auth.nicknameTaken
         }
     }
 }
@@ -480,6 +511,7 @@ private struct SettingsUpsertRow: Encodable {
     let darkMode: Bool
     let hideTbd: Bool
     let laAutoRounds: [String]
+    let language: String
 
     enum CodingKeys: String, CodingKey {
         case userId = "user_id"
@@ -487,6 +519,7 @@ private struct SettingsUpsertRow: Encodable {
         case darkMode = "dark_mode"
         case hideTbd = "hide_tbd"
         case laAutoRounds = "la_auto_rounds"
+        case language
     }
 }
 
@@ -497,6 +530,9 @@ private struct SettingsResponse: Decodable {
     let darkMode: Bool?
     let hideTbd: Bool?
     let laAutoRounds: [String]?
+    /// A language code, or "system" to follow the device. Optional so rows
+    /// written before the column existed still decode.
+    let language: String?
 }
 
 // MARK: - Notification Names

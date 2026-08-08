@@ -295,7 +295,7 @@ final class ScoreCell: UICollectionViewCell {
             }
             
             // Saat kısmı
-            awayScoreLabel.text = presentation.formattedTimePart ?? "TBD"
+            awayScoreLabel.text = presentation.formattedTimePart ?? L10n.Common.tbd
             awayScoreLabel.font = AppFont.semiBold(size: Constants.scoreFontSize - 2)
             awayScoreLabel.textColor = .label
             awayScoreLabel.textAlignment = .center
@@ -328,7 +328,7 @@ final class ScoreCell: UICollectionViewCell {
             matchStatusLabel.font = AppFont.medium(size: Constants.statusFontSize)
             let status = presentation.matchStatus.lowercased()
             if status == "live" {
-                matchStatusLabel.text = "LIVE"
+                matchStatusLabel.text = L10n.MatchStatus.live
                 matchStatusLabel.textColor = .systemRed
                 liveIndicatorView.isHidden = false
                 startLiveAnimation()
@@ -336,13 +336,13 @@ final class ScoreCell: UICollectionViewCell {
                 let datePart = presentation.formattedDatePart ?? "Today"
                 let timePart = presentation.formattedTimePart ?? ""
 
-                matchStatusLabel.text = "Suspended\n\(datePart) \(timePart)"
+                matchStatusLabel.text = "\(L10n.MatchStatus.suspended)\n\(datePart) \(timePart)"
 
                 matchStatusLabel.textColor = .secondaryLabel
                 liveIndicatorView.isHidden = true
                 stopLiveAnimation()
             } else if status == "completed" || status == "done" {
-                matchStatusLabel.text = "Completed"
+                matchStatusLabel.text = L10n.MatchStatus.completed
                 matchStatusLabel.textColor = .secondaryLabel
                 liveIndicatorView.isHidden = true
                 stopLiveAnimation()

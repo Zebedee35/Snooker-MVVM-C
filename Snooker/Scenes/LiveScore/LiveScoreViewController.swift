@@ -36,7 +36,7 @@ final class LiveScoreViewController: UIViewController {
     private let emptyStateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No live matches at the moment"
+        label.text = L10n.Live.empty
         label.textColor = .secondaryLabel
         label.font = AppFont.medium(size: 17)
         label.textAlignment = .center
@@ -98,7 +98,10 @@ final class LiveScoreViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
-        title = "Live Scores"
+        // navigationItem.title, not title: setting `title` on a tab's root
+        // view controller also writes through to its tabBarItem, which would
+        // overwrite the short tab label the moment this view loads.
+        navigationItem.title = L10n.Live.title
         
         setupUI()
         setupConstraints()

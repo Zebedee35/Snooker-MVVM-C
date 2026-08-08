@@ -36,7 +36,7 @@ final class RankingViewController: UIViewController {
     private let emptyStateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No rankings available"
+        label.text = L10n.Ranking.empty
         label.textColor = .secondaryLabel
         label.font = AppFont.medium(size: 17)
         label.textAlignment = .center
@@ -68,7 +68,7 @@ final class RankingViewController: UIViewController {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search players..."
+        searchController.searchBar.placeholder = L10n.Ranking.searchPlaceholder
         return searchController
     }()
     
@@ -86,7 +86,10 @@ final class RankingViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
-        title = "Rankings"
+        // navigationItem.title, not title: setting `title` on a tab's root
+        // view controller also writes through to its tabBarItem, which would
+        // overwrite the short tab label the moment this view loads.
+        navigationItem.title = L10n.Ranking.title
         
         setupUI()
         setupConstraints()

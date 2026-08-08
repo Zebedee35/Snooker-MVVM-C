@@ -23,7 +23,7 @@ final class AnnouncementsHistoryViewController: UIViewController {
     private lazy var emptyLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No dismissed announcements yet."
+        label.text = L10n.Announcements.empty
         label.font = AppFont.regular(size: 15)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -40,7 +40,7 @@ final class AnnouncementsHistoryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Announcements"
+        title = L10n.Announcements.title
         view.backgroundColor = .systemBackground
         setupUI()
         loadRecords()

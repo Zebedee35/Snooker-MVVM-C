@@ -86,19 +86,15 @@ struct LiveScoreCellPresentation {
         guard let matchDate = date else { return nil }
         
         let calendar = Calendar.current
-        let timeFormatter = DateFormatter()
-        timeFormatter.locale = Locale.current
-        timeFormatter.timeZone = TimeZone.current
+        let timeFormatter = AppDateFormatter.display(AppDateFormatter.Template.time)
         
         if calendar.isDateInToday(matchDate) {
             // Bugün - sadece saat
-            timeFormatter.dateFormat = "HH:mm"
             return timeFormatter.string(from: matchDate)
         } else {
             // Farklı gün - tarih ilk satır, saat ikinci satır
-            timeFormatter.dateFormat = "d MMM"
-            let datePart = timeFormatter.string(from: matchDate)
-            timeFormatter.dateFormat = "HH:mm"
+            let dateFormatter = AppDateFormatter.display(AppDateFormatter.Template.dayShortMonth)
+            let datePart = dateFormatter.string(from: matchDate)
             let timePart = timeFormatter.string(from: matchDate)
             return "\(datePart)\n\(timePart)"
         }
@@ -124,11 +120,8 @@ struct LiveScoreCellPresentation {
             return nil // Bugün ise tarih gösterme
         }
         
-        let timeFormatter = DateFormatter()
-        timeFormatter.locale = Locale.current
-        timeFormatter.timeZone = TimeZone.current
-        timeFormatter.dateFormat = "d MMM"
-        return timeFormatter.string(from: matchDate)
+        return AppDateFormatter.display(AppDateFormatter.Template.dayShortMonth)
+            .string(from: matchDate)
     }
     
     /// Scheduled maçlar için sadece saat kısmı
@@ -146,11 +139,8 @@ struct LiveScoreCellPresentation {
         
         guard let matchDate = date else { return nil }
         
-        let timeFormatter = DateFormatter()
-        timeFormatter.locale = Locale.current
-        timeFormatter.timeZone = TimeZone.current
-        timeFormatter.dateFormat = "HH:mm"
-        return timeFormatter.string(from: matchDate)
+        return AppDateFormatter.display(AppDateFormatter.Template.time)
+            .string(from: matchDate)
     }
     
     // MARK: - Initialization
@@ -159,7 +149,7 @@ struct LiveScoreCellPresentation {
         self.matchId = match.id
         
         self.homePlayerId = match.homePlayerId ?? ""
-        self.homePlayerName = match.homePlayer.firstName ?? "TBD"
+        self.homePlayerName = match.homePlayer.firstName ?? L10n.Common.tbd
         self.homePlayerSurname = match.homePlayer.surname ?? ""
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
         self.homePlayerScore = match.homePlayerScore ?? 0
@@ -170,7 +160,7 @@ struct LiveScoreCellPresentation {
         self.homePlayerTurnedPro = match.homePlayer.turnedPro
         
         self.awayPlayerId = match.awayPlayerId ?? ""
-        self.awayPlayerName = match.awayPlayer.firstName ?? "TBD"
+        self.awayPlayerName = match.awayPlayer.firstName ?? L10n.Common.tbd
         self.awayPlayerSurname = match.awayPlayer.surname ?? ""
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
         self.awayPlayerScore = match.awayPlayerScore ?? 0

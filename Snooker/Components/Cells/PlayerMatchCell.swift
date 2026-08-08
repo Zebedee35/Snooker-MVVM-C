@@ -207,7 +207,7 @@ final class PlayerMatchCell: UICollectionViewCell {
     
     func configure(with presentation: PlayerMatchCellPresentation) {
         // Round
-        roundLabel.text = presentation.round
+        roundLabel.text = RoundName.localized(presentation.round)
         
         // Score
         currentScoreLabel.text = "\(presentation.currentPlayerScore)"

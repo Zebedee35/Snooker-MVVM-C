@@ -162,19 +162,19 @@ private struct AnnouncementVisualStyle {
     init(type: AnnouncementType) {
         switch type {
         case .error:
-            title = "Error"
+            title = L10n.Announcements.Kind.error
             iconName = "exclamationmark.octagon.fill"
             tintColor = .systemRed
         case .warning:
-            title = "Warning"
+            title = L10n.Announcements.Kind.warning
             iconName = "exclamationmark.triangle.fill"
             tintColor = .systemOrange
         case .info:
-            title = "Info"
+            title = L10n.Announcements.Kind.info
             iconName = "info.circle.fill"
             tintColor = .systemBlue
         case .success:
-            title = "Success"
+            title = L10n.Announcements.Kind.success
             iconName = "checkmark.circle.fill"
             tintColor = .systemGreen
         }

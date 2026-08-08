@@ -36,6 +36,9 @@ final class SettingsCoordinator: Coordinator {
         case .editProfile:
             showEditProfile()
 
+        case .language:
+            showLanguagePicker()
+
         case .sendTestNotification:
             sendTestNotification()
 
@@ -78,15 +81,21 @@ final class SettingsCoordinator: Coordinator {
     }
     
     // MARK: - Route Implementations
-    
+
+    private func showLanguagePicker() {
+        let viewController = LanguagePickerViewController()
+        viewController.hidesBottomBarWhenPushed = true
+        navigationController.pushViewController(viewController, animated: true)
+    }
+
     private func showAppIconPicker() {
         // TODO: Implement app icon picker
         let alert = UIAlertController(
-            title: "Change App Icon",
-            message: "App icon selection coming soon!",
+            title: L10n.Alert.ChangeAppIcon.title,
+            message: L10n.Alert.ChangeAppIcon.message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
         navigationController.present(alert, animated: true)
     }
     
@@ -157,8 +166,8 @@ final class SettingsCoordinator: Coordinator {
             do {
                 try await PushNotificationManager.shared.sendTestNotification()
                 presentInfo(
-                    title: "Test Sent",
-                    message: "A test notification was sent to this device. It can take a few seconds to arrive."
+                    title: L10n.Alert.TestNotification.title,
+                    message: L10n.Alert.TestNotification.message
                 )
             } catch {
                 presentError(message: error.localizedDescription)
@@ -168,7 +177,7 @@ final class SettingsCoordinator: Coordinator {
 
     private func presentInfo(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
         navigationController.present(alert, animated: true)
     }
 
@@ -189,26 +198,26 @@ final class SettingsCoordinator: Coordinator {
                         authorizationCode: result.authorizationCode
                     )
                 } catch {
-                    self?.presentError(message: "Sign in failed. Please try again.")
+                    self?.presentError(message: L10n.Alert.signInFailed)
                 }
             }
         } onFailure: { [weak self] error in
             // The user cancelling the sheet is not an error worth surfacing.
             if (error as NSError).code == ASAuthorizationError.canceled.rawValue { return }
             DispatchQueue.main.async {
-                self?.presentError(message: "Sign in failed. Please try again.")
+                self?.presentError(message: L10n.Alert.signInFailed)
             }
         }
     }
 
     private func confirmSignOut() {
         let alert = UIAlertController(
-            title: "Sign Out",
-            message: "Are you sure you want to sign out?",
+            title: L10n.Alert.SignOut.title,
+            message: L10n.Alert.SignOut.message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive) { _ in
+        alert.addAction(UIAlertAction(title: L10n.Common.cancel, style: .cancel))
+        alert.addAction(UIAlertAction(title: L10n.Settings.signOut, style: .destructive) { _ in
             Task { await AuthManager.shared.signOut() }
         })
         navigationController.present(alert, animated: true)
@@ -218,12 +227,12 @@ final class SettingsCoordinator: Coordinator {
 
     private func confirmDeleteAccount() {
         let alert = UIAlertController(
-            title: "Delete Account",
-            message: "This permanently deletes your account and all associated data. This action cannot be undone.",
+            title: L10n.Alert.DeleteAccount.title,
+            message: L10n.Alert.DeleteAccount.message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Delete Account", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: L10n.Common.cancel, style: .cancel))
+        alert.addAction(UIAlertAction(title: L10n.Settings.deleteAccount, style: .destructive) { [weak self] _ in
             self?.performDeleteAccount()
         })
         navigationController.present(alert, animated: true)
@@ -232,7 +241,7 @@ final class SettingsCoordinator: Coordinator {
     private func performDeleteAccount() {
         let progress = UIAlertController(
             title: nil,
-            message: "Deleting your account…",
+            message: L10n.Alert.DeleteAccount.progress,
             preferredStyle: .alert
         )
         navigationController.present(progress, animated: true)
@@ -243,15 +252,15 @@ final class SettingsCoordinator: Coordinator {
                 progress.dismiss(animated: true)
             } catch {
                 progress.dismiss(animated: true) { [weak self] in
-                    self?.presentError(message: "Could not delete your account. Please try again.")
+                    self?.presentError(message: L10n.Alert.DeleteAccount.failed)
                 }
             }
         }
     }
 
     private func presentError(message: String) {
-        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(title: L10n.Common.error, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
         navigationController.present(alert, animated: true)
     }
 }

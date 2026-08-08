@@ -70,7 +70,7 @@ final class HeadToHeadViewController: UIViewController {
     // VS Label
     private let vsLabel: UILabel = {
         let label = UILabel()
-        label.text = "VS"
+        label.text = L10n.Common.versus
         label.font = AppFont.bold(size: 20)
         label.textColor = .systemGreen
         label.textAlignment = .center
@@ -145,7 +145,7 @@ final class HeadToHeadViewController: UIViewController {
     // Matches Section
     private let matchesTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "All Matches"
+        label.text = L10n.HeadToHead.allMatches
         label.font = AppFont.semiBold(size: 18)
         label.textColor = .label
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -177,7 +177,7 @@ final class HeadToHeadViewController: UIViewController {
     
     private let emptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "No matches found between these players"
+        label.text = L10n.HeadToHead.empty
         label.font = AppFont.regular(size: 14)
         label.textColor = .secondaryLabel
         label.textAlignment = .center
@@ -407,7 +407,7 @@ extension HeadToHeadViewController: HeadToHeadViewModelDelegate {
             player2WinsLabel.text = "\(header.player2Wins)"
             
         case .showError(let message):
-            emptyLabel.text = "Error: \(message)"
+            emptyLabel.text = L10n.Common.errorWithReason(message)
             emptyLabel.isHidden = false
             matchesCollectionView.isHidden = true
             

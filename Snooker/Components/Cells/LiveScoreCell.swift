@@ -223,7 +223,7 @@ final class LiveScoreCell: UICollectionViewCell {
     
     private let liveLabel: UILabel = {
         let label = UILabel()
-        label.text = "LIVE"
+        label.text = L10n.Live.badge
         label.font = AppFont.bold(size: 10)
         label.textColor = .systemRed
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -511,7 +511,7 @@ final class LiveScoreCell: UICollectionViewCell {
             }
             
             // Saat kısmı
-            awayScoreLabel.text = presentation.formattedTimePart ?? "TBD"
+            awayScoreLabel.text = presentation.formattedTimePart ?? L10n.Common.tbd
             awayScoreLabel.font = AppFont.semiBold(size: Constants.scoreFontSize - 8)
             awayScoreLabel.textColor = .label
             awayScoreLabel.textAlignment = .center
@@ -547,7 +547,7 @@ final class LiveScoreCell: UICollectionViewCell {
 
             // In-progress frame's live points (Option B)
             if let cf = presentation.currentFrame {
-                currentFrameLabel.text = "Frame \(cf.number)\n\(cf.home) - \(cf.away)"
+                currentFrameLabel.text = L10n.Live.currentFrame(number: cf.number, home: cf.home, away: cf.away)
                 currentFrameLabel.isHidden = false
             } else {
                 currentFrameLabel.isHidden = true

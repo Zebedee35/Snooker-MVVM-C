@@ -54,7 +54,10 @@ final class SeasonListViewController: UIViewController {
     super.viewDidLoad()
 
     view.backgroundColor = .systemBackground
-    title = "Seasons"
+    // navigationItem.title, not title: setting `title` on a tab's root
+    // view controller also writes through to its tabBarItem, which would
+    // overwrite the short tab label the moment this view loads.
+    navigationItem.title = L10n.Seasons.title
 
     setupUI()
     setupConstraints()
@@ -178,8 +181,7 @@ extension SeasonListViewController: SeasonListViewModelDelegate {
   private func scrollToUpcomingTournament() {
     guard !cellPresentations.isEmpty else { return }
     
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "yyyy-MM-dd"
+    let dateFormatter = AppDateFormatter.parser("yyyy-MM-dd")
     let today = Date()
     
     // Bugünden sonraki ilk turnuvayı bul (isPast == false olan ilk item)

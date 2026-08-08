@@ -30,14 +30,11 @@ struct PlayerDetailPresentation {
     var formattedBirthDate: String? {
         guard let dob = dob else { return nil }
         
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
+        let inputFormatter = AppDateFormatter.parser("yyyy-MM-dd")
         
         guard let date = inputFormatter.date(from: dob) else { return nil }
         
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "d MMMM yyyy"
-        outputFormatter.locale = Locale(identifier: "en_US")
+        let outputFormatter = AppDateFormatter.display(AppDateFormatter.Template.fullDate)
         
         return outputFormatter.string(from: date)
     }
@@ -46,8 +43,7 @@ struct PlayerDetailPresentation {
     var age: Int? {
         guard let dob = dob else { return nil }
         
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        let formatter = AppDateFormatter.parser("yyyy-MM-dd")
         
         guard let birthDate = formatter.date(from: dob) else { return nil }
         

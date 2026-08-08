@@ -19,6 +19,11 @@ struct BracketMatch {
     let awayScore: Int?
     let homeIsWinner: Bool
     let awayIsWinner: Bool
+    /// Whether the slot is still undecided. Tracked as a flag rather than by
+    /// comparing the name against "TBD", which would break once that label is
+    /// translated.
+    let homeIsTBD: Bool
+    let awayIsTBD: Bool
     /// True for auto-generated future rounds that don't exist in the data yet.
     let isPlaceholder: Bool
 }
@@ -75,18 +80,20 @@ enum BracketBuilder {
                 // Winners of completed feeder matches advance into these slots;
                 // undecided feeders leave a "TBD". Deeper rounds feed from
                 // placeholders (no winner yet) so they stay TBD.
-                let home = winnerName(of: feeder[2 * i]) ?? "TBD"
-                let away = winnerName(of: feeder[2 * i + 1]) ?? "TBD"
+                let home = winnerName(of: feeder[2 * i])
+                let away = winnerName(of: feeder[2 * i + 1])
                 round.append(BracketMatch(
                     id: "placeholder-\(fixtureSeed)",
                     round: name,
                     fixtureNumber: fixtureSeed,
-                    homeName: home,
-                    awayName: away,
+                    homeName: home ?? L10n.Common.tbd,
+                    awayName: away ?? L10n.Common.tbd,
                     homeScore: nil,
                     awayScore: nil,
                     homeIsWinner: false,
                     awayIsWinner: false,
+                    homeIsTBD: home == nil,
+                    awayIsTBD: away == nil,
                     isPlaceholder: true
                 ))
                 fixtureSeed += 1
@@ -123,24 +130,30 @@ enum BracketBuilder {
             awayWin = away > home
         }
 
+        let homeName = displayName(dto.homePlayer)
+        let awayName = displayName(dto.awayPlayer)
+
         return BracketMatch(
             id: dto.id,
             round: dto.round,
             fixtureNumber: fixture,
-            homeName: displayName(dto.homePlayer),
-            awayName: displayName(dto.awayPlayer),
+            homeName: homeName ?? L10n.Common.tbd,
+            awayName: awayName ?? L10n.Common.tbd,
             homeScore: dto.homePlayerScore,
             awayScore: dto.awayPlayerScore,
             homeIsWinner: homeWin,
             awayIsWinner: awayWin,
+            homeIsTBD: homeName == nil,
+            awayIsTBD: awayName == nil,
             isPlaceholder: false
         )
     }
 
-    private static func displayName(_ player: PlayerDTO) -> String {
+    /// The player's short name, or nil when the slot isn't decided yet.
+    private static func displayName(_ player: PlayerDTO) -> String? {
         let first = player.firstName ?? ""
         let last = player.surname ?? ""
-        if first.isEmpty && last.isEmpty { return "TBD" }
+        if first.isEmpty && last.isEmpty { return nil }
         return PlayerNameHelper.shortenedName(
             firstName: player.firstName,
             surname: player.surname,

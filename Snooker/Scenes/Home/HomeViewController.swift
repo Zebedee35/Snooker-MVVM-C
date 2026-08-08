@@ -41,7 +41,7 @@ final class HomeViewController: UIViewController {
     private let emptyStateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No active tournament"
+        label.text = L10n.Home.empty
         label.textColor = .secondaryLabel
         label.font = AppFont.medium(size: 17)
         label.textAlignment = .center
@@ -94,7 +94,10 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .systemBackground
-        title = "Home"
+        // navigationItem.title, not title: setting `title` on a tab's root
+        // view controller also writes through to its tabBarItem, which would
+        // overwrite the short tab label the moment this view loads.
+        navigationItem.title = L10n.Home.title
         
         setupUI()
         setupConstraints()

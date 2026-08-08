@@ -156,7 +156,7 @@ struct HomeCellPresentation {
         self.matchId = match.id
         
         self.homePlayerId = match.homePlayerId
-        self.homePlayerName = match.homePlayer.firstName ?? "TBD"
+        self.homePlayerName = match.homePlayer.firstName ?? L10n.Common.tbd
         self.homePlayerSurname = match.homePlayer.surname ?? ""
         self.homePlayerPhotoUrl = match.homePlayer.photoUrl
         self.homePlayerScore = match.homePlayerScore ?? 0
@@ -167,7 +167,7 @@ struct HomeCellPresentation {
         self.homePlayerTurnedPro = match.homePlayer.turnedPro
         
         self.awayPlayerId = match.awayPlayerId
-        self.awayPlayerName = match.awayPlayer.firstName ?? "TBD"
+        self.awayPlayerName = match.awayPlayer.firstName ?? L10n.Common.tbd
         self.awayPlayerSurname = match.awayPlayer.surname ?? ""
         self.awayPlayerPhotoUrl = match.awayPlayer.photoUrl
         self.awayPlayerScore = match.awayPlayerScore ?? 0

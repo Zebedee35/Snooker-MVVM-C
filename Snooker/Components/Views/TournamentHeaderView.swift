@@ -166,7 +166,7 @@ final class TournamentHeaderView: UICollectionReusableView {
 
     private let bracketLabel: UILabel = {
         let label = UILabel()
-        label.text = "View Tournament Bracket"
+        label.text = L10n.Tournament.viewBracket
         label.font = AppFont.semiBold(size: 15)
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -186,7 +186,7 @@ final class TournamentHeaderView: UICollectionReusableView {
     /// Small attention badge; pulses gently while visible (discoverability).
     private let newBadge: UILabel = {
         let label = PaddedLabel(insets: UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6))
-        label.text = "NEW"
+        label.text = L10n.Tournament.newBadge
         label.font = AppFont.bold(size: 10)
         label.textColor = .systemIndigo
         label.backgroundColor = .white
@@ -398,39 +398,31 @@ final class TournamentHeaderView: UICollectionReusableView {
     // MARK: - Helpers
     
     private func formatDateRange(start: String, end: String) -> String {
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
+        let inputFormatter = AppDateFormatter.parser("yyyy-MM-dd")
         
         guard let startDate = inputFormatter.date(from: start),
               let endDate = inputFormatter.date(from: end) else {
             return "\(start) - \(end)"
         }
         
-        let outputFormatter = DateFormatter()
-        outputFormatter.locale = Locale.current
-        
+        let fullFormatter = AppDateFormatter.display(AppDateFormatter.Template.dayShortMonthYear)
+
         let calendar = Calendar.current
         let startMonth = calendar.component(.month, from: startDate)
         let endMonth = calendar.component(.month, from: endDate)
-        
+        let endFormatted = fullFormatter.string(from: endDate)
+
         if startMonth == endMonth {
             // Aynı ay: "20 - 06 May 2024"
-            let dayFormatter = DateFormatter()
-            dayFormatter.dateFormat = "d"
-            
-            outputFormatter.dateFormat = "d MMM yyyy"
-            let startDay = dayFormatter.string(from: startDate)
-            let endFormatted = outputFormatter.string(from: endDate)
-            
+            let startDay = AppDateFormatter
+                .display(AppDateFormatter.Template.dayOfMonth)
+                .string(from: startDate)
             return "\(startDay) - \(endFormatted)"
         } else {
             // Farklı ay: "20 Apr - 06 May 2024"
-            outputFormatter.dateFormat = "d MMM"
-            let startFormatted = outputFormatter.string(from: startDate)
-            
-            outputFormatter.dateFormat = "d MMM yyyy"
-            let endFormatted = outputFormatter.string(from: endDate)
-            
+            let startFormatted = AppDateFormatter
+                .display(AppDateFormatter.Template.dayShortMonth)
+                .string(from: startDate)
             return "\(startFormatted) - \(endFormatted)"
         }
     }

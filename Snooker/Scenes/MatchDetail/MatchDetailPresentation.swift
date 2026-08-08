@@ -64,13 +64,7 @@ struct MatchDetailPresentation {
 
     /// Status banner text shown above the players.
     var statusText: String {
-        switch status.lowercased() {
-        case "live":              return "LIVE"
-        case "break":             return "ON BREAK"
-        case "completed", "finished": return "MATCH COMPLETE"
-        case "scheduled":         return "SCHEDULED"
-        default:                  return status.uppercased()
-        }
+        MatchStatusName.badgeOrRaw(status)
     }
 
     /// Header used to launch the existing Head-to-Head sheet from this screen.

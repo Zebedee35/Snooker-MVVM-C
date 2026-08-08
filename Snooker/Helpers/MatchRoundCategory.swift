@@ -20,9 +20,9 @@ enum MatchRoundCategory: String, CaseIterable {
 
     var title: String {
         switch self {
-        case .final:        return "Final"
-        case .semiFinal:    return "Semi Final"
-        case .quarterFinal: return "Quarter Final"
+        case .final:        return L10n.Round.final
+        case .semiFinal:    return L10n.Round.semiFinal
+        case .quarterFinal: return L10n.Round.quarterFinal
         }
     }
 

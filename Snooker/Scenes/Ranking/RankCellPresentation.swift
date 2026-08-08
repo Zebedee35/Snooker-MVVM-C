@@ -26,7 +26,7 @@ struct RankCellPresentation {
     init(ranking: RankingDTO) {
         self.playerId = ranking.playerId
         self.position = ranking.position
-        self.playerName = ranking.player.firstName ?? "TBD"
+        self.playerName = ranking.player.firstName ?? L10n.Common.tbd
         self.playerSurname = ranking.player.surname ?? ""
         self.playerPhotoUrl = ranking.player.photoUrl
         self.playerFlag = CountryFlagHelper.flagEmoji(for: ranking.player.countryCode)
@@ -35,11 +35,7 @@ struct RankCellPresentation {
         self.playerTurnedPro = ranking.player.turnedPro
         
         // Prize money formatla
-        if let money = ranking.prizeMoney {
-            self.prizeMoney = Self.formatPrizeMoney(money)
-        } else {
-            self.prizeMoney = "£ 0"
-        }
+        self.prizeMoney = Self.formatPrizeMoney(ranking.prizeMoney ?? 0)
     }
     
     /// Manuel oluşturma için (test/preview amaçlı)
@@ -85,13 +81,17 @@ struct RankCellPresentation {
     
     // MARK: - Helpers
     
+    /// Prize money is genuinely denominated in pounds, so the currency itself
+    /// stays GBP in every language — only its *presentation* is localized.
+    /// The locale decides the digit grouping and which side the symbol sits on
+    /// ("£1,234,567" in English, "1.234.567 £" in German).
     private static func formatPrizeMoney(_ amount: Double) -> String {
         let formatter = NumberFormatter()
+        formatter.locale = LanguageManager.shared.locale
         formatter.numberStyle = .currency
-        formatter.currencySymbol = "£ "
+        formatter.currencyCode = "GBP"
         formatter.maximumFractionDigits = 0
-        formatter.groupingSeparator = ","
-        return formatter.string(from: NSNumber(value: amount)) ?? "£ 0"
+        return formatter.string(from: NSNumber(value: amount)) ?? ""
     }
 }
 

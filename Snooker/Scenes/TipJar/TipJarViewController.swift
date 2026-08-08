@@ -37,7 +37,7 @@ final class TipJarViewController: UIViewController {
     private let contentStack = UIStackView()
 
     private lazy var segmentedControl: UISegmentedControl = {
-        let control = UISegmentedControl(items: ["One-time", "Monthly"])
+        let control = UISegmentedControl(items: [L10n.TipJar.segmentOneTime, L10n.TipJar.segmentMonthly])
         control.selectedSegmentIndex = Segment.monthly.rawValue
         control.addTarget(self, action: #selector(segmentChanged), for: .valueChanged)
         return control
@@ -62,7 +62,7 @@ final class TipJarViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Support the App"
+        title = L10n.TipJar.title
         view.backgroundColor = .systemGroupedBackground
         setupUI()
         loadProducts()
@@ -114,19 +114,14 @@ final class TipJarViewController: UIViewController {
         heart.textAlignment = .center
 
         let title = UILabel()
-        title.text = "Enjoying the app?"
+        title.text = L10n.TipJar.heading
         title.font = AppFont.bold(size: 22)
         title.textColor = .label
         title.textAlignment = .center
         title.numberOfLines = 0
 
         let body = UILabel()
-        body.text = """
-        Hundreds of hours of work, heart and passion went into this app — built \
-        to make following snooker simpler and more enjoyable. There are no paid \
-        features: everything stays free. If it brought you a little joy, a small \
-        optional tip helps me keep improving it. Thank you! 🙏
-        """
+        body.text = L10n.TipJar.body
         body.font = AppFont.regular(size: 15)
         body.textColor = .secondaryLabel
         body.textAlignment = .center
@@ -140,7 +135,7 @@ final class TipJarViewController: UIViewController {
 
     private func makeRestoreButton() -> UIButton {
         let button = UIButton(type: .system)
-        button.setTitle("Restore Purchases", for: .normal)
+        button.setTitle(L10n.TipJar.restore, for: .normal)
         button.titleLabel?.font = AppFont.medium(size: 15)
         button.addTarget(self, action: #selector(restoreTapped), for: .touchUpInside)
         return button
@@ -157,7 +152,7 @@ final class TipJarViewController: UIViewController {
                 rebuildProductRows()
             } catch {
                 loadingIndicator.stopAnimating()
-                showError("Could not load options. Please check your connection and try again.")
+                showError(L10n.TipJar.loadFailed)
             }
         }
     }
@@ -171,7 +166,7 @@ final class TipJarViewController: UIViewController {
 
         if products.isEmpty {
             let empty = UILabel()
-            empty.text = "No options available right now."
+            empty.text = L10n.TipJar.empty
             empty.font = AppFont.regular(size: 15)
             empty.textColor = .tertiaryLabel
             empty.textAlignment = .center
@@ -206,7 +201,7 @@ final class TipJarViewController: UIViewController {
 
         // Price is now a decorative pill (no nested button) — the whole card taps.
         let priceLabel = UILabel()
-        priceLabel.text = isActive ? "Active" : product.displayPrice
+        priceLabel.text = isActive ? L10n.TipJar.active : product.displayPrice
         priceLabel.font = AppFont.semiBold(size: 17)
         priceLabel.textColor = tint
         priceLabel.textAlignment = .center
@@ -285,30 +280,22 @@ final class TipJarViewController: UIViewController {
 
     private func updateFooter() {
         if selectedSegment == .monthly {
-            footerLabel.text = """
-            Monthly Support is an auto-renewable subscription. Each plan lasts \
-            1 month and renews automatically at the price shown until cancelled. \
-            Payment is charged to your Apple Account; you can cancel anytime in \
-            your App Store subscription settings. No features are unlocked — \
-            this is purely optional support.
-            """
+            footerLabel.text = L10n.TipJar.footerMonthly
         } else {
-            footerLabel.text = "A one-time tip. No subscription, no features unlocked — just a thank-you."
+            footerLabel.text = L10n.TipJar.footerOneTime
         }
     }
 
     /// "per month" etc. — read from StoreKit so it always matches the real product.
     private static func subscriptionPeriodText(for product: Product) -> String? {
         guard let period = product.subscription?.subscriptionPeriod else { return nil }
-        let unit: String
         switch period.unit {
-        case .day: unit = "day"
-        case .week: unit = "week"
-        case .month: unit = "month"
-        case .year: unit = "year"
+        case .day:   return L10n.TipJar.perDay(period.value)
+        case .week:  return L10n.TipJar.perWeek(period.value)
+        case .month: return L10n.TipJar.perMonth(period.value)
+        case .year:  return L10n.TipJar.perYear(period.value)
         @unknown default: return nil
         }
-        return period.value == 1 ? "per \(unit)" : "per \(period.value) \(unit)s"
     }
 
     // MARK: - Actions
@@ -327,7 +314,7 @@ final class TipJarViewController: UIViewController {
                     rebuildProductRows()
                     showThankYou()
                 case .pending:
-                    showError("Your purchase is pending approval.")
+                    showError(L10n.TipJar.purchasePending)
                 case .cancelled:
                     break
                 }
@@ -365,9 +352,9 @@ final class TipJarViewController: UIViewController {
         separator.textColor = .secondaryLabel
 
         let row = UIStackView(arrangedSubviews: [
-            linkButton("Terms of Use (EULA)", url: Links.terms),
+            linkButton(L10n.TipJar.termsLink, url: Links.terms),
             separator,
-            linkButton("Privacy Policy", url: Links.privacy)
+            linkButton(L10n.TipJar.privacyLink, url: Links.privacy)
         ])
         row.axis = .horizontal
         row.spacing = 6
@@ -384,17 +371,17 @@ final class TipJarViewController: UIViewController {
 
     private func showThankYou() {
         let alert = UIAlertController(
-            title: "Thank you! ❤️",
-            message: "Your support genuinely means a lot and helps keep the app growing.",
+            title: L10n.TipJar.Thanks.title,
+            message: L10n.TipJar.Thanks.message,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "You're welcome", style: .default))
+        alert.addAction(UIAlertAction(title: L10n.TipJar.Thanks.dismiss, style: .default))
         present(alert, animated: true)
     }
 
     private func showError(_ message: String) {
-        let alert = UIAlertController(title: "Something went wrong", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        let alert = UIAlertController(title: L10n.TipJar.errorTitle, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: L10n.Common.ok, style: .default))
         present(alert, animated: true)
     }
 }

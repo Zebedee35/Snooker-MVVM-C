@@ -63,7 +63,10 @@ final class SettingsViewController: UIViewController {
     // MARK: - Setup
     
     private func setupUI() {
-        title = "Settings"
+        // navigationItem.title, not title: setting `title` on a tab's root
+        // view controller also writes through to its tabBarItem, which would
+        // overwrite the short tab label the moment this view loads.
+        navigationItem.title = L10n.Settings.title
         view.backgroundColor = .systemGroupedBackground
         view.addSubview(tableView)
     }
@@ -90,7 +93,9 @@ extension SettingsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        viewModel.sections[section].title
+        // Uppercased here rather than in the catalog so translators write
+        // natural case, and so locale rules (Turkish dotless i) are respected.
+        viewModel.sections[section].title.uppercased(with: LanguageManager.shared.locale)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -161,14 +166,14 @@ extension SettingsViewController: UITableViewDataSource {
         let footerView = UIView()
         
         let byLabel = UILabel()
-        byLabel.text = "by Tayfun Susamcioglu"
+        byLabel.text = L10n.Settings.byAuthor("Tayfun Susamcioglu")
         byLabel.font = AppFont.regular(size: 12)
         byLabel.textColor = .tertiaryLabel
         byLabel.textAlignment = .center
         byLabel.translatesAutoresizingMaskIntoConstraints = false
         
         let versionLabel = UILabel()
-        versionLabel.text = "Version \(viewModel.appVersion)"
+        versionLabel.text = L10n.Settings.version(viewModel.appVersion)
         versionLabel.font = AppFont.regular(size: 12)
         versionLabel.textColor = .tertiaryLabel
         versionLabel.textAlignment = .center

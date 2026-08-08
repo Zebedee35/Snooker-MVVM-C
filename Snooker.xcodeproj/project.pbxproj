@@ -85,6 +85,11 @@
 			path = SnookerWidget;
 			sourceTree = "<group>";
 		};
+		AA10CA1E2FE1000000000001 /* Localization */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		AABD5E762EB919C300B0045D /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Models;
@@ -132,6 +137,7 @@
 		AAB319A92E96F4AF0014CA2A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AA10CA1E2FE1000000000001 /* Localization */,
 				AABD5E762EB919C300B0045D /* Models */,
 				AABD5E7A2EB919D000B0045D /* Network */,
 				AA74DA512FD3329700C71C6C /* WidgetKit.framework */,
@@ -177,6 +183,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				AA10CA1E2FE1000000000001 /* Localization */,
 				AA74DA552FD3329800C71C6C /* SnookerWidget */,
 			);
 			name = SnookerWidgetExtension;
@@ -201,6 +208,7 @@
 				AA74DA602FD3329A00C71C6C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				AA10CA1E2FE1000000000001 /* Localization */,
 				AABD5E762EB919C300B0045D /* Models */,
 				AABD5E7A2EB919D000B0045D /* Network */,
 				AAC264A62E93031A0062804E /* Snooker */,
@@ -238,6 +246,7 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				tr,
 				en,
 				Base,
 			);
@@ -326,7 +335,7 @@
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -357,7 +366,7 @@
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -398,7 +407,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -439,7 +448,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -1,0 +1,743 @@
+<title>Snooker — Translation Review</title>
+<style>
+  /* Palette drawn from the game itself: baize green ground, chalk-blue
+     neutrals, and the ball colours doing semantic work (yellow = needs a
+     decision, red = broken placeholder, green = signed off).
+
+     No webfont is embedded on purpose. This page shows Turkish, German and
+     Simplified Chinese side by side; no font small enough to inline covers
+     all three, and a partial one would silently fall back mid-sentence —
+     exactly the kind of bug a reviewer would mistake for a bad translation. */
+  :root {
+    --baize:      #12664A;
+    --baize-lift: #17805C;
+    --ground:     #F5F7F2;
+    --surface:    #FFFFFF;
+    --surface-2:  #EDF1EA;
+    --ink:        #131A16;
+    --ink-soft:   #4A5A52;
+    --ink-faint:  #7C8C83;
+    --rule:       #D8E0D6;
+    --yellow:     #B67F10;
+    --yellow-bg:  #FBF2DC;
+    --red:        #B22F27;
+    --red-bg:     #FBE7E4;
+    --green:      #1B6E45;
+    --green-bg:   #E2F1E7;
+
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+
+    --step-0: 0.9375rem;
+    --step-1: 1.0625rem;
+    --step-2: 1.375rem;
+    --step-3: 2rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --baize:      #3DA37B;
+      --baize-lift: #57BC93;
+      --ground:     #0D1310;
+      --surface:    #151D19;
+      --surface-2:  #1D2721;
+      --ink:        #E8EFE9;
+      --ink-soft:   #A6B6AC;
+      --ink-faint:  #74857A;
+      --rule:       #2A3630;
+      --yellow:     #E0AE45;
+      --yellow-bg:  #2E2716;
+      --red:        #E4796F;
+      --red-bg:     #33201D;
+      --green:      #5CBB86;
+      --green-bg:   #16291E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --baize:      #3DA37B;
+    --baize-lift: #57BC93;
+    --ground:     #0D1310;
+    --surface:    #151D19;
+    --surface-2:  #1D2721;
+    --ink:        #E8EFE9;
+    --ink-soft:   #A6B6AC;
+    --ink-faint:  #74857A;
+    --rule:       #2A3630;
+    --yellow:     #E0AE45;
+    --yellow-bg:  #2E2716;
+    --red:        #E4796F;
+    --red-bg:     #33201D;
+    --green:      #5CBB86;
+    --green-bg:   #16291E;
+  }
+  :root[data-theme="light"] {
+    --baize:      #12664A;
+    --baize-lift: #17805C;
+    --ground:     #F5F7F2;
+    --surface:    #FFFFFF;
+    --surface-2:  #EDF1EA;
+    --ink:        #131A16;
+    --ink-soft:   #4A5A52;
+    --ink-faint:  #7C8C83;
+    --rule:       #D8E0D6;
+    --yellow:     #B67F10;
+    --yellow-bg:  #FBF2DC;
+    --red:        #B22F27;
+    --red-bg:     #FBE7E4;
+    --green:      #1B6E45;
+    --green-bg:   #E2F1E7;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 96px; }
+
+  /* ---------------------------------------------------------- masthead */
+
+  .masthead {
+    padding: 48px 0 28px;
+    border-bottom: 2px solid var(--baize);
+  }
+  .eyebrow {
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--baize);
+    font-weight: 650;
+    margin: 0 0 10px;
+  }
+  h1 {
+    margin: 0 0 12px;
+    font-size: var(--step-3);
+    line-height: 1.1;
+    letter-spacing: -0.022em;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .lede {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--ink-soft);
+    font-size: var(--step-1);
+  }
+
+  /* ------------------------------------------------------------ toolbar */
+
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--ground) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    margin: 0 -20px;
+    padding: 12px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .langs { display: flex; gap: 4px; background: var(--surface-2); padding: 3px; border-radius: 9px; }
+  .lang {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--ink-soft);
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 6px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+  }
+  .lang[aria-selected="true"] { background: var(--surface); color: var(--baize); box-shadow: 0 1px 3px rgb(0 0 0 / 0.10); }
+  .lang:focus-visible { outline: 2px solid var(--baize); outline-offset: 2px; }
+
+  .search {
+    flex: 1 1 200px;
+    min-width: 160px;
+    font: inherit;
+    padding: 8px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .search:focus-visible { outline: 2px solid var(--baize); outline-offset: 1px; border-color: var(--baize); }
+
+  .filters { display: flex; gap: 4px; }
+  .filter {
+    appearance: none;
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    padding: 7px 12px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    color: var(--ink-soft);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .filter[aria-pressed="true"] { background: var(--baize); border-color: var(--baize); color: #fff; }
+  .filter:focus-visible { outline: 2px solid var(--baize); outline-offset: 2px; }
+
+  .btn {
+    appearance: none;
+    font: inherit;
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--baize);
+    background: var(--baize);
+    color: #fff;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--baize-lift); border-color: var(--baize-lift); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .btn.ghost { background: transparent; color: var(--baize); }
+  .btn.ghost:hover { background: var(--surface-2); }
+
+  /* ------------------------------------------------------------ progress */
+
+  .progress { display: flex; gap: 20px; align-items: baseline; padding: 20px 0 6px; flex-wrap: wrap; }
+  .metric { display: flex; align-items: baseline; gap: 7px; }
+  .metric b { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .metric span { font-size: 0.8125rem; color: var(--ink-faint); }
+  .metric.ok b { color: var(--green); }
+  .metric.flag b { color: var(--yellow); }
+  .metric.bad b { color: var(--red); }
+
+  .bar { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; margin-bottom: 26px; }
+  .bar > i { display: block; height: 100%; background: var(--green); transition: width 0.25s ease; }
+
+  /* --------------------------------------------------------------- flags */
+
+  .flags {
+    background: var(--yellow-bg);
+    border: 1px solid color-mix(in srgb, var(--yellow) 35%, transparent);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 30px;
+  }
+  .flags h2 { margin: 0 0 4px; font-size: var(--step-1); font-weight: 650; letter-spacing: -0.01em; }
+  .flags p.sub { margin: 0 0 14px; font-size: 0.875rem; color: var(--ink-soft); }
+  .flags ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .flags li { font-size: 0.875rem; line-height: 1.5; }
+  .flags code {
+    font-family: var(--mono);
+    font-size: 0.78em;
+    background: color-mix(in srgb, var(--yellow) 16%, transparent);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .flags a { color: inherit; text-underline-offset: 2px; }
+
+  /* --------------------------------------------------------------- rows */
+
+  .group { margin-bottom: 34px; }
+  .group > h3 {
+    margin: 0 0 12px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 650;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+  }
+  .group > h3 em { font-style: normal; font-variant-numeric: tabular-nums; }
+
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 22px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 11px;
+    margin-bottom: 8px;
+  }
+  .row[data-state="edited"] { border-color: color-mix(in srgb, var(--baize) 45%, transparent); }
+  .row[data-state="invalid"] { border-color: var(--red); background: var(--red-bg); }
+  .row.hidden { display: none; }
+
+  .row .key {
+    grid-column: 1 / -1;
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+    word-break: break-all;
+  }
+  .row .key .plural {
+    color: var(--baize);
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-left: 6px;
+  }
+
+  .source .en {
+    margin: 0 0 8px;
+    white-space: pre-wrap;
+    font-size: var(--step-0);
+  }
+  .source .ctx {
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+
+  .target { display: flex; flex-direction: column; gap: 7px; }
+  .target textarea {
+    font: inherit;
+    width: 100%;
+    min-height: 60px;
+    resize: vertical;
+    padding: 9px 11px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .target textarea:focus-visible { outline: 2px solid var(--baize); outline-offset: 1px; border-color: var(--baize); }
+
+  .rowfoot { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .chip {
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 5px;
+    background: var(--surface-2);
+    color: var(--ink-faint);
+  }
+  .chip.ok    { background: var(--green-bg);  color: var(--green); }
+  .chip.edit  { background: var(--surface-2); color: var(--baize); }
+  .chip.flag  { background: var(--yellow-bg); color: var(--yellow); }
+  .chip.bad   { background: var(--red-bg);    color: var(--red); }
+
+  .warn { font-size: 0.8125rem; color: var(--red); margin: 0; }
+  .note { font-size: 0.8125rem; color: var(--yellow); margin: 0; }
+  .reset {
+    appearance: none; border: 0; background: none; padding: 0;
+    font: inherit; font-size: 0.75rem; color: var(--ink-faint);
+    text-decoration: underline; text-underline-offset: 2px; cursor: pointer;
+    margin-left: auto;
+  }
+  .reset:hover { color: var(--ink); }
+  .reset:focus-visible { outline: 2px solid var(--baize); outline-offset: 2px; }
+
+  .empty { padding: 40px 0; text-align: center; color: var(--ink-faint); }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 0.8125rem;
+    color: var(--ink-faint);
+  }
+  footer code { font-family: var(--mono); font-size: 0.9em; }
+
+  @media (max-width: 720px) {
+    .row { grid-template-columns: 1fr; gap: 12px; }
+    h1 { font-size: 1.625rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Snooker for iOS</p>
+    <h1>Help us get the translations right</h1>
+    <p class="lede">
+      Every piece of text in the app is listed below in English, with a note on
+      where it appears and what it means. Underneath each one is a draft
+      translation. Read it, fix anything that sounds wrong or unnatural, then
+      send the file back — nothing ships until a native speaker has been
+      through it.
+    </p>
+  </header>
+
+  <div class="toolbar">
+    <div class="langs" role="tablist" aria-label="Language"></div>
+    <input class="search" type="search" placeholder="Search text or key…" aria-label="Search">
+    <div class="filters">
+      <button class="filter" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter" data-filter="flagged" aria-pressed="false">Needs a decision</button>
+      <button class="filter" data-filter="edited" aria-pressed="false">Changed</button>
+    </div>
+    <button class="btn" id="export">Download CSV</button>
+  </div>
+
+  <div class="progress" id="progress"></div>
+  <div class="bar"><i id="bar" style="width:0%"></i></div>
+
+  <section class="flags" id="flags" hidden>
+    <h2>Questions only you can answer</h2>
+    <p class="sub">These are the spots where a dictionary doesn't help — they need someone who actually watches snooker in this language.</p>
+    <ul id="flaglist"></ul>
+  </section>
+
+  <main id="rows"></main>
+
+  <footer>
+    <p>
+      Drafted automatically, then checked so that every placeholder
+      (<code>%@</code>, <code>%d</code>) and line break matches the English.
+      Your edits are kept in this browser as you type, so you can close the tab
+      and come back. When you're done, use <b>Download CSV</b> and send us the
+      file.
+    </p>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const DATA = /*__DATA__*/null;
+  const KEY_COUNT = "__KEY_COUNT__";
+  const STORAGE = "snooker-l10n-review";
+
+  const $ = (sel) => document.querySelector(sel);
+  const langBar = $(".langs");
+  const rowsEl = $("#rows");
+  const searchEl = $(".search");
+
+  let language = DATA.languages[0];
+  let filter = "all";
+  let query = "";
+
+  /* Edits live in localStorage under {lang: {rowKey: text}} so a reviewer can
+     work through 149 strings over more than one sitting. */
+  const edits = (() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE)) || {}; }
+    catch { return {}; }
+  })();
+
+  const saveEdits = () => {
+    try { localStorage.setItem(STORAGE, JSON.stringify(edits)); } catch {}
+  };
+
+  const draftFor = (row) => row.translations[language] ?? "";
+  const currentFor = (row) => edits[language]?.[row.key] ?? draftFor(row);
+
+  /* Mirrors the placeholder check in l10n.py. A translation that loses a %@
+     doesn't just read oddly — it prints the wrong thing or crashes, so it is
+     surfaced as an error the reviewer can see immediately rather than a
+     problem found weeks later. */
+  const SPEC = /%(?:(\d+)\$)?[-+ #0]*[\d.*]*(?:hh|h|ll|l|q|L|z|t|j)?([@dDuUxXoOfeEgGcCsSpaAn%])/g;
+  const specifiers = (text) => {
+    const found = [];
+    let match, index = 0;
+    SPEC.lastIndex = 0;
+    while ((match = SPEC.exec(text)) !== null) {
+      if (match[2] === "%") continue;
+      index += 1;
+      found.push(`${match[1] || index}$${match[2]}`);
+    }
+    return found.sort().join(",");
+  };
+
+  const problemWith = (row, text) => {
+    if (!text.trim()) return "This one is still empty.";
+    if (specifiers(text) !== specifiers(row.english)) {
+      return `Placeholders must match the English exactly (${specifiers(row.english) || "none"}).`;
+    }
+    const enBreaks = (row.english.match(/\n/g) || []).length;
+    const trBreaks = (text.match(/\n/g) || []).length;
+    if (enBreaks !== trBreaks) return `The English has ${enBreaks} line break(s); this has ${trBreaks}.`;
+    return null;
+  };
+
+  const flagFor = (row) => DATA.flags?.[language]?.[row.base_key] ?? null;
+
+  /* -------------------------------------------------------------- render */
+
+  const GROUP_NAMES = {
+    common: "Shared wording", tab: "Tab bar", home: "Home screen",
+    live: "Live scores", ranking: "Rankings", seasons: "Season list",
+    match_status: "Match status", match_detail: "Match detail",
+    tournament: "Tournament", player: "Player profile",
+    head_to_head: "Head-to-head", settings: "Settings",
+    notification_preference: "Notification options", language: "Language picker",
+    alert: "Alerts", edit_profile: "Edit profile", auth: "Sign in",
+    tip_jar: "Support the app", announcements: "Announcements",
+    round: "Round names",
+  };
+
+  function renderLangs() {
+    langBar.innerHTML = "";
+    DATA.languages.forEach((code) => {
+      const button = document.createElement("button");
+      button.className = "lang";
+      button.type = "button";
+      button.role = "tab";
+      button.textContent = new Intl.DisplayNames([code], { type: "language" }).of(code) || code;
+      button.setAttribute("aria-selected", String(code === language));
+      button.addEventListener("click", () => {
+        language = code;
+        renderLangs();
+        render();
+      });
+      langBar.append(button);
+    });
+  }
+
+  function render() {
+    rowsEl.innerHTML = "";
+    const needle = query.trim().toLowerCase();
+    let shown = 0, changed = 0, broken = 0, flagged = 0;
+
+    const groups = new Map();
+    DATA.rows.forEach((row) => {
+      if (!groups.has(row.group)) groups.set(row.group, []);
+      groups.get(row.group).push(row);
+    });
+
+    groups.forEach((rows, groupKey) => {
+      const section = document.createElement("section");
+      section.className = "group";
+
+      const heading = document.createElement("h3");
+      heading.innerHTML = `<span></span><em></em>`;
+      heading.firstChild.textContent = GROUP_NAMES[groupKey] || groupKey;
+      section.append(heading);
+
+      let visibleInGroup = 0;
+
+      rows.forEach((row) => {
+        const text = currentFor(row);
+        const problem = problemWith(row, text);
+        const flag = flagFor(row);
+        const isEdited = text !== draftFor(row);
+
+        if (problem) broken += 1;
+        if (isEdited) changed += 1;
+        if (flag) flagged += 1;
+
+        const matchesFilter =
+          filter === "all" ||
+          (filter === "flagged" && flag) ||
+          (filter === "edited" && isEdited);
+        const matchesQuery =
+          !needle ||
+          row.key.toLowerCase().includes(needle) ||
+          row.english.toLowerCase().includes(needle) ||
+          text.toLowerCase().includes(needle);
+
+        if (!matchesFilter || !matchesQuery) return;
+        visibleInGroup += 1;
+        shown += 1;
+
+        const el = document.createElement("article");
+        el.className = "row";
+        el.dataset.state = problem ? "invalid" : isEdited ? "edited" : "clean";
+
+        const key = document.createElement("p");
+        key.className = "key";
+        key.textContent = row.base_key;
+        if (row.form) {
+          const badge = document.createElement("span");
+          badge.className = "plural";
+          badge.textContent = row.form === "one" ? "when the number is 1" : "any other number";
+          key.append(badge);
+        }
+
+        const source = document.createElement("div");
+        source.className = "source";
+        const en = document.createElement("p");
+        en.className = "en";
+        en.textContent = row.english;
+        const ctx = document.createElement("p");
+        ctx.className = "ctx";
+        ctx.textContent = row.comment;
+        source.append(en, ctx);
+
+        const target = document.createElement("div");
+        target.className = "target";
+        const field = document.createElement("textarea");
+        field.value = text;
+        field.spellcheck = true;
+        field.lang = language;
+        field.setAttribute("aria-label", `Translation for ${row.key}`);
+        field.addEventListener("input", () => {
+          (edits[language] ||= {})[row.key] = field.value;
+          saveEdits();
+          updateRow(el, row, field.value);
+          updateTotals();
+        });
+
+        const foot = document.createElement("div");
+        foot.className = "rowfoot";
+
+        const reset = document.createElement("button");
+        reset.type = "button";
+        reset.className = "reset";
+        reset.textContent = "Restore draft";
+        reset.addEventListener("click", () => {
+          field.value = draftFor(row);
+          delete edits[language]?.[row.key];
+          saveEdits();
+          updateRow(el, row, field.value);
+          updateTotals();
+        });
+
+        target.append(field, foot);
+        el.append(key, source, target);
+        section.append(el);
+
+        el._foot = foot;
+        el._reset = reset;
+        updateRow(el, row, text);
+      });
+
+      heading.lastChild.textContent = `${visibleInGroup}`;
+      if (visibleInGroup > 0) rowsEl.append(section);
+    });
+
+    if (shown === 0) {
+      const empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "Nothing matches that.";
+      rowsEl.append(empty);
+    }
+
+    renderFlags();
+    updateTotals();
+  }
+
+  function updateRow(el, row, text) {
+    const problem = problemWith(row, text);
+    const flag = flagFor(row);
+    const isEdited = text !== draftFor(row);
+    el.dataset.state = problem ? "invalid" : isEdited ? "edited" : "clean";
+
+    const foot = el._foot;
+    foot.innerHTML = "";
+
+    const chip = document.createElement("span");
+    chip.className = "chip " + (problem ? "bad" : isEdited ? "edit" : flag ? "flag" : "ok");
+    chip.textContent = problem ? "Needs fixing" : isEdited ? "Changed" : flag ? "Please check" : "Draft";
+    foot.append(chip);
+
+    if (problem) {
+      const warn = document.createElement("p");
+      warn.className = "warn";
+      warn.textContent = problem;
+      foot.append(warn);
+    } else if (flag) {
+      const note = document.createElement("p");
+      note.className = "note";
+      note.textContent = flag;
+      foot.append(note);
+    }
+
+    if (isEdited) foot.append(el._reset);
+  }
+
+  function renderFlags() {
+    const flags = DATA.flags?.[language] ?? {};
+    const entries = Object.entries(flags);
+    const panel = $("#flags");
+    panel.hidden = entries.length === 0;
+    const list = $("#flaglist");
+    list.innerHTML = "";
+    entries.forEach(([key, note]) => {
+      const item = document.createElement("li");
+      const code = document.createElement("code");
+      code.textContent = key;
+      item.append(code, document.createTextNode(" " + note));
+      list.append(item);
+    });
+  }
+
+  function updateTotals() {
+    let changed = 0, broken = 0, flagged = 0;
+    DATA.rows.forEach((row) => {
+      const text = currentFor(row);
+      if (problemWith(row, text)) broken += 1;
+      if (text !== draftFor(row)) changed += 1;
+      if (flagFor(row)) flagged += 1;
+    });
+
+    const total = DATA.rows.length;
+    $("#progress").innerHTML = "";
+    const metrics = [
+      ["", total, "strings"],
+      ["ok", changed, "changed by you"],
+      ["flag", flagged, "need a decision"],
+      ["bad", broken, "with a problem"],
+    ];
+    metrics.forEach(([cls, value, label]) => {
+      if (label === "with a problem" && value === 0) return;
+      const metric = document.createElement("div");
+      metric.className = "metric " + cls;
+      metric.innerHTML = "<b></b><span></span>";
+      metric.firstChild.textContent = value;
+      metric.lastChild.textContent = label;
+      $("#progress").append(metric);
+    });
+    $("#bar").style.width = `${Math.round((changed / total) * 100)}%`;
+  }
+
+  /* -------------------------------------------------------------- export */
+
+  const csvCell = (value) => `"${String(value).replaceAll('"', '""')}"`;
+
+  $("#export").addEventListener("click", () => {
+    const header = ["key", "context", "english", ...DATA.languages];
+    const lines = [header.map(csvCell).join(",")];
+
+    DATA.rows.forEach((row) => {
+      const cells = [row.key, row.comment, row.english];
+      DATA.languages.forEach((code) => {
+        cells.push(code === language
+          ? currentFor(row)
+          : (edits[code]?.[row.key] ?? row.translations[code] ?? ""));
+      });
+      lines.push(cells.map(csvCell).join(","));
+    });
+
+    // The BOM keeps Excel from mangling Turkish and Chinese on open.
+    const blob = new Blob(["﻿" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `snooker-translations-${language}.csv`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  document.querySelectorAll(".filter").forEach((button) => {
+    button.addEventListener("click", () => {
+      filter = button.dataset.filter;
+      document.querySelectorAll(".filter").forEach((other) =>
+        other.setAttribute("aria-pressed", String(other === button)));
+      render();
+    });
+  });
+
+  searchEl.addEventListener("input", () => { query = searchEl.value; render(); });
+
+  renderLangs();
+  render();
+})();
+</script>

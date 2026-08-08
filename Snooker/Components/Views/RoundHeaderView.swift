@@ -96,10 +96,10 @@ final class RoundHeaderView: UICollectionReusableView {
     // MARK: - Configuration
     
     func configure(roundName: String, numberOfFrames: Int? = nil) {
-        roundNameLabel.text = roundName
+        roundNameLabel.text = RoundName.localized(roundName)
 
         if let numberOfFrames {
-            subtitleLabel.text = "Best of \(numberOfFrames)"
+            subtitleLabel.text = L10n.MatchDetail.bestOf(numberOfFrames)
             subtitleLabel.isHidden = false
         } else {
             subtitleLabel.text = nil

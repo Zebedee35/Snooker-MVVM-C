@@ -33,8 +33,7 @@ struct SeasonListCellPresentation: Sendable {
         self.location = locationParts.isEmpty ? "Unknown" : locationParts.joined(separator: ", ")
         
         // Geçmiş mi kontrol et
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        let formatter = AppDateFormatter.parser("yyyy-MM-dd")
         if let endDate = formatter.date(from: tournament.endDate) {
             self.isPast = endDate < Date()
         } else {
@@ -43,16 +42,14 @@ struct SeasonListCellPresentation: Sendable {
     }
     
     private static func formatDateRange(start: String, end: String) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
+        let formatter = AppDateFormatter.parser("yyyy-MM-dd")
         
         guard let startDate = formatter.date(from: start),
               let endDate = formatter.date(from: end) else {
             return "\(start) - \(end)"
         }
         
-        let displayFormatter = DateFormatter()
-        displayFormatter.dateFormat = "MMM dd"
+        let displayFormatter = AppDateFormatter.display(AppDateFormatter.Template.dayShortMonth)
         
         let startString = displayFormatter.string(from: startDate)
         let endString = displayFormatter.string(from: endDate)

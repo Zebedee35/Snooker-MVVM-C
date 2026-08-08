@@ -71,8 +71,8 @@ final class BracketMatchCardView: UIView {
         // Future (placeholder) rounds carry no scores.
         homeScoreLabel.text = match.isPlaceholder ? "" : (match.homeScore.map(String.init) ?? "–")
         awayScoreLabel.text = match.isPlaceholder ? "" : (match.awayScore.map(String.init) ?? "–")
-        style(name: homeNameLabel, score: homeScoreLabel, isWinner: match.homeIsWinner, isTBD: match.homeName == "TBD")
-        style(name: awayNameLabel, score: awayScoreLabel, isWinner: match.awayIsWinner, isTBD: match.awayName == "TBD")
+        style(name: homeNameLabel, score: homeScoreLabel, isWinner: match.homeIsWinner, isTBD: match.homeIsTBD)
+        style(name: awayNameLabel, score: awayScoreLabel, isWinner: match.awayIsWinner, isTBD: match.awayIsTBD)
     }
 
     private func style(name: UILabel, score: UILabel, isWinner: Bool, isTBD: Bool) {

@@ -140,45 +140,49 @@ final class TournamentDateView: UIView {
     
     // MARK: - Configuration
     
+    /// Short month name for the badge, uppercased with the app's locale.
+    ///
+    /// The abbreviation comes from the formatter rather than from truncating
+    /// the full name: not every language abbreviates to three characters, and
+    /// Chinese months ("4月") would be mangled by a blind prefix. Uppercasing
+    /// is locale-aware so Turkish keeps its dotless ı.
+    private static func monthText(for date: Date) -> String {
+        let name = AppDateFormatter
+            .display(AppDateFormatter.Template.shortMonth)
+            .string(from: date)
+        return name.uppercased(with: LanguageManager.shared.locale)
+    }
+
     /// Tek tarih için yapılandırma (sadece bir gün)
     func configure(date: Date, isPast: Bool = false) {
         self.isPast = isPast
         
-        let formatter = DateFormatter()
-        formatter.locale = Locale.current
-        
         // Ay
-        formatter.dateFormat = "MMM"
-        monthLabel.text = formatter.string(from: date).uppercased()
-        
+        monthLabel.text = Self.monthText(for: date)
+
         // Gün
-        formatter.dateFormat = "d"
-        dayLabel.text = formatter.string(from: date)
+        dayLabel.text = AppDateFormatter
+            .display(AppDateFormatter.Template.dayOfMonth)
+            .string(from: date)
     }
     
     /// Tarih aralığı için yapılandırma (başlangıç - bitiş)
     func configure(startDate: Date, endDate: Date, isPast: Bool = false) {
         self.isPast = isPast
         
-        let formatter = DateFormatter()
-        formatter.locale = Locale.current
-        
         let calendar = Calendar.current
         let startMonth = calendar.component(.month, from: startDate)
         let endMonth = calendar.component(.month, from: endDate)
         let startDay = calendar.component(.day, from: startDate)
         let endDay = calendar.component(.day, from: endDate)
-        
+
         // Ay
-        formatter.dateFormat = "MMM"
         if startMonth == endMonth {
             // Aynı ay
-            monthLabel.text = formatter.string(from: startDate).uppercased()
+            monthLabel.text = Self.monthText(for: startDate)
         } else {
             // Farklı aylar
-            let startMonthStr = formatter.string(from: startDate).prefix(3).uppercased()
-            let endMonthStr = formatter.string(from: endDate).prefix(3).uppercased()
-            monthLabel.text = "\(startMonthStr)-\(endMonthStr)"
+            monthLabel.text = "\(Self.monthText(for: startDate))-\(Self.monthText(for: endDate))"
         }
         
         // Günler
@@ -195,8 +199,7 @@ final class TournamentDateView: UIView {
         isoFormatter.formatOptions = [.withFullDate]
         
         // Alternatif format dene
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateFormatter = AppDateFormatter.parser("yyyy-MM-dd")
         
         var startDate: Date?
         var endDate: Date?
@@ -210,7 +213,7 @@ final class TournamentDateView: UIView {
         }
         
         guard let start = startDate else {
-            monthLabel.text = "TBD"
+            monthLabel.text = L10n.Seasons.dateUnknown
             dayLabel.text = "-"
             return
         }
