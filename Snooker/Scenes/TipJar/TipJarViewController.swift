@@ -12,9 +12,11 @@ import StoreKit
 
 final class TipJarViewController: UIViewController {
 
-    // Replace with the real hosted documents before submitting subscriptions.
+    // Live hosted documents; App Review requires both to be functional links
+    // visible on this screen (Guideline 3.1.2(c)).
     private enum Links {
-        static let terms = URL(string: "https://35coders.com/snooker/terms")!
+        /// Apple's standard EULA — must match the link in the App Store description.
+        static let terms = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
         static let privacy = URL(string: "https://35coders.com/snooker/privacy")!
     }
 
@@ -51,7 +53,8 @@ final class TipJarViewController: UIViewController {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.font = AppFont.regular(size: 12)
-        label.textColor = .tertiaryLabel
+        // Same color as the intro text at the top of the screen.
+        label.textColor = .secondaryLabel
         return label
     }()
 
@@ -85,6 +88,7 @@ final class TipJarViewController: UIViewController {
         contentStack.addArrangedSubview(loadingIndicator)
         contentStack.addArrangedSubview(makeRestoreButton())
         contentStack.addArrangedSubview(footerLabel)
+        contentStack.addArrangedSubview(makeLegalLinksRow())
 
         let frameGuide = scrollView.frameLayoutGuide
         let contentGuide = scrollView.contentLayoutGuide
@@ -209,23 +213,40 @@ final class TipJarViewController: UIViewController {
         // Safety net for long localized prices (e.g. "₺499,99").
         priceLabel.adjustsFontSizeToFitWidth = true
         priceLabel.minimumScaleFactor = 0.7
-        priceLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let priceStack = UIStackView(arrangedSubviews: [priceLabel])
+        priceStack.axis = .vertical
+        priceStack.alignment = .center
+        priceStack.translatesAutoresizingMaskIntoConstraints = false
+
+        // Guideline 3.1.2(c): the subscription length must be shown with the price.
+        if !isActive, let periodText = Self.subscriptionPeriodText(for: product) {
+            let periodLabel = UILabel()
+            periodLabel.text = periodText
+            periodLabel.font = AppFont.regular(size: 11)
+            periodLabel.textColor = tint
+            periodLabel.textAlignment = .center
+            priceStack.addArrangedSubview(periodLabel)
+        }
 
         let pill = UIView()
         pill.backgroundColor = tint.withAlphaComponent(0.15)
         pill.layer.cornerRadius = 18
         pill.translatesAutoresizingMaskIntoConstraints = false
-        pill.addSubview(priceLabel)
+        pill.addSubview(priceStack)
         pill.setContentHuggingPriority(.required, for: .horizontal)
         pill.setContentCompressionResistancePriority(.required, for: .horizontal)
         NSLayoutConstraint.activate([
-            pill.heightAnchor.constraint(equalToConstant: 36),
+            // Grows to two lines ("₺x" + "per month") for subscriptions.
+            pill.heightAnchor.constraint(greaterThanOrEqualToConstant: 36),
             // Fixed width so every pill is identical regardless of the amount.
             pill.widthAnchor.constraint(equalToConstant: 108),
-            priceLabel.centerXAnchor.constraint(equalTo: pill.centerXAnchor),
-            priceLabel.centerYAnchor.constraint(equalTo: pill.centerYAnchor),
-            priceLabel.leadingAnchor.constraint(greaterThanOrEqualTo: pill.leadingAnchor, constant: 10),
-            priceLabel.trailingAnchor.constraint(lessThanOrEqualTo: pill.trailingAnchor, constant: -10)
+            priceStack.centerXAnchor.constraint(equalTo: pill.centerXAnchor),
+            priceStack.centerYAnchor.constraint(equalTo: pill.centerYAnchor),
+            priceStack.topAnchor.constraint(greaterThanOrEqualTo: pill.topAnchor, constant: 5),
+            priceStack.bottomAnchor.constraint(lessThanOrEqualTo: pill.bottomAnchor, constant: -5),
+            priceStack.leadingAnchor.constraint(greaterThanOrEqualTo: pill.leadingAnchor, constant: 10),
+            priceStack.trailingAnchor.constraint(lessThanOrEqualTo: pill.trailingAnchor, constant: -10)
         ])
 
         let row = UIStackView(arrangedSubviews: [textStack, pill])
@@ -265,16 +286,29 @@ final class TipJarViewController: UIViewController {
     private func updateFooter() {
         if selectedSegment == .monthly {
             footerLabel.text = """
-            Your monthly support renews automatically until cancelled. You can \
-            cancel anytime in your Apple ID settings. No features are unlocked — \
+            Monthly Support is an auto-renewable subscription. Each plan lasts \
+            1 month and renews automatically at the price shown until cancelled. \
+            Payment is charged to your Apple Account; you can cancel anytime in \
+            your App Store subscription settings. No features are unlocked — \
             this is purely optional support.
-
-            Terms of Use  ·  Privacy Policy
             """
         } else {
-            footerLabel.text = "A one-time tip. No subscription, no features unlocked — just a thank-you.\n\nTerms of Use  ·  Privacy Policy"
+            footerLabel.text = "A one-time tip. No subscription, no features unlocked — just a thank-you."
         }
-        attachLegalTapGesture()
+    }
+
+    /// "per month" etc. — read from StoreKit so it always matches the real product.
+    private static func subscriptionPeriodText(for product: Product) -> String? {
+        guard let period = product.subscription?.subscriptionPeriod else { return nil }
+        let unit: String
+        switch period.unit {
+        case .day: unit = "day"
+        case .week: unit = "week"
+        case .month: unit = "month"
+        case .year: unit = "year"
+        @unknown default: return nil
+        }
+        return period.value == 1 ? "per \(unit)" : "per \(period.value) \(unit)s"
     }
 
     // MARK: - Actions
@@ -310,27 +344,40 @@ final class TipJarViewController: UIViewController {
         }
     }
 
-    private func attachLegalTapGesture() {
-        footerLabel.isUserInteractionEnabled = true
-        footerLabel.gestureRecognizers?.forEach { footerLabel.removeGestureRecognizer($0) }
-        let tap = UITapGestureRecognizer(target: self, action: #selector(footerTapped))
-        footerLabel.addGestureRecognizer(tap)
-    }
-
-    @objc private func footerTapped() {
-        let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        sheet.addAction(UIAlertAction(title: "Terms of Use", style: .default) { _ in
-            UIApplication.shared.open(Links.terms)
-        })
-        sheet.addAction(UIAlertAction(title: "Privacy Policy", style: .default) { _ in
-            UIApplication.shared.open(Links.privacy)
-        })
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        if let popover = sheet.popoverPresentationController {
-            popover.sourceView = footerLabel
-            popover.sourceRect = footerLabel.bounds
+    /// Always-visible, directly tappable legal links (required by 3.1.2(c) —
+    /// hiding them behind an action sheet got the app rejected).
+    private func makeLegalLinksRow() -> UIView {
+        func linkButton(_ title: String, url: URL) -> UIButton {
+            var config = UIButton.Configuration.plain()
+            config.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+            config.attributedTitle = AttributedString(title, attributes: AttributeContainer([
+                .font: AppFont.medium(size: 13),
+                .underlineStyle: NSUnderlineStyle.single.rawValue
+            ]))
+            let button = UIButton(configuration: config)
+            button.addAction(UIAction { _ in UIApplication.shared.open(url) }, for: .touchUpInside)
+            return button
         }
-        present(sheet, animated: true)
+
+        let separator = UILabel()
+        separator.text = "·"
+        separator.font = AppFont.regular(size: 13)
+        separator.textColor = .secondaryLabel
+
+        let row = UIStackView(arrangedSubviews: [
+            linkButton("Terms of Use (EULA)", url: Links.terms),
+            separator,
+            linkButton("Privacy Policy", url: Links.privacy)
+        ])
+        row.axis = .horizontal
+        row.spacing = 6
+        row.alignment = .center
+
+        // Wrapper keeps the row centered instead of stretched full-width.
+        let wrapper = UIStackView(arrangedSubviews: [row])
+        wrapper.axis = .vertical
+        wrapper.alignment = .center
+        return wrapper
     }
 
     // MARK: - Feedback
